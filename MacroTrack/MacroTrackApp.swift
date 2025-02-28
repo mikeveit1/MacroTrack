@@ -11,7 +11,7 @@ import SwiftUI
 struct MacroTrackApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            FoodLogView()
         }
     }
 }
