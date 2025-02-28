@@ -11,6 +11,8 @@
 		E48DF3002D72129300F92063 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E48DF2FF2D72129300F92063 /* ContentView.swift */; };
 		E48DF3022D72129400F92063 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E48DF3012D72129400F92063 /* Assets.xcassets */; };
 		E48DF3062D72129400F92063 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E48DF3052D72129400F92063 /* Preview Assets.xcassets */; };
+		E48DF30E2D7212D500F92063 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = E48DF30D2D7212D500F92063 /* Colors.swift */; };
+		E48DF3102D72134000F92063 /* FoodLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E48DF30F2D72134000F92063 /* FoodLogView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -20,6 +22,8 @@
 		E48DF3012D72129400F92063 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E48DF3032D72129400F92063 /* MacroTrack.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MacroTrack.entitlements; sourceTree = "<group>"; };
 		E48DF3052D72129400F92063 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		E48DF30D2D7212D500F92063 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
+		E48DF30F2D72134000F92063 /* FoodLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodLogView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,8 +56,10 @@
 		E48DF2FC2D72129300F92063 /* MacroTrack */ = {
 			isa = PBXGroup;
 			children = (
+				E48DF30C2D7212CB00F92063 /* Constants */,
 				E48DF2FD2D72129300F92063 /* MacroTrackApp.swift */,
 				E48DF2FF2D72129300F92063 /* ContentView.swift */,
+				E48DF30F2D72134000F92063 /* FoodLogView.swift */,
 				E48DF3012D72129400F92063 /* Assets.xcassets */,
 				E48DF3032D72129400F92063 /* MacroTrack.entitlements */,
 				E48DF3042D72129400F92063 /* Preview Content */,
@@ -67,6 +73,14 @@
 				E48DF3052D72129400F92063 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		E48DF30C2D7212CB00F92063 /* Constants */ = {
+			isa = PBXGroup;
+			children = (
+				E48DF30D2D7212D500F92063 /* Colors.swift */,
+			);
+			path = Constants;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -140,6 +154,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				E48DF3002D72129300F92063 /* ContentView.swift in Sources */,
+				E48DF3102D72134000F92063 /* FoodLogView.swift in Sources */,
+				E48DF30E2D7212D500F92063 /* Colors.swift in Sources */,
 				E48DF2FE2D72129300F92063 /* MacroTrackApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
