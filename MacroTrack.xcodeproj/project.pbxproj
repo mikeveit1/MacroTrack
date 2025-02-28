@@ -15,6 +15,8 @@
 		E48DF3102D72134000F92063 /* FoodLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E48DF30F2D72134000F92063 /* FoodLogView.swift */; };
 		E48DF3142D722DCA00F92063 /* FoodHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E48DF3132D722DCA00F92063 /* FoodHelper.swift */; };
 		E48DF31A2D72311A00F92063 /* FatSecretSwift in Frameworks */ = {isa = PBXBuildFile; productRef = E48DF3192D72311A00F92063 /* FatSecretSwift */; };
+		E48DF3282D7249CB00F92063 /* FatSecretSwift in Frameworks */ = {isa = PBXBuildFile; productRef = E48DF3272D7249CB00F92063 /* FatSecretSwift */; };
+		E48DF32B2D7249E300F92063 /* FatSecretSwift in Frameworks */ = {isa = PBXBuildFile; productRef = E48DF32A2D7249E300F92063 /* FatSecretSwift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +36,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E48DF3282D7249CB00F92063 /* FatSecretSwift in Frameworks */,
+				E48DF32B2D7249E300F92063 /* FatSecretSwift in Frameworks */,
 				E48DF31A2D72311A00F92063 /* FatSecretSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -122,6 +126,8 @@
 			name = MacroTrack;
 			packageProductDependencies = (
 				E48DF3192D72311A00F92063 /* FatSecretSwift */,
+				E48DF3272D7249CB00F92063 /* FatSecretSwift */,
+				E48DF32A2D7249E300F92063 /* FatSecretSwift */,
 			);
 			productName = MacroTrack;
 			productReference = E48DF2FA2D72129300F92063 /* MacroTrack.app */;
@@ -152,7 +158,7 @@
 			);
 			mainGroup = E48DF2F12D72129300F92063;
 			packageReferences = (
-				E48DF3182D72311A00F92063 /* XCLocalSwiftPackageReference "../FatSecretSwift" */,
+				E48DF3292D7249E300F92063 /* XCLocalSwiftPackageReference "../FatSecretSwift" */,
 			);
 			productRefGroup = E48DF2FB2D72129300F92063 /* Products */;
 			projectDirPath = "";
@@ -405,7 +411,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		E48DF3182D72311A00F92063 /* XCLocalSwiftPackageReference "../FatSecretSwift" */ = {
+		E48DF3292D7249E300F92063 /* XCLocalSwiftPackageReference "../FatSecretSwift" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../FatSecretSwift;
 		};
@@ -413,6 +419,14 @@
 
 /* Begin XCSwiftPackageProductDependency section */
 		E48DF3192D72311A00F92063 /* FatSecretSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FatSecretSwift;
+		};
+		E48DF3272D7249CB00F92063 /* FatSecretSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FatSecretSwift;
+		};
+		E48DF32A2D7249E300F92063 /* FatSecretSwift */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = FatSecretSwift;
 		};
