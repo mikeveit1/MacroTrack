@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -13,6 +13,8 @@
 		E48DF3062D72129400F92063 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E48DF3052D72129400F92063 /* Preview Assets.xcassets */; };
 		E48DF30E2D7212D500F92063 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = E48DF30D2D7212D500F92063 /* Colors.swift */; };
 		E48DF3102D72134000F92063 /* FoodLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E48DF30F2D72134000F92063 /* FoodLogView.swift */; };
+		E48DF3142D722DCA00F92063 /* FoodHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E48DF3132D722DCA00F92063 /* FoodHelper.swift */; };
+		E48DF31A2D72311A00F92063 /* FatSecretSwift in Frameworks */ = {isa = PBXBuildFile; productRef = E48DF3192D72311A00F92063 /* FatSecretSwift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +26,7 @@
 		E48DF3052D72129400F92063 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		E48DF30D2D7212D500F92063 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		E48DF30F2D72134000F92063 /* FoodLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodLogView.swift; sourceTree = "<group>"; };
+		E48DF3132D722DCA00F92063 /* FoodHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodHelper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -31,6 +34,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E48DF31A2D72311A00F92063 /* FatSecretSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -56,10 +60,10 @@
 		E48DF2FC2D72129300F92063 /* MacroTrack */ = {
 			isa = PBXGroup;
 			children = (
+				E48DF3122D722C9400F92063 /* Helpers */,
+				E48DF3112D722C8D00F92063 /* Views */,
 				E48DF30C2D7212CB00F92063 /* Constants */,
 				E48DF2FD2D72129300F92063 /* MacroTrackApp.swift */,
-				E48DF2FF2D72129300F92063 /* ContentView.swift */,
-				E48DF30F2D72134000F92063 /* FoodLogView.swift */,
 				E48DF3012D72129400F92063 /* Assets.xcassets */,
 				E48DF3032D72129400F92063 /* MacroTrack.entitlements */,
 				E48DF3042D72129400F92063 /* Preview Content */,
@@ -83,6 +87,23 @@
 			path = Constants;
 			sourceTree = "<group>";
 		};
+		E48DF3112D722C8D00F92063 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				E48DF2FF2D72129300F92063 /* ContentView.swift */,
+				E48DF30F2D72134000F92063 /* FoodLogView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		E48DF3122D722C9400F92063 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				E48DF3132D722DCA00F92063 /* FoodHelper.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -99,6 +120,9 @@
 			dependencies = (
 			);
 			name = MacroTrack;
+			packageProductDependencies = (
+				E48DF3192D72311A00F92063 /* FatSecretSwift */,
+			);
 			productName = MacroTrack;
 			productReference = E48DF2FA2D72129300F92063 /* MacroTrack.app */;
 			productType = "com.apple.product-type.application";
@@ -127,6 +151,9 @@
 				Base,
 			);
 			mainGroup = E48DF2F12D72129300F92063;
+			packageReferences = (
+				E48DF3182D72311A00F92063 /* XCLocalSwiftPackageReference "../FatSecretSwift" */,
+			);
 			productRefGroup = E48DF2FB2D72129300F92063 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -156,6 +183,7 @@
 				E48DF3002D72129300F92063 /* ContentView.swift in Sources */,
 				E48DF3102D72134000F92063 /* FoodLogView.swift in Sources */,
 				E48DF30E2D7212D500F92063 /* Colors.swift in Sources */,
+				E48DF3142D722DCA00F92063 /* FoodHelper.swift in Sources */,
 				E48DF2FE2D72129300F92063 /* MacroTrackApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -375,6 +403,20 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		E48DF3182D72311A00F92063 /* XCLocalSwiftPackageReference "../FatSecretSwift" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../FatSecretSwift;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		E48DF3192D72311A00F92063 /* FatSecretSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FatSecretSwift;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = E48DF2F22D72129300F92063 /* Project object */;
 }

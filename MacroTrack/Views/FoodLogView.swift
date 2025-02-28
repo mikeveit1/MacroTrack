@@ -8,6 +8,14 @@ struct FoodLogScreen: View {
     @State private var mealLogs: MealLogs = MealLogs()
     @State private var selectedMeal: Meal = .breakfast
     @State private var showDatePicker = false
+    
+    // For searchable modal
+    @State private var searchQuery = ""
+    @State private var searchResults: [String] = [] // Result list for food names
+    @State private var isLoading = false
+
+    // Create an instance of GetFoods
+    @StateObject private var getFoods = GetFoods()
 
     var body: some View {
         ScrollView {
@@ -75,6 +83,7 @@ struct FoodLogScreen: View {
                     .font(.headline)
                     .foregroundColor(Colors.primary)
             }
+            .padding(.horizontal, 8)
 
             // Add Food Button - Set maxWidth to .infinity to make it full width
             Button("Add Food") {
@@ -85,6 +94,7 @@ struct FoodLogScreen: View {
             .frame(maxWidth: .infinity)  // Ensures the button takes up the full width
             .background(RoundedRectangle(cornerRadius: 8).stroke(Colors.primary, lineWidth: 1))
             .tint(Colors.primary)
+            .bold()
 
             // Food List - Set maxWidth to .infinity for full width on each item
             ForEach(mealLogs[meal] ?? [], id: \.self) { food in
@@ -109,22 +119,39 @@ struct FoodLogScreen: View {
         .shadow(radius: 5)
     }
 
-    // Modal for Food Details Entry
+    // Modal for Food Details Entry with search
     var foodModalView: some View {
         VStack {
-            Text("Enter Food Details")
+            Text("Search for Food")
                 .font(.headline)
 
-            TextField("Food Name", text: $foodName)
+            // Search bar
+            TextField("Search for food", text: $searchQuery)
                 .padding()
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .foregroundColor(.primary)
-            
-            TextField("Quantity", text: $quantity)
-                .padding()
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .foregroundColor(.primary)
-            
+                .onChange(of: searchQuery) { _ in
+                    searchFoods()
+                }
+
+            if isLoading {
+                ProgressView("Searching...")
+                    .padding()
+            }
+
+            // List of food items
+            List(searchResults, id: \.self) { food in
+                Button(action: {
+                    addFoodToMeal(meal: selectedMeal, food: food)
+                    modalVisible = false
+                }) {
+                    Text(food)
+                        .foregroundColor(Colors.primary)
+                }
+            }
+            .padding(.top)
+
+            // Buttons for canceling and saving
             HStack {
                 Button("Cancel") {
                     foodName = ""
@@ -145,9 +172,25 @@ struct FoodLogScreen: View {
             .padding(.top)
         }
         .padding()
-        .background(Color.white)
         .cornerRadius(10)
         .shadow(radius: 10)
+        .background(Color.white)
+    }
+
+    // Search food items from the API
+    func searchFoods() {
+        guard !searchQuery.isEmpty else {
+            searchResults = []
+            return
+        }
+
+        isLoading = true
+        getFoods.searchFood(query: searchQuery) { foods in
+            DispatchQueue.main.async {
+                self.searchResults = foods
+                self.isLoading = false
+            }
+        }
     }
 
     // Save food to the selected meal
@@ -190,6 +233,12 @@ struct FoodLogScreen: View {
         let formatter = DateFormatter()
         formatter.dateStyle = .long
         return formatter.string(from: date)
+    }
+}
+
+struct FoodLogScreen_Previews: PreviewProvider {
+    static var previews: some View {
+        FoodLogScreen()
     }
 }
 
@@ -238,8 +287,3 @@ struct MealLogs {
     }
 }
 
-struct FoodLogScreen_Previews: PreviewProvider {
-    static var previews: some View {
-        FoodLogScreen()
-    }
-}
