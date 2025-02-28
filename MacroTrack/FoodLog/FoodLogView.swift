@@ -8,6 +8,11 @@ struct FoodLogView: View {
     @State private var searchQuery = ""
     @State private var isLoading = false
     
+    func selectMeal(meal: Meal) {
+        viewModel.selectedMeal = meal
+        modalVisible = true
+    }
+    
     var body: some View {
         ScrollView {
             VStack {
@@ -71,57 +76,51 @@ struct FoodLogView: View {
                 Image(systemName: meal.iconName)
                     .foregroundColor(Colors.primary)
                 Text(meal.rawValue.capitalized)
-                    .font(.headline)
+                    .font(.system(size: 19))
+                    .bold()
                     .foregroundColor(Colors.primary)
+                Spacer()
+                Button(action: { selectMeal(meal: meal )}) {
+                    Image(systemName: "plus.circle")
+                        .foregroundColor(Colors.primary)
+                }
+                .padding()
+                .tint(Colors.primary)
+                .font(.system(size: 19))
             }
-            .padding(.horizontal, 8)
-            
-            // Add Food Button - Set maxWidth to .infinity to make it full width
-            Button("Add Food") {
-                viewModel.selectedMeal = meal
-                modalVisible = true
-            }
-            .padding()
             .frame(maxWidth: .infinity)  // Ensures the button takes up the full width
-            .background(RoundedRectangle(cornerRadius: 8).stroke(Colors.primary, lineWidth: 1))
-            .tint(Colors.primary)
-            .bold()
-            
-            // Food List - Set maxWidth to .infinity for full width on each item
             ForEach(viewModel.mealLogs[meal] ?? [], id: \.self) { food in
                 HStack {
                     VStack(alignment: .leading) {
                         HStack {
                             Text(food.name)
-                                .foregroundColor(Colors.primary)
+                                .foregroundColor(Colors.secondary)
                                 .bold()
                                 .font(.headline)
-                            Text("-")
-                                .foregroundColor(Colors.primary)
                             Text("\(food.macronutrients.calories) cal")
-                                .foregroundColor(Colors.primary)
+                                .foregroundColor(Colors.secondary)
                         }
                         VStack(alignment: .leading) {
                             HStack {
                                 HStack {
                                     Text("P:")
-                                        .foregroundColor(Colors.primaryLight)
+                                        .foregroundColor(Colors.secondary)
                                     Text("\(food.macronutrients.protein)g")
-                                        .foregroundColor(Colors.primaryLight)
+                                        .foregroundColor(Colors.secondary)
                                         .bold()
                                 }
                                 HStack {
                                     Text("C:")
-                                        .foregroundColor(Colors.primaryLight)
+                                        .foregroundColor(Colors.secondary)
                                     Text("\(food.macronutrients.carbs)g")
-                                        .foregroundColor(Colors.primaryLight)
+                                        .foregroundColor(Colors.secondary)
                                         .bold()
                                 }
                                 HStack {
                                     Text("F:")
-                                        .foregroundColor(Colors.primaryLight)
+                                        .foregroundColor(Colors.secondary)
                                     Text("\(food.macronutrients.fat)g")
-                                        .foregroundColor(Colors.primaryLight)
+                                        .foregroundColor(Colors.secondary)
                                         .bold()
                                 }
                             }
@@ -130,12 +129,12 @@ struct FoodLogView: View {
                     Spacer()
                     Button(action: { viewModel.deleteFoodFromMeal(meal: meal, food: food) }) {
                         Image(systemName: "trash")
-                            .foregroundColor(.red)
+                            .foregroundColor(Colors.secondary)
                     }
                 }
                 .padding()
                 .frame(maxWidth: .infinity)  // Ensures the food item takes up the full width
-                .background(RoundedRectangle(cornerRadius: 8).fill(Color.white))
+                .background(RoundedRectangle(cornerRadius: 8).fill(Colors.primaryLight))
             }
         }
         .padding()

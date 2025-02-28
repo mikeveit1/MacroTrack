@@ -56,7 +56,7 @@ class FoodLogViewModel: ObservableObject {
     // Format date into a readable string
     func formatDate(_ date: Date) -> String {
         let formatter = DateFormatter()
-        formatter.dateStyle = .long
+        formatter.dateStyle = .medium
         return formatter.string(from: date)
     }
     
