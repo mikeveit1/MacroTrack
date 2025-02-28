@@ -25,18 +25,17 @@ class FoodLogViewModel: ObservableObject {
     
     // Save food to the selected meal
     func saveFood(food: MacroFood) {
-        let foodDetails = "\(food.name) \(food.macros.calories) Calories, Protein: \(food.macros.protein)g, Carbs: \(food.macros.carbs)g, Fat: \(food.macros.fat)g"
-        addFoodToMeal(meal: selectedMeal, food: foodDetails)
+        addFoodToMeal(meal: selectedMeal, food: food)
     }
     
     // Add food to selected meal
-    func addFoodToMeal(meal: Meal, food: String) {
+    func addFoodToMeal(meal: Meal, food: MacroFood) {
         mealLogs[meal]?.append(food)
     }
     
     // Delete food from selected meal
-    func deleteFoodFromMeal(meal: Meal, food: String) {
-        mealLogs[meal]?.removeAll { $0 == food }
+    func deleteFoodFromMeal(meal: Meal, food: MacroFood) {
+        mealLogs[meal]?.removeAll { $0.id == food.id }
     }
     
     // Go to today's date

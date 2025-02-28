@@ -9,12 +9,12 @@ import Foundation
 
 
 struct MealLogs {
-    var breakfast: [String] = []
-    var lunch: [String] = []
-    var dinner: [String] = []
-    var snacks: [String] = []
+    var breakfast: [MacroFood] = []
+    var lunch: [MacroFood] = []
+    var dinner: [MacroFood] = []
+    var snacks: [MacroFood] = []
 
-    subscript(meal: Meal) -> [String]? {
+    subscript(meal: Meal) -> [MacroFood]? {
         get {
             switch meal {
             case .breakfast: return breakfast

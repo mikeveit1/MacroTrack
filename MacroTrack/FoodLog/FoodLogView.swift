@@ -90,8 +90,43 @@ struct FoodLogView: View {
             // Food List - Set maxWidth to .infinity for full width on each item
             ForEach(viewModel.mealLogs[meal] ?? [], id: \.self) { food in
                 HStack {
-                    Text(food)
-                        .foregroundColor(Colors.primary)
+                    VStack(alignment: .leading) {
+                        HStack {
+                            Text(food.name)
+                                .foregroundColor(Colors.primary)
+                                .bold()
+                                .font(.headline)
+                            Text("-")
+                                .foregroundColor(Colors.primary)
+                            Text("\(food.macronutrients.calories) cal")
+                                .foregroundColor(Colors.primary)
+                        }
+                        VStack(alignment: .leading) {
+                            HStack {
+                                HStack {
+                                    Text("P:")
+                                        .foregroundColor(Colors.primaryLight)
+                                    Text("\(food.macronutrients.protein)g")
+                                        .foregroundColor(Colors.primaryLight)
+                                        .bold()
+                                }
+                                HStack {
+                                    Text("C:")
+                                        .foregroundColor(Colors.primaryLight)
+                                    Text("\(food.macronutrients.carbs)g")
+                                        .foregroundColor(Colors.primaryLight)
+                                        .bold()
+                                }
+                                HStack {
+                                    Text("F:")
+                                        .foregroundColor(Colors.primaryLight)
+                                    Text("\(food.macronutrients.fat)g")
+                                        .foregroundColor(Colors.primaryLight)
+                                        .bold()
+                                }
+                            }
+                        }
+                    }
                     Spacer()
                     Button(action: { viewModel.deleteFoodFromMeal(meal: meal, food: food) }) {
                         Image(systemName: "trash")

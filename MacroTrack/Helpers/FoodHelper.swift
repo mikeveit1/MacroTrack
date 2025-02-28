@@ -34,7 +34,7 @@ class FoodHelper: ObservableObject {
         fatSecretClient.getFood(id: searchedFood.id) { food in
             var macros = MacronutrientInfo(calories: "", protein: "", carbs: "", fat: "")
             self.getMacros(food: food) { macros in
-                completion(MacroFood(id: food.id, name: food.name, macros: macros))
+                completion(MacroFood(id: food.id, name: food.name, macronutrients: macros))
             }
         }
     }

@@ -14,13 +14,13 @@ enum Meal: String, CaseIterable {
     var iconName: String {
         switch self {
         case .breakfast:
-            return "egg.fried"
+            return "sun.max.fill"
         case .lunch:
             return "bag"
         case .dinner:
-            return "staroflife"
+            return "fork.knife"
         case .snacks:
-            return "applelogo"
+            return "carrot"
         }
     }
 }
