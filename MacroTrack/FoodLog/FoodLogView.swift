@@ -128,34 +128,69 @@ struct FoodLogView: View {
                                 }
                             }
                         }
-                        TextField("Servings", text: $localServingsString)
+                        HStack {
+                            Text("Servings:")
+                            TextField("", text: Binding(
+                                get: {
+                                    // Return the current servings value for this food, or default to "1.0" if not found
+                                    String(viewModel.servings[food.id] ?? 1.0)
+                                },
+                                set: { newValue in
+                                    // Handle the text input and update the servings value for this food
+                                    var servingsToUpdate: Double = 1.0
+                                    
+                                    if let newDoubleValue = Double(newValue), newDoubleValue > 0 {
+                                        servingsToUpdate = newDoubleValue
+                                    } else if newValue.isEmpty {
+                                        // Handle empty string (backspace)
+                                        servingsToUpdate = 1.0
+                                    }
+
+                                    // Update the servings dictionary for this specific food
+                                    viewModel.servings[food.id] = servingsToUpdate
+                                    
+                                    // Update the food's macronutrients based on the new servings
+                                    let updatedFood = viewModel.updateFoodMacrosForServings(food: food, servings: servingsToUpdate)
+                                    
+                                    // Update the meal log with the updated food
+                                    viewModel.updateMealLogWithUpdatedFood(updatedFood: updatedFood, meal: viewModel.selectedMeal)
+                                }
+                            ))
                             .keyboardType(.decimalPad)
                             .padding()
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                            .onChange(of: localServingsString) { newValue in
-                                // Handle backspace (empty string case) and conversion to Double
-                                var servingsToUpdate: Double = 1.0  // Default value
-
-                                if let newDoubleValue = Double(newValue), newDoubleValue > 0 {
-                                    servingsToUpdate = newDoubleValue
-                                } else if newValue.isEmpty {
-                                    // Handle empty case (backspace scenario)
-                                    servingsToUpdate = 1.0
+                            .background(Color.white)
+                            .cornerRadius(8)
+                            .foregroundColor(Colors.primary)
+                            .textFieldStyle(PlainTextFieldStyle())
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .stroke(Color.gray, lineWidth: 1)
+                            )
+                                .onChange(of: localServingsString) { newValue in
+                                    // Handle backspace (empty string case) and conversion to Double
+                                    var servingsToUpdate: Double = 1.0  // Default value
+                                    
+                                    if let newDoubleValue = Double(newValue), newDoubleValue > 0 {
+                                        servingsToUpdate = newDoubleValue
+                                    } else if newValue.isEmpty {
+                                        // Handle empty case (backspace scenario)
+                                        servingsToUpdate = 1.0
+                                    }
+                                    
+                                    // Debugging logs
+                                    print("New Value: \(newValue)")
+                                    print("Servings to update: \(servingsToUpdate)")
+                                    
+                                    // Update the servings dictionary in the view model
+                                    viewModel.servings[food.id] = servingsToUpdate
+                                    
+                                    // Get the updated food with scaled macros
+                                    let updatedFood = viewModel.updateFoodMacrosForServings(food: food, servings: servingsToUpdate)
+                                    
+                                    // Update the meal log with the updated food
+                                    viewModel.updateMealLogWithUpdatedFood(updatedFood: updatedFood, meal: viewModel.selectedMeal)
                                 }
-
-                                // Debugging logs
-                                print("New Value: \(newValue)")
-                                print("Servings to update: \(servingsToUpdate)")
-
-                                // Update the servings dictionary in the view model
-                                viewModel.servings[food.id] = servingsToUpdate
-
-                                // Get the updated food with scaled macros
-                                let updatedFood = viewModel.updateFoodMacrosForServings(food: food, servings: servingsToUpdate)
-
-                                // Update the meal log with the updated food
-                                viewModel.updateMealLogWithUpdatedFood(updatedFood: updatedFood, meal: viewModel.selectedMeal)
-                            }
+                        }
 
                     }
                     Spacer()
