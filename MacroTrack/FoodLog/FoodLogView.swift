@@ -119,11 +119,48 @@ struct FoodLogView: View {
                 .font(.system(size: 19))
             }
             .frame(maxWidth: .infinity)  // Ensures the button takes up the full width
+            VStack(alignment: .leading) {
+                Text("Total:")
+                    .font(.headline)
+                    .foregroundColor(Colors.primary)
+                    .bold()
+                Text(String(format: "%.0f", totalMacronutrients.calories) + " kcal")
+                    .foregroundColor(Colors.primary)
+                    .bold()
+                HStack {
+                    HStack {
+                        Text("P:")
+                            .foregroundColor(Colors.primary)
+                        Text(String(format: "%.2f", totalMacronutrients.protein) + " g")
+                            .foregroundColor(Colors.primary)
+                            .bold()
+                    }
+                    HStack {
+                        Text("C:")
+                            .foregroundColor(Colors.primary)
+                        Text(String(format: "%.2f", totalMacronutrients.carbs) + " g")
+                            .foregroundColor(Colors.primary)
+                            .bold()
+                    }
+                    HStack {
+                        Text("F:")
+                            .foregroundColor(Colors.primary)
+                        Text(String(format: "%.2f", totalMacronutrients.fat) + " g")
+                            .foregroundColor(Colors.primary)
+                            .bold()
+                        
+                    }
+                    Spacer()
+                }
+            }
+            .padding()
+            .frame(maxWidth: .infinity)  // Ensures the food item takes up the full width
+            .background(RoundedRectangle(cornerRadius: 8).fill(Color(UIColor(white: 0.9, alpha: 1.0))))
             ForEach(viewModel.mealLogs[meal] ?? [], id: \.self) { food in
                 HStack {
                     VStack(alignment: .leading) {
                         HStack {
-                            Text("\(food.name) (per \(food.servingDescription))")
+                            Text("\(food.name) (serving size: \(food.servingDescription))")
                                 .foregroundColor(Colors.secondary)
                                 .bold()
                                 .font(.headline)
@@ -232,43 +269,6 @@ struct FoodLogView: View {
                 .frame(maxWidth: .infinity)  // Ensures the food item takes up the full width
                 .background(RoundedRectangle(cornerRadius: 8).fill(Colors.primaryLight))
             }
-            VStack(alignment: .leading) {
-                Text("Total:")
-                    .font(.headline)
-                    .foregroundColor(Colors.primary)
-                    .bold()
-                Text(String(format: "%.0f", totalMacronutrients.calories) + " kcal")
-                    .foregroundColor(Colors.primary)
-                    .bold()
-                HStack {
-                    HStack {
-                        Text("P:")
-                            .foregroundColor(Colors.primary)
-                        Text(String(format: "%.2f", totalMacronutrients.protein) + " g")
-                            .foregroundColor(Colors.primary)
-                            .bold()
-                    }
-                    HStack {
-                        Text("C:")
-                            .foregroundColor(Colors.primary)
-                        Text(String(format: "%.2f", totalMacronutrients.carbs) + " g")
-                            .foregroundColor(Colors.primary)
-                            .bold()
-                    }
-                    HStack {
-                        Text("F:")
-                            .foregroundColor(Colors.primary)
-                        Text(String(format: "%.2f", totalMacronutrients.fat) + " g")
-                            .foregroundColor(Colors.primary)
-                            .bold()
-                        
-                    }
-                    Spacer()
-                }
-            }
-            .padding()
-            .frame(maxWidth: .infinity)  // Ensures the food item takes up the full width
-            .background(RoundedRectangle(cornerRadius: 8).fill(Color(UIColor(white: 0.9, alpha: 1.0))))
         }
         .padding()
         .background(Colors.secondary)
