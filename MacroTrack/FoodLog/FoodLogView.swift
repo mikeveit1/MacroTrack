@@ -7,10 +7,7 @@ struct FoodLogView: View {
     @StateObject private var viewModel = FoodLogViewModel()
     @State private var searchQuery = ""
     @State private var isLoading = false
-    @State private var showAlert = false
-    @State private var servingsText = ""
 
-    
     func selectMeal(meal: Meal) {
         viewModel.selectedMeal = meal
         modalVisible = true
@@ -69,7 +66,7 @@ struct FoodLogView: View {
         }
         .padding()
         .frame(maxWidth: .infinity)
-        .background(Colors.primary, in: RoundedRectangle(cornerRadius: 10))
+        .background(Colors.primaryLight, in: RoundedRectangle(cornerRadius: 10))
     }
     
     // Meal Section (for breakfast, lunch, dinner, snacks)
@@ -174,9 +171,8 @@ struct FoodLogView: View {
                 Button(action: {
                     // Prompt user for servings after selecting a food
                     viewModel.convertSearchFoodToMacroFood(searchedFood: food) { macroFood in
-                        // Show the alert when food is selected
-                        self.servingsText = "" // Reset any previous servings input
-                        self.showAlert = true
+                        viewModel.saveFood(food: macroFood)
+                        modalVisible = false
                     }
                 }) {
                     VStack(alignment: .leading) {
@@ -208,20 +204,6 @@ struct FoodLogView: View {
         .cornerRadius(10)
         .shadow(radius: 10)
         .background(Color.white)
-        .sheet(isPresented: $showAlert) {
-            // Trigger the AlertView here
-            AlertView(title: "Enter Servings", message: "How many servings would you like to add?") { servings in
-                if let servingsInt = Int(servings), servingsInt > 0 {
-                    // Perform action with servings (e.g., multiply macros by servings)
-                    print("Servings entered: \(servingsInt)")
-                    // Update food macros or do whatever is needed
-                } else {
-                    // Handle invalid input (e.g., show error message)
-                    print("Invalid servings input")
-                }
-            }
-            .background(Colors.primaryLight)
-        }
     }
 }
 
