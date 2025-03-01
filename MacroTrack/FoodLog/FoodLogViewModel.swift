@@ -6,6 +6,7 @@ class FoodLogViewModel: ObservableObject {
     @Published var mealLogs: MealLogs = MealLogs()
     @Published var currentDate: Date = Date()
     @Published var searchResults: [SearchedFood] = []
+    @Published var servings: [String: Double] = [:] // Dictionary of servings for each food by food.id
     var selectedMeal: Meal = .breakfast
     var foodHelper = FoodHelper()
     
@@ -30,6 +31,7 @@ class FoodLogViewModel: ObservableObject {
     
     // Add food to selected meal
     func addFoodToMeal(meal: Meal, food: MacroFood) {
+        saveOriginalMacros(for: food)
         mealLogs[meal]?.append(food)
     }
     
@@ -66,13 +68,42 @@ class FoodLogViewModel: ObservableObject {
         }
     }
     
-    func updateFoodMacrosForServings(food: MacroFood, servings: Int) -> MacroFood {
-        // Assuming `food` has macros (protein, carbs, fat) that need to be updated
+    var originalMacronutrients: [String: MacronutrientInfo] = [:]
+    
+    func saveOriginalMacros(for food: MacroFood) {
+        originalMacronutrients[food.id] = food.macronutrients
+    }
+    
+    func updateFoodMacrosForServings(food: MacroFood, servings: Double) -> MacroFood {
+        // If servings are reset to 1, return the original food
+        if servings == 1 {
+            if let originalMacros = originalMacronutrients[food.id] {
+                return MacroFood(id: food.id, name: food.name, macronutrients: originalMacros, servingDescription: food.servingDescription)
+            }
+        }
+        
+        // Otherwise, scale the food's macronutrients based on the servings
         var updatedFood = food
-        updatedFood.macronutrients.protein = String((Int(updatedFood.macronutrients.protein) ?? 0) * servings)
-        updatedFood.macronutrients.carbs = String((Int(updatedFood.macronutrients.carbs) ?? 0) * servings)
-        updatedFood.macronutrients.fat = String((Int(updatedFood.macronutrients.fat) ?? 0) * servings)
+        updatedFood.macronutrients.calories = (Int(updatedFood.macronutrients.calories)) * Int(servings)
+        updatedFood.macronutrients.protein = (Double(updatedFood.macronutrients.protein)) * servings
+        updatedFood.macronutrients.carbs = (Double(updatedFood.macronutrients.carbs)) * servings
+        updatedFood.macronutrients.fat = (Double(updatedFood.macronutrients.fat)) * servings
+
+        // Round the values to two decimal places
+        updatedFood.macronutrients.protein = updatedFood.macronutrients.protein.rounded(toPlaces: 2)
+        updatedFood.macronutrients.carbs = updatedFood.macronutrients.carbs.rounded(toPlaces: 2)
+        updatedFood.macronutrients.fat = updatedFood.macronutrients.fat.rounded(toPlaces: 2)
         
         return updatedFood
+    }
+
+    
+    // Update the meal log with the updated food
+    func updateMealLogWithUpdatedFood(updatedFood: MacroFood, meal: Meal) {
+        // Find the index of the food with the same ID in the selected meal's list
+        if let index = mealLogs[meal]?.firstIndex(where: { $0.id == updatedFood.id }) {
+            // Update the existing food in the meal
+            mealLogs[meal]?[index] = updatedFood
+        }
     }
 }

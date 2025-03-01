@@ -7,6 +7,7 @@ struct FoodLogView: View {
     @StateObject private var viewModel = FoodLogViewModel()
     @State private var searchQuery = ""
     @State private var isLoading = false
+    @State private var localServingsString: String = "1.0"
     
     func selectMeal(meal: Meal) {
         viewModel.selectedMeal = meal
@@ -107,26 +108,55 @@ struct FoodLogView: View {
                                 HStack {
                                     Text("P:")
                                         .foregroundColor(Colors.secondary)
-                                    Text("\(food.macronutrients.protein)g")
+                                    Text(String(format: "%.2f", food.macronutrients.protein) + " g")
                                         .foregroundColor(Colors.secondary)
                                         .bold()
                                 }
                                 HStack {
                                     Text("C:")
                                         .foregroundColor(Colors.secondary)
-                                    Text("\(food.macronutrients.carbs)g")
+                                    Text(String(format: "%.2f", food.macronutrients.carbs) + " g")
                                         .foregroundColor(Colors.secondary)
                                         .bold()
                                 }
                                 HStack {
                                     Text("F:")
                                         .foregroundColor(Colors.secondary)
-                                    Text("\(food.macronutrients.fat)g")
+                                    Text(String(format: "%.2f", food.macronutrients.fat) + " g")
                                         .foregroundColor(Colors.secondary)
                                         .bold()
                                 }
                             }
                         }
+                        TextField("Servings", text: $localServingsString)
+                            .keyboardType(.decimalPad)
+                            .padding()
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .onChange(of: localServingsString) { newValue in
+                                // Handle backspace (empty string case) and conversion to Double
+                                var servingsToUpdate: Double = 1.0  // Default value
+
+                                if let newDoubleValue = Double(newValue), newDoubleValue > 0 {
+                                    servingsToUpdate = newDoubleValue
+                                } else if newValue.isEmpty {
+                                    // Handle empty case (backspace scenario)
+                                    servingsToUpdate = 1.0
+                                }
+
+                                // Debugging logs
+                                print("New Value: \(newValue)")
+                                print("Servings to update: \(servingsToUpdate)")
+
+                                // Update the servings dictionary in the view model
+                                viewModel.servings[food.id] = servingsToUpdate
+
+                                // Get the updated food with scaled macros
+                                let updatedFood = viewModel.updateFoodMacrosForServings(food: food, servings: servingsToUpdate)
+
+                                // Update the meal log with the updated food
+                                viewModel.updateMealLogWithUpdatedFood(updatedFood: updatedFood, meal: viewModel.selectedMeal)
+                            }
+
                     }
                     Spacer()
                     Button(action: { viewModel.deleteFoodFromMeal(meal: meal, food: food) }) {
@@ -197,7 +227,6 @@ struct FoodLogView: View {
                 .listRowBackground(Colors.secondary)
             }
             //.padding(.vertical)
-            .cornerRadius(8)
             .listStyle(.plain)
             .overlay(
                 RoundedRectangle(cornerRadius: 8)
