@@ -24,6 +24,7 @@
 		E48DF33E2D7270B000F92063 /* FatSecretSwift in Frameworks */ = {isa = PBXBuildFile; productRef = E48DF33D2D7270B000F92063 /* FatSecretSwift */; };
 		E48DF3412D7291CD00F92063 /* AlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E48DF3402D7291CD00F92063 /* AlertView.swift */; };
 		E48DF3432D73797E00F92063 /* RoundingHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E48DF3422D73797E00F92063 /* RoundingHelper.swift */; };
+		E48DF3452D73965A00F92063 /* ApplicationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E48DF3442D73965A00F92063 /* ApplicationHelper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,6 +43,7 @@
 		E48DF33A2D7254C700F92063 /* FoodHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodHelper.swift; sourceTree = "<group>"; };
 		E48DF3402D7291CD00F92063 /* AlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertView.swift; sourceTree = "<group>"; };
 		E48DF3422D73797E00F92063 /* RoundingHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundingHelper.swift; sourceTree = "<group>"; };
+		E48DF3442D73965A00F92063 /* ApplicationHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationHelper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -132,6 +134,7 @@
 			children = (
 				E48DF33A2D7254C700F92063 /* FoodHelper.swift */,
 				E48DF3422D73797E00F92063 /* RoundingHelper.swift */,
+				E48DF3442D73965A00F92063 /* ApplicationHelper.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -229,6 +232,7 @@
 				E48DF3302D724C1D00F92063 /* MacronutrientInfo.swift in Sources */,
 				E48DF30E2D7212D500F92063 /* Colors.swift in Sources */,
 				E48DF3412D7291CD00F92063 /* AlertView.swift in Sources */,
+				E48DF3452D73965A00F92063 /* ApplicationHelper.swift in Sources */,
 				E48DF3382D72540700F92063 /* MealLogs.swift in Sources */,
 				E48DF33B2D7254C700F92063 /* FoodHelper.swift in Sources */,
 				E48DF2FE2D72129300F92063 /* MacroTrackApp.swift in Sources */,

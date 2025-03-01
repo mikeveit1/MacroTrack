@@ -33,6 +33,9 @@ struct FoodLogView: View {
             .background(Color(.white))
         }
         .background(Color(.white))
+        .onTapGesture {
+            UIApplication.shared.endEditing() // This will dismiss the keyboard
+        }
     }
     
     // Header View (Date Navigation)
@@ -158,6 +161,7 @@ struct FoodLogView: View {
                             ))
                             .keyboardType(.decimalPad)
                             .padding()
+                            .frame(width: 60, height: 40)
                             .background(Color.white)
                             .cornerRadius(8)
                             .foregroundColor(Colors.primary)
