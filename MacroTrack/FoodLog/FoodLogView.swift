@@ -88,8 +88,7 @@ struct FoodLogView: View {
                 .onChange(of: viewModel.currentDate) { newDate in
                     // Log the selected date and close the date picker
                     print("New selected date: \(newDate)")
-                    //showDatePicker = false // Optionally hide the DatePicker after selecting a date
-                    // Add any additional actions you want here (e.g., updating meal logs for the selected date)
+                    
                 }
             }
         }
@@ -102,6 +101,7 @@ struct FoodLogView: View {
     // Meal Section (for breakfast, lunch, dinner, snacks)
     func mealSection(_ meal: Meal) -> some View {
         VStack(alignment: .leading) {
+            let totalMacronutrients = viewModel.getTotalMacronutrients(for: meal)
             HStack {
                 Image(systemName: meal.iconName)
                     .foregroundColor(Colors.primary)
@@ -232,6 +232,28 @@ struct FoodLogView: View {
                 .frame(maxWidth: .infinity)  // Ensures the food item takes up the full width
                 .background(RoundedRectangle(cornerRadius: 8).fill(Colors.primaryLight))
             }
+            VStack(alignment: .leading) {
+                Text("Total:")
+                    .font(.headline)
+                    .foregroundColor(Colors.primary)
+                    .bold()
+                VStack(alignment: .leading) {
+                    Text("\(String(format: "%.0f", totalMacronutrients.calories)) kcal")
+                        .foregroundColor(Colors.primary)
+                    HStack {
+                        Text("P: \(String(format: "%.2f", totalMacronutrients.protein)) g")
+                            .foregroundColor(Colors.primary)
+                        Text("C: \(String(format: "%.2f", totalMacronutrients.carbs)) g")
+                            .foregroundColor(Colors.primary)
+                        Text("F: \(String(format: "%.2f", totalMacronutrients.fat)) g")
+                            .foregroundColor(Colors.primary)
+                        Spacer()
+                    }
+                }
+            }
+            .padding()
+            .frame(maxWidth: .infinity)  // Ensures the food item takes up the full width
+            .background(RoundedRectangle(cornerRadius: 8).fill(Color(UIColor(white: 0.9, alpha: 1.0))))
         }
         .padding()
         .background(Colors.secondary)

@@ -101,8 +101,6 @@ class FoodLogViewModel: ObservableObject {
         // If no original macros were found, return the original food without modifications
         return food
     }
-
-
     
     // Update the meal log with the updated food
     func updateMealLogWithUpdatedFood(updatedFood: MacroFood, meal: Meal) {
@@ -112,4 +110,21 @@ class FoodLogViewModel: ObservableObject {
             mealLogs[meal]?[index] = updatedFood
         }
     }
+    
+    func getTotalMacronutrients(for meal: Meal) -> MacronutrientInfo {
+        var totalMacronutrients = MacronutrientInfo(calories: 0, protein: 0, carbs: 0, fat: 0)
+
+        // Sum the macronutrients of all foods in the meal
+        if let foods = mealLogs[meal] {
+            for food in foods {
+                totalMacronutrients.calories += food.macronutrients.calories
+                totalMacronutrients.protein += food.macronutrients.protein
+                totalMacronutrients.carbs += food.macronutrients.carbs
+                totalMacronutrients.fat += food.macronutrients.fat
+            }
+        }
+        
+        return totalMacronutrients
+    }
+
 }
