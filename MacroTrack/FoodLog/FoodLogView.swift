@@ -38,37 +38,62 @@ struct FoodLogView: View {
         }
     }
     
-    // Header View (Date Navigation)
     var headerView: some View {
-        HStack {
-            Button(action: viewModel.goToToday) {
-                Text("Today")
+        VStack {
+            HStack {
+                Button(action: viewModel.goToToday) {
+                    Text("Today")
+                        .fontWeight(.bold)
+                        .foregroundColor(Colors.secondary)
+                }
+                Spacer()
+                Button(action: viewModel.goToPreviousDay) {
+                    Image(systemName: "chevron.left")
+                        .font(.title)
+                        .foregroundColor(Colors.secondary)
+                }
+                Text(viewModel.formatDate(viewModel.currentDate))
+                    .font(.title3)
+                    .lineLimit(2)
                     .fontWeight(.bold)
                     .foregroundColor(Colors.secondary)
+                Button(action: viewModel.goToNextDay) {
+                    Image(systemName: "chevron.right")
+                        .font(.title)
+                        .foregroundColor(Colors.secondary)
+                }
+                Spacer()
+                Button(action: { showDatePicker.toggle() }) {
+                    Image(systemName: "calendar")
+                        .font(.title)
+                        .foregroundColor(Colors.secondary)
+                }
             }
-            Spacer()
-            Button(action: viewModel.goToPreviousDay) {
-                Image(systemName: "chevron.left")
-                    .font(.title)
-                    .foregroundColor(Colors.secondary)
-            }
-            Text(viewModel.formatDate(viewModel.currentDate))
-                .font(.title3)
-                .lineLimit(2)
-                .fontWeight(.bold)
-                .foregroundColor(Colors.secondary)
-            Button(action: viewModel.goToNextDay) {
-                Image(systemName: "chevron.right")
-                    .font(.title)
-                    .foregroundColor(Colors.secondary)
-            }
-            Spacer()
-            Button(action: { showDatePicker.toggle() }) {
-                Image(systemName: "calendar")
-                    .font(.title)
-                    .foregroundColor(Colors.secondary)
+            .padding()
+            .frame(maxWidth: .infinity)
+            .background(Colors.primaryLight, in: RoundedRectangle(cornerRadius: 10))
+            
+            // Show DatePicker when showDatePicker is true
+            if showDatePicker {
+                DatePicker(
+                    "Select Date",
+                    selection: $viewModel.currentDate,
+                    displayedComponents: [.date]
+                )
+                .datePickerStyle(GraphicalDatePickerStyle())
+                .tint(Colors.secondary)
+                .padding()
+                .onTapGesture(count: 99, perform: {
+                })
+                .onChange(of: viewModel.currentDate) { newDate in
+                    // Log the selected date and close the date picker
+                    print("New selected date: \(newDate)")
+                    //showDatePicker = false // Optionally hide the DatePicker after selecting a date
+                    // Add any additional actions you want here (e.g., updating meal logs for the selected date)
+                }
             }
         }
+        
         .padding()
         .frame(maxWidth: .infinity)
         .background(Colors.primaryLight, in: RoundedRectangle(cornerRadius: 10))
@@ -148,7 +173,7 @@ struct FoodLogView: View {
                                         // Handle empty string (backspace)
                                         servingsToUpdate = 1.0
                                     }
-
+                                    
                                     // Update the servings dictionary for this specific food
                                     viewModel.servings[food.id] = servingsToUpdate
                                     
@@ -170,32 +195,32 @@ struct FoodLogView: View {
                                 RoundedRectangle(cornerRadius: 8)
                                     .stroke(Color.gray, lineWidth: 1)
                             )
-                                .onChange(of: localServingsString) { newValue in
-                                    // Handle backspace (empty string case) and conversion to Double
-                                    var servingsToUpdate: Double = 1.0  // Default value
-                                    
-                                    if let newDoubleValue = Double(newValue), newDoubleValue > 0 {
-                                        servingsToUpdate = newDoubleValue
-                                    } else if newValue.isEmpty {
-                                        // Handle empty case (backspace scenario)
-                                        servingsToUpdate = 1.0
-                                    }
-                                    
-                                    // Debugging logs
-                                    print("New Value: \(newValue)")
-                                    print("Servings to update: \(servingsToUpdate)")
-                                    
-                                    // Update the servings dictionary in the view model
-                                    viewModel.servings[food.id] = servingsToUpdate
-                                    
-                                    // Get the updated food with scaled macros
-                                    let updatedFood = viewModel.updateFoodMacrosForServings(food: food, servings: servingsToUpdate)
-                                    
-                                    // Update the meal log with the updated food
-                                    viewModel.updateMealLogWithUpdatedFood(updatedFood: updatedFood, meal: viewModel.selectedMeal)
+                            .onChange(of: localServingsString) { newValue in
+                                // Handle backspace (empty string case) and conversion to Double
+                                var servingsToUpdate: Double = 1.0  // Default value
+                                
+                                if let newDoubleValue = Double(newValue), newDoubleValue > 0 {
+                                    servingsToUpdate = newDoubleValue
+                                } else if newValue.isEmpty {
+                                    // Handle empty case (backspace scenario)
+                                    servingsToUpdate = 1.0
                                 }
+                                
+                                // Debugging logs
+                                print("New Value: \(newValue)")
+                                print("Servings to update: \(servingsToUpdate)")
+                                
+                                // Update the servings dictionary in the view model
+                                viewModel.servings[food.id] = servingsToUpdate
+                                
+                                // Get the updated food with scaled macros
+                                let updatedFood = viewModel.updateFoodMacrosForServings(food: food, servings: servingsToUpdate)
+                                
+                                // Update the meal log with the updated food
+                                viewModel.updateMealLogWithUpdatedFood(updatedFood: updatedFood, meal: viewModel.selectedMeal)
+                            }
                         }
-
+                        
                     }
                     Spacer()
                     Button(action: { viewModel.deleteFoodFromMeal(meal: meal, food: food) }) {

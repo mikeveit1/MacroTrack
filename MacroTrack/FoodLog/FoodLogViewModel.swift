@@ -2,7 +2,6 @@ import SwiftUI
 import FatSecretSwift
 
 class FoodLogViewModel: ObservableObject {
-    @Published var isLoading: Bool = false
     @Published var mealLogs: MealLogs = MealLogs()
     @Published var currentDate: Date = Date()
     @Published var searchResults: [SearchedFood] = []
@@ -15,11 +14,9 @@ class FoodLogViewModel: ObservableObject {
             return
         }
         
-        self.isLoading = true
         foodHelper.searchFood(query: query) { foods in
             DispatchQueue.main.async {
                 self.searchResults = foods
-                self.isLoading = false
             }
         }
     }
