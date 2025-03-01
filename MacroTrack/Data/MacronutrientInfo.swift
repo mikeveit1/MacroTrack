@@ -9,7 +9,7 @@ import Foundation
 
 
 struct MacronutrientInfo {
-    var calories: Int
+    var calories: Double
     var protein: Double
     var carbs: Double
     var fat: Double

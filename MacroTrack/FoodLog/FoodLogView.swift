@@ -101,7 +101,7 @@ struct FoodLogView: View {
                                 .font(.headline)
                         }
                         VStack(alignment: .leading) {
-                            Text("\(food.macronutrients.calories) kcal")
+                            Text(String(format: "%.0f", food.macronutrients.calories) + " kcal")
                                 .bold()
                                 .foregroundColor(Colors.secondary)
                             HStack {

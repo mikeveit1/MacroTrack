@@ -40,7 +40,7 @@ class FoodHelper: ObservableObject {
     
     func getMacros(food: Food, completion: @escaping(MacronutrientInfo) -> Void) {
         completion(MacronutrientInfo(
-            calories: Int(food.servings?[0].calories ?? "") ?? 0,
+            calories: Double(food.servings?[0].calories ?? "") ?? 0,
             protein: (Double(food.servings?[0].protein ?? "") ?? 0).rounded(toPlaces: 2),
             carbs: (Double(food.servings?[0].carbohydrate ?? "") ?? 0).rounded(toPlaces: 2),
             fat: (Double(food.servings?[0].fat ?? "") ?? 0).rounded(toPlaces: 2)

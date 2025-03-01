@@ -82,20 +82,29 @@ class FoodLogViewModel: ObservableObject {
             }
         }
         
-        // Otherwise, scale the food's macronutrients based on the servings
-        var updatedFood = food
-        updatedFood.macronutrients.calories = (Int(updatedFood.macronutrients.calories)) * Int(servings)
-        updatedFood.macronutrients.protein = (Double(updatedFood.macronutrients.protein)) * servings
-        updatedFood.macronutrients.carbs = (Double(updatedFood.macronutrients.carbs)) * servings
-        updatedFood.macronutrients.fat = (Double(updatedFood.macronutrients.fat)) * servings
-
-        // Round the values to two decimal places
-        updatedFood.macronutrients.protein = updatedFood.macronutrients.protein.rounded(toPlaces: 2)
-        updatedFood.macronutrients.carbs = updatedFood.macronutrients.carbs.rounded(toPlaces: 2)
-        updatedFood.macronutrients.fat = updatedFood.macronutrients.fat.rounded(toPlaces: 2)
+        // Get the original macronutrients for multiplication
+        if let originalMacros = originalMacronutrients[food.id] {
+            var updatedFood = food
+            
+            // Multiply original values by servings
+            updatedFood.macronutrients.calories = originalMacros.calories * servings
+            updatedFood.macronutrients.protein = originalMacros.protein * servings
+            updatedFood.macronutrients.carbs = originalMacros.carbs * servings
+            updatedFood.macronutrients.fat = originalMacros.fat * servings
+            
+            // Round values to 2 decimal places
+            updatedFood.macronutrients.protein = updatedFood.macronutrients.protein.rounded(toPlaces: 0)
+            updatedFood.macronutrients.protein = updatedFood.macronutrients.protein.rounded(toPlaces: 2)
+            updatedFood.macronutrients.carbs = updatedFood.macronutrients.carbs.rounded(toPlaces: 2)
+            updatedFood.macronutrients.fat = updatedFood.macronutrients.fat.rounded(toPlaces: 2)
+            
+            return updatedFood
+        }
         
-        return updatedFood
+        // If no original macros were found, return the original food without modifications
+        return food
     }
+
 
     
     // Update the meal log with the updated food
