@@ -237,18 +237,33 @@ struct FoodLogView: View {
                     .font(.headline)
                     .foregroundColor(Colors.primary)
                     .bold()
-                VStack(alignment: .leading) {
-                    Text("\(String(format: "%.0f", totalMacronutrients.calories)) kcal")
-                        .foregroundColor(Colors.primary)
+                Text(String(format: "%.0f", totalMacronutrients.calories) + " kcal")
+                    .foregroundColor(Colors.primary)
+                    .bold()
+                HStack {
                     HStack {
-                        Text("P: \(String(format: "%.2f", totalMacronutrients.protein)) g")
+                        Text("P:")
                             .foregroundColor(Colors.primary)
-                        Text("C: \(String(format: "%.2f", totalMacronutrients.carbs)) g")
+                        Text(String(format: "%.2f", totalMacronutrients.protein) + " g")
                             .foregroundColor(Colors.primary)
-                        Text("F: \(String(format: "%.2f", totalMacronutrients.fat)) g")
-                            .foregroundColor(Colors.primary)
-                        Spacer()
+                            .bold()
                     }
+                    HStack {
+                        Text("C:")
+                            .foregroundColor(Colors.primary)
+                        Text(String(format: "%.2f", totalMacronutrients.carbs) + " g")
+                            .foregroundColor(Colors.primary)
+                            .bold()
+                    }
+                    HStack {
+                        Text("F:")
+                            .foregroundColor(Colors.primary)
+                        Text(String(format: "%.2f", totalMacronutrients.fat) + " g")
+                            .foregroundColor(Colors.primary)
+                            .bold()
+                        
+                    }
+                    Spacer()
                 }
             }
             .padding()
