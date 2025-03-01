@@ -12,6 +12,7 @@ struct MacroFood: Identifiable, Hashable, Equatable {
     var id: String
     var name: String
     var macronutrients: MacronutrientInfo
+    var servingDescription: String
     
     // Conforming to Equatable by comparing id
     static func == (lhs: MacroFood, rhs: MacroFood) -> Bool {

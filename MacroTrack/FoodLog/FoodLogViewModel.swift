@@ -66,4 +66,13 @@ class FoodLogViewModel: ObservableObject {
         }
     }
     
+    func updateFoodMacrosForServings(food: MacroFood, servings: Int) -> MacroFood {
+        // Assuming `food` has macros (protein, carbs, fat) that need to be updated
+        var updatedFood = food
+        updatedFood.macronutrients.protein = String((Int(updatedFood.macronutrients.protein) ?? 0) * servings)
+        updatedFood.macronutrients.carbs = String((Int(updatedFood.macronutrients.carbs) ?? 0) * servings)
+        updatedFood.macronutrients.fat = String((Int(updatedFood.macronutrients.fat) ?? 0) * servings)
+        
+        return updatedFood
+    }
 }

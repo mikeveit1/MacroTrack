@@ -32,9 +32,8 @@ class FoodHelper: ObservableObject {
     
     func convertSearchFoodToMacroFood(searchedFood: SearchedFood, completion: @escaping (MacroFood) -> Void) {
         fatSecretClient.getFood(id: searchedFood.id) { food in
-            var macros = MacronutrientInfo(calories: "", protein: "", carbs: "", fat: "")
             self.getMacros(food: food) { macros in
-                completion(MacroFood(id: food.id, name: food.name, macronutrients: macros))
+                completion(MacroFood(id: food.id, name: food.name, macronutrients: macros, servingDescription: food.servings?[0].servingDescription ?? ""))
             }
         }
     }

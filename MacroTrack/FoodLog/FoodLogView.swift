@@ -7,6 +7,9 @@ struct FoodLogView: View {
     @StateObject private var viewModel = FoodLogViewModel()
     @State private var searchQuery = ""
     @State private var isLoading = false
+    @State private var showAlert = false
+    @State private var servingsText = ""
+
     
     func selectMeal(meal: Meal) {
         viewModel.selectedMeal = meal
@@ -93,14 +96,15 @@ struct FoodLogView: View {
                 HStack {
                     VStack(alignment: .leading) {
                         HStack {
-                            Text(food.name)
+                            Text("\(food.name) (per \(food.servingDescription))")
                                 .foregroundColor(Colors.secondary)
                                 .bold()
                                 .font(.headline)
-                            Text("\(food.macronutrients.calories) cal")
-                                .foregroundColor(Colors.secondary)
                         }
                         VStack(alignment: .leading) {
+                            Text("\(food.macronutrients.calories) kcal")
+                                .bold()
+                                .foregroundColor(Colors.secondary)
                             HStack {
                                 HStack {
                                     Text("P:")
@@ -168,10 +172,12 @@ struct FoodLogView: View {
             // List of food items
             List(viewModel.searchResults, id: \.id) { food in
                 Button(action: {
-                    viewModel.convertSearchFoodToMacroFood(searchedFood: food) { food in
-                        viewModel.saveFood(food: food)
+                    // Prompt user for servings after selecting a food
+                    viewModel.convertSearchFoodToMacroFood(searchedFood: food) { macroFood in
+                        // Show the alert when food is selected
+                        self.servingsText = "" // Reset any previous servings input
+                        self.showAlert = true
                     }
-                    modalVisible = false
                 }) {
                     VStack(alignment: .leading) {
                         Text(food.name)
@@ -202,6 +208,20 @@ struct FoodLogView: View {
         .cornerRadius(10)
         .shadow(radius: 10)
         .background(Color.white)
+        .sheet(isPresented: $showAlert) {
+            // Trigger the AlertView here
+            AlertView(title: "Enter Servings", message: "How many servings would you like to add?") { servings in
+                if let servingsInt = Int(servings), servingsInt > 0 {
+                    // Perform action with servings (e.g., multiply macros by servings)
+                    print("Servings entered: \(servingsInt)")
+                    // Update food macros or do whatever is needed
+                } else {
+                    // Handle invalid input (e.g., show error message)
+                    print("Invalid servings input")
+                }
+            }
+            .background(Colors.primaryLight)
+        }
     }
 }
 
