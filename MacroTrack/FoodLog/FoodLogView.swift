@@ -7,7 +7,7 @@ struct FoodLogView: View {
     @StateObject private var viewModel = FoodLogViewModel()
     @State private var searchQuery = ""
     @State private var isLoading = false
-
+    
     func selectMeal(meal: Meal) {
         viewModel.selectedMeal = meal
         modalVisible = true
@@ -25,12 +25,13 @@ struct FoodLogView: View {
                 }
             }
             .padding()
-            .background(Color(.systemGray6))
+            .background(Color(.white))
             .sheet(isPresented: $modalVisible) {
                 foodModalView
             }
+            .background(Color(.white))
         }
-        .background(Color(.systemGray6))
+        .background(Color(.white))
     }
     
     // Header View (Date Navigation)
@@ -139,7 +140,7 @@ struct FoodLogView: View {
             }
         }
         .padding()
-        .background(Color.white)
+        .background(Colors.secondary)
         .cornerRadius(10)
         .shadow(radius: 5)
     }
@@ -155,8 +156,14 @@ struct FoodLogView: View {
             // Search bar
             TextField("Search for food", text: $searchQuery)
                 .padding()
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .foregroundColor(Colors.primary)
+                .background(Color.white)  // Set background of the entire TextField to white
+                .cornerRadius(8)          // Optional: round the corners for a nicer appearance
+                .foregroundColor(Colors.primary)  // Text color
+                .textFieldStyle(PlainTextFieldStyle()) // Use PlainTextFieldStyle to remove default styling
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8)
+                        .stroke(Color.gray, lineWidth: 1) // Optional: add a border to the TextField
+                )
                 .onChange(of: searchQuery) { newValue in
                     viewModel.searchFoods(query: newValue)
                 }
@@ -168,26 +175,34 @@ struct FoodLogView: View {
             
             // List of food items
             List(viewModel.searchResults, id: \.id) { food in
-                Button(action: {
-                    // Prompt user for servings after selecting a food
-                    viewModel.convertSearchFoodToMacroFood(searchedFood: food) { macroFood in
-                        viewModel.saveFood(food: macroFood)
-                        modalVisible = false
-                    }
-                }) {
-                    VStack(alignment: .leading) {
-                        Text(food.name)
-                            .foregroundColor(Colors.primary)
-                            .bold()
-                            .lineLimit(2)
-                        (food.brand != nil) ? Text(food.brand ?? "")
-                            .foregroundColor(Colors.primaryLight)
-                        : nil
+                Section {
+                    Button(action: {
+                        // Prompt user for servings after selecting a food
+                        viewModel.convertSearchFoodToMacroFood(searchedFood: food) { macroFood in
+                            viewModel.saveFood(food: macroFood)
+                            modalVisible = false
+                        }
+                    }) {
+                        VStack(alignment: .leading) {
+                            Text(food.name)
+                                .foregroundColor(Colors.primary)
+                                .bold()
+                                .lineLimit(2)
+                            (food.brand != nil) ? Text(food.brand ?? "")
+                                .foregroundColor(Colors.primaryLight)
+                            : nil
+                        }
                     }
                 }
+                .listRowBackground(Colors.secondary)
             }
-            .padding(.vertical)
-            
+            //.padding(.vertical)
+            .cornerRadius(8)
+            .listStyle(.plain)
+            .overlay(
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(Color.gray, lineWidth: 1) // Optional: add a border to the TextField
+            )
             // Buttons for canceling and saving
             HStack {
                 Button("Cancel") {
@@ -203,7 +218,7 @@ struct FoodLogView: View {
         .padding()
         .cornerRadius(10)
         .shadow(radius: 10)
-        .background(Color.white)
+        .background(Colors.secondary)
     }
 }
 
