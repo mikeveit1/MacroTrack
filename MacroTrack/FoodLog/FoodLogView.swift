@@ -17,8 +17,11 @@ struct FoodLogView: View {
     var body: some View {
         ScrollView {
             VStack {
-                // Date Navigation
+                // Header View (Date Navigation)
                 headerView
+                
+                // Progress Bars for Daily Goals
+                progressChart
                 
                 // Meal Sections
                 ForEach(Meal.allCases, id: \.self) { meal in
@@ -36,7 +39,104 @@ struct FoodLogView: View {
         .onTapGesture {
             UIApplication.shared.endEditing() // This will dismiss the keyboard
         }
+        .onChange(of: viewModel.mealLogs) { _ in
+            // Recalculate macros whenever mealLogs changes
+            _ = viewModel.getTotalMacros()
+        }
     }
+    
+    // Progress Bars for Daily Goals
+    var progressChart: some View {
+        let totalMacros = viewModel.getTotalMacros()
+        
+        let maxWidth: CGFloat = 80 // Maximum width for progress bars
+
+        return VStack(spacing: 20) {
+            // Calories Progress
+            HStack {
+                Text("Calories")
+                    .frame(width: 80, alignment: .leading)
+                    .foregroundColor(Colors.primary)
+                    .bold()
+                ZStack(alignment: .leading) {
+                    (Color(UIColor(white: 0.9, alpha: 1.0)))  // Background color (empty space)
+                        .frame(height: 30)
+                    Colors.primaryLight
+                        .opacity(0.2)
+                        .frame(width: min(CGFloat(totalMacros.calories / (viewModel.dailyGoals["calories"] ?? 0) * 100), maxWidth), height: 20)
+                    Text("\(Int(totalMacros.calories)) / \(Int(viewModel.dailyGoals["calories"] ?? 0)) kcal")
+                        .foregroundColor(Colors.primary)
+                        .padding(.leading, 10)
+                        .bold()
+                }
+                .cornerRadius(8)
+            }
+
+            // Protein Progress
+            HStack {
+                Text("Protein")
+                    .frame(width: 80, alignment: .leading)
+                    .foregroundColor(Colors.primary)
+                    .bold()
+                ZStack(alignment: .leading) {
+                    (Color(UIColor(white: 0.9, alpha: 1.0)))  // Background color (empty space)
+                        .frame(height: 30)
+                    Colors.primaryLight
+                        .opacity(0.2)
+                        .frame(width: min(CGFloat(totalMacros.calories / (viewModel.dailyGoals["protein"] ?? 0) * 100), maxWidth), height: 20)
+                    Text("\(Int(totalMacros.protein)) / \(Int(viewModel.dailyGoals["protein"] ?? 0)) g")
+                        .foregroundColor(Colors.primary)
+                        .padding(.leading, 10)
+                        .bold()
+                }
+                .cornerRadius(8)
+            }
+            // Carbs Progress
+            HStack {
+                Text("Carbs")
+                    .frame(width: 80, alignment: .leading)
+                    .foregroundColor(Colors.primary)
+                    .bold()
+                ZStack(alignment: .leading) {
+                    (Color(UIColor(white: 0.9, alpha: 1.0)))  // Background color (empty space)
+                        .frame(height: 30)
+                    Colors.primaryLight
+                        .opacity(0.2)
+                        .frame(width: min(CGFloat(totalMacros.calories / (viewModel.dailyGoals["carbs"] ?? 0) * 100), maxWidth), height: 20)
+                    Text("\(Int(totalMacros.carbs)) / \(Int(viewModel.dailyGoals["carbs"] ?? 0)) g")
+                        .foregroundColor(Colors.primary)
+                        .padding(.leading, 10)
+                        .bold()
+                }
+                .cornerRadius(8)
+            }
+
+            // Fat Progress
+            HStack {
+                Text("Fat")
+                    .frame(width: 80, alignment: .leading)
+                    .foregroundColor(Colors.primary)
+                    .bold()
+                ZStack(alignment: .leading) {
+                    (Color(UIColor(white: 0.9, alpha: 1.0)))  // Background color (empty space)
+                        .frame(height: 30)
+                    Colors.primaryLight
+                        .opacity(0.2)
+                        .frame(width: min(CGFloat(totalMacros.calories / (viewModel.dailyGoals["fat"] ?? 0) * 100), maxWidth), height: 20)
+                    Text("\(Int(totalMacros.fat)) / \(Int(viewModel.dailyGoals["fat"] ?? 0)) g")
+                        .foregroundColor(Colors.primary)
+                        .padding(.leading, 10)
+                        .bold()
+                }
+                .cornerRadius(8)
+            }
+        }
+        .padding()
+        .background(Colors.secondary)
+        .cornerRadius(10)
+        .shadow(radius: 5)
+    }
+
     
     var headerView: some View {
         VStack {
@@ -45,6 +145,9 @@ struct FoodLogView: View {
                     Text("Today")
                         .fontWeight(.bold)
                         .foregroundColor(Colors.secondary)
+                        .font(.system(size: 17))
+                        .padding(8)
+                        .background(Colors.primary, in: RoundedRectangle(cornerRadius: 10))
                 }
                 Spacer()
                 Button(action: viewModel.goToPreviousDay) {
@@ -53,7 +156,7 @@ struct FoodLogView: View {
                         .foregroundColor(Colors.secondary)
                 }
                 Text(viewModel.formatDate(viewModel.currentDate))
-                    .font(.title3)
+                    .font(.system(size: 22))
                     .lineLimit(2)
                     .fontWeight(.bold)
                     .foregroundColor(Colors.secondary)
@@ -69,7 +172,7 @@ struct FoodLogView: View {
                         .foregroundColor(Colors.secondary)
                 }
             }
-            .padding()
+            //.padding()
             .frame(maxWidth: .infinity)
             .background(Colors.primaryLight, in: RoundedRectangle(cornerRadius: 10))
             
@@ -106,7 +209,7 @@ struct FoodLogView: View {
                 Image(systemName: meal.iconName)
                     .foregroundColor(Colors.primary)
                 Text(meal.rawValue.capitalized)
-                    .font(.system(size: 19))
+                    .font(.system(size: 22))
                     .bold()
                     .foregroundColor(Colors.primary)
                 Spacer()
@@ -121,10 +224,10 @@ struct FoodLogView: View {
             .frame(maxWidth: .infinity)  // Ensures the button takes up the full width
             VStack(alignment: .leading) {
                 Text("Total:")
-                    .font(.headline)
+                    .font(.system(size: 19))
                     .foregroundColor(Colors.primary)
                     .bold()
-                Text(String(format: "%.0f", totalMacronutrients.calories) + " kcal")
+                Text("\(Int(totalMacronutrients.calories)) kcal")
                     .foregroundColor(Colors.primary)
                     .bold()
                 HStack {
@@ -163,10 +266,10 @@ struct FoodLogView: View {
                             Text("\(food.name) (serving size: \(food.servingDescription))")
                                 .foregroundColor(Colors.secondary)
                                 .bold()
-                                .font(.headline)
+                                .font(.system(size: 19))
                         }
                         VStack(alignment: .leading) {
-                            Text(String(format: "%.0f", food.macronutrients.calories) + " kcal")
+                            Text("\(Int(food.macronutrients.calories)) kcal")
                                 .bold()
                                 .foregroundColor(Colors.secondary)
                             HStack {

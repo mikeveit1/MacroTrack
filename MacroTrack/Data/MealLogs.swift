@@ -8,7 +8,7 @@
 import Foundation
 
 
-struct MealLogs {
+struct MealLogs: Equatable {
     var breakfast: [MacroFood] = []
     var lunch: [MacroFood] = []
     var dinner: [MacroFood] = []
@@ -31,6 +31,14 @@ struct MealLogs {
             case .snacks: snacks = newValue ?? []
             }
         }
+    }
+
+    // Conformance to Equatable protocol
+    static func ==(lhs: MealLogs, rhs: MealLogs) -> Bool {
+        return lhs.breakfast == rhs.breakfast &&
+               lhs.lunch == rhs.lunch &&
+               lhs.dinner == rhs.dinner &&
+               lhs.snacks == rhs.snacks
     }
 }
 

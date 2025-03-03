@@ -9,6 +9,40 @@ class FoodLogViewModel: ObservableObject {
     var selectedMeal: Meal = .breakfast
     var foodHelper = FoodHelper()
     
+    let dailyGoals: [String: Double] = [
+        "calories": 2000.0,  // Example: 2000 calories
+        "protein": 150.0,    // Example: 150g protein
+        "carbs": 250.0,      // Example: 250g carbs
+        "fat": 70.0          // Example: 70g fat
+    ]
+    
+    // Function to get the total macros across all meals
+    func getTotalMacros() -> MacronutrientInfo {
+        var totalCalories: Double = 0
+        var totalProtein: Double = 0
+        var totalCarbs: Double = 0
+        var totalFat: Double = 0
+        
+        // Sum across each meal type
+        for meal in Meal.allCases {
+            if let mealItems = mealLogs[meal] {
+                for food in mealItems {
+                    totalCalories += food.macronutrients.calories
+                    totalProtein += food.macronutrients.protein
+                    totalCarbs += food.macronutrients.carbs
+                    totalFat += food.macronutrients.fat
+                }
+            }
+        }
+        
+        return MacronutrientInfo(
+            calories: totalCalories,
+            protein: totalProtein,
+            carbs: totalCarbs,
+            fat: totalFat
+        )
+    }
+    
     func searchFoods(query: String) {
         guard !query.isEmpty else {
             return
@@ -29,6 +63,7 @@ class FoodLogViewModel: ObservableObject {
     // Add food to selected meal
     func addFoodToMeal(meal: Meal, food: MacroFood) {
         saveOriginalMacros(for: food)
+        _ = getTotalMacros()
         mealLogs[meal]?.append(food)
     }
     
@@ -90,7 +125,6 @@ class FoodLogViewModel: ObservableObject {
             updatedFood.macronutrients.fat = originalMacros.fat * servings
             
             // Round values to 2 decimal places
-            updatedFood.macronutrients.protein = updatedFood.macronutrients.protein.rounded(toPlaces: 0)
             updatedFood.macronutrients.protein = updatedFood.macronutrients.protein.rounded(toPlaces: 2)
             updatedFood.macronutrients.carbs = updatedFood.macronutrients.carbs.rounded(toPlaces: 2)
             updatedFood.macronutrients.fat = updatedFood.macronutrients.fat.rounded(toPlaces: 2)
@@ -113,7 +147,7 @@ class FoodLogViewModel: ObservableObject {
     
     func getTotalMacronutrients(for meal: Meal) -> MacronutrientInfo {
         var totalMacronutrients = MacronutrientInfo(calories: 0, protein: 0, carbs: 0, fat: 0)
-
+        
         // Sum the macronutrients of all foods in the meal
         if let foods = mealLogs[meal] {
             for food in foods {
@@ -126,5 +160,5 @@ class FoodLogViewModel: ObservableObject {
         
         return totalMacronutrients
     }
-
+    
 }
