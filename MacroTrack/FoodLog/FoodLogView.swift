@@ -51,8 +51,12 @@ struct FoodLogView: View {
         
         let maxWidth: CGFloat = 80 // Maximum width for progress bars
 
-        return VStack(spacing: 20) {
+        return VStack(alignment: .leading, spacing: 20) {
             // Calories Progress
+            Text("Daily Total")
+                .font(.system(size: 22))
+                .bold()
+                .foregroundColor(Colors.primary)
             HStack {
                 Text("Calories")
                     .frame(width: 80, alignment: .leading)
@@ -63,11 +67,12 @@ struct FoodLogView: View {
                         .frame(height: 30)
                     Colors.primaryLight
                         .opacity(0.2)
-                        .frame(width: min(CGFloat(totalMacros.calories / (viewModel.dailyGoals["calories"] ?? 0) * 100), maxWidth), height: 20)
+                        .frame(width: min(CGFloat(totalMacros.calories / (viewModel.dailyGoals["calories"] ?? 0) * 100), maxWidth), height: 30)
                     Text("\(Int(totalMacros.calories)) / \(Int(viewModel.dailyGoals["calories"] ?? 0)) kcal")
                         .foregroundColor(Colors.primary)
                         .padding(.leading, 10)
                         .bold()
+                        .lineLimit(1)
                 }
                 .cornerRadius(8)
             }
@@ -83,11 +88,12 @@ struct FoodLogView: View {
                         .frame(height: 30)
                     Colors.primaryLight
                         .opacity(0.2)
-                        .frame(width: min(CGFloat(totalMacros.calories / (viewModel.dailyGoals["protein"] ?? 0) * 100), maxWidth), height: 20)
-                    Text("\(Int(totalMacros.protein)) / \(Int(viewModel.dailyGoals["protein"] ?? 0)) g")
+                        .frame(width: min(CGFloat(totalMacros.calories / (viewModel.dailyGoals["protein"] ?? 0) * 100), maxWidth), height: 30)
+                    Text("\(String(format: "%.2f", totalMacros.protein)) / \(Int(viewModel.dailyGoals["protein"] ?? 0)) g")
                         .foregroundColor(Colors.primary)
                         .padding(.leading, 10)
                         .bold()
+                        .lineLimit(1)
                 }
                 .cornerRadius(8)
             }
@@ -102,11 +108,12 @@ struct FoodLogView: View {
                         .frame(height: 30)
                     Colors.primaryLight
                         .opacity(0.2)
-                        .frame(width: min(CGFloat(totalMacros.calories / (viewModel.dailyGoals["carbs"] ?? 0) * 100), maxWidth), height: 20)
-                    Text("\(Int(totalMacros.carbs)) / \(Int(viewModel.dailyGoals["carbs"] ?? 0)) g")
+                        .frame(width: min(CGFloat(totalMacros.calories / (viewModel.dailyGoals["carbs"] ?? 0) * 100), maxWidth), height: 30)
+                    Text("\(String(format: "%.2f", totalMacros.carbs)) / \(Int(viewModel.dailyGoals["carbs"] ?? 0)) g")
                         .foregroundColor(Colors.primary)
                         .padding(.leading, 10)
                         .bold()
+                        .lineLimit(1)
                 }
                 .cornerRadius(8)
             }
@@ -122,11 +129,12 @@ struct FoodLogView: View {
                         .frame(height: 30)
                     Colors.primaryLight
                         .opacity(0.2)
-                        .frame(width: min(CGFloat(totalMacros.calories / (viewModel.dailyGoals["fat"] ?? 0) * 100), maxWidth), height: 20)
-                    Text("\(Int(totalMacros.fat)) / \(Int(viewModel.dailyGoals["fat"] ?? 0)) g")
+                        .frame(width: min(CGFloat(totalMacros.calories / (viewModel.dailyGoals["fat"] ?? 0) * 100), maxWidth), height: 30)
+                    Text("\(String(format: "%.2f", totalMacros.fat)) / \(Int(viewModel.dailyGoals["fat"] ?? 0)) g")
                         .foregroundColor(Colors.primary)
                         .padding(.leading, 10)
                         .bold()
+                        .lineLimit(1)
                 }
                 .cornerRadius(8)
             }
@@ -223,13 +231,14 @@ struct FoodLogView: View {
             }
             .frame(maxWidth: .infinity)  // Ensures the button takes up the full width
             VStack(alignment: .leading) {
-                Text("Total:")
+                Text("Meal Total")
                     .font(.system(size: 19))
                     .foregroundColor(Colors.primary)
                     .bold()
                 Text("\(Int(totalMacronutrients.calories)) kcal")
                     .foregroundColor(Colors.primary)
                     .bold()
+                    .lineLimit(1)
                 HStack {
                     HStack {
                         Text("P:")
@@ -237,6 +246,7 @@ struct FoodLogView: View {
                         Text(String(format: "%.2f", totalMacronutrients.protein) + " g")
                             .foregroundColor(Colors.primary)
                             .bold()
+                            .lineLimit(1)
                     }
                     HStack {
                         Text("C:")
@@ -244,6 +254,7 @@ struct FoodLogView: View {
                         Text(String(format: "%.2f", totalMacronutrients.carbs) + " g")
                             .foregroundColor(Colors.primary)
                             .bold()
+                            .lineLimit(1)
                     }
                     HStack {
                         Text("F:")
@@ -251,6 +262,7 @@ struct FoodLogView: View {
                         Text(String(format: "%.2f", totalMacronutrients.fat) + " g")
                             .foregroundColor(Colors.primary)
                             .bold()
+                            .lineLimit(1)
                         
                     }
                     Spacer()
@@ -270,6 +282,7 @@ struct FoodLogView: View {
                         }
                         VStack(alignment: .leading) {
                             Text("\(Int(food.macronutrients.calories)) kcal")
+                                .lineLimit(1)
                                 .bold()
                                 .foregroundColor(Colors.secondary)
                             HStack {
@@ -279,6 +292,7 @@ struct FoodLogView: View {
                                     Text(String(format: "%.2f", food.macronutrients.protein) + " g")
                                         .foregroundColor(Colors.secondary)
                                         .bold()
+                                        .lineLimit(1)
                                 }
                                 HStack {
                                     Text("C:")
@@ -286,6 +300,7 @@ struct FoodLogView: View {
                                     Text(String(format: "%.2f", food.macronutrients.carbs) + " g")
                                         .foregroundColor(Colors.secondary)
                                         .bold()
+                                        .lineLimit(1)
                                 }
                                 HStack {
                                     Text("F:")
@@ -293,6 +308,7 @@ struct FoodLogView: View {
                                     Text(String(format: "%.2f", food.macronutrients.fat) + " g")
                                         .foregroundColor(Colors.secondary)
                                         .bold()
+                                        .lineLimit(1)
                                 }
                             }
                         }
