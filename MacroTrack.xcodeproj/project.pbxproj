@@ -25,6 +25,7 @@
 		E48DF3412D7291CD00F92063 /* AlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E48DF3402D7291CD00F92063 /* AlertView.swift */; };
 		E48DF3432D73797E00F92063 /* RoundingHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E48DF3422D73797E00F92063 /* RoundingHelper.swift */; };
 		E48DF3452D73965A00F92063 /* ApplicationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E48DF3442D73965A00F92063 /* ApplicationHelper.swift */; };
+		E48DF3472D7681A900F92063 /* GoalEditorField.swift in Sources */ = {isa = PBXBuildFile; fileRef = E48DF3462D7681A900F92063 /* GoalEditorField.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,6 +45,7 @@
 		E48DF3402D7291CD00F92063 /* AlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertView.swift; sourceTree = "<group>"; };
 		E48DF3422D73797E00F92063 /* RoundingHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundingHelper.swift; sourceTree = "<group>"; };
 		E48DF3442D73965A00F92063 /* ApplicationHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationHelper.swift; sourceTree = "<group>"; };
+		E48DF3462D7681A900F92063 /* GoalEditorField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalEditorField.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -143,6 +145,7 @@
 			isa = PBXGroup;
 			children = (
 				E48DF3402D7291CD00F92063 /* AlertView.swift */,
+				E48DF3462D7681A900F92063 /* GoalEditorField.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -230,6 +233,7 @@
 				E48DF3102D72134000F92063 /* FoodLogView.swift in Sources */,
 				E48DF3362D7253E100F92063 /* Meal.swift in Sources */,
 				E48DF3302D724C1D00F92063 /* MacronutrientInfo.swift in Sources */,
+				E48DF3472D7681A900F92063 /* GoalEditorField.swift in Sources */,
 				E48DF30E2D7212D500F92063 /* Colors.swift in Sources */,
 				E48DF3412D7291CD00F92063 /* AlertView.swift in Sources */,
 				E48DF3452D73965A00F92063 /* ApplicationHelper.swift in Sources */,

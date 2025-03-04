@@ -13,6 +13,8 @@ struct FoodLogView: View {
     @State private var showCarbs = true
     @State private var showFat = true
     @State private var showFilterModal = false
+    @State private var editedGoals: [String: Double] = [:]
+    @State private var isSettingsPresented = false
     
     func selectMeal(meal: Meal) {
         viewModel.selectedMeal = meal
@@ -38,6 +40,71 @@ struct FoodLogView: View {
             .sheet(isPresented: $modalVisible) {
                 foodModalView
             }
+            .sheet(isPresented: $isSettingsPresented) {
+                VStack {
+                    Text("Edit Your Daily Goals")
+                        .font(.system(size: 22))
+                        .foregroundColor(Colors.secondary)
+                        .bold()
+                        .padding()
+                    
+                    VStack(spacing: 8) { // Increased spacing for better separation between sections
+                        // Editable fields for each goal
+                        GoalEditorField(goalType: "Calories", value: $editedGoals["calories"])
+                        Text("You can calculate your macro goals based on your body weight.")
+                            .font(.caption)
+                            .foregroundColor(Colors.primary)
+                        
+                        GoalEditorField(goalType: "Protein", value: $editedGoals["protein"])
+                        Text("You can calculate your macro goals based on your body weight.")
+                            .font(.caption)
+                            .foregroundColor(Colors.primary)
+                        
+                        GoalEditorField(goalType: "Carbs", value: $editedGoals["carbs"])
+                        Text("You can calculate your macro goals based on your body weight.")
+                            .font(.caption)
+                            .foregroundColor(Colors.primary)
+                        
+                        GoalEditorField(goalType: "Fat", value: $editedGoals["fat"])
+                        Text("You can calculate your macro goals based on your body weight.")
+                            .font(.caption)
+                            .foregroundColor(Colors.primary)
+                        
+                        // Save Button
+                        Button(action: {
+                            viewModel.saveDailyGoals(newGoals: editedGoals)
+                            isSettingsPresented = false // Close the modal
+                        }) {
+                            Text("Save")
+                                .fontWeight(.bold)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(Colors.primary)
+                                .foregroundColor(.white)
+                                .cornerRadius(8)
+                        }
+                        .padding(.top, 16) // Padding for spacing between the fields and the button
+                        
+                        // Cancel Button
+                        Button(action: {
+                            isSettingsPresented = false // Close the modal without saving
+                        }) {
+                            Text("Cancel")
+                                .foregroundColor(.red)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                        }
+                    }
+                    .padding()
+                    .background(Color.white)
+                    .cornerRadius(12) // Rounded corners for the modal
+                    .shadow(radius: 10) // Shadow for the modal
+                }
+                .padding()
+                .frame(maxHeight: .infinity) // Make the VStack take up the full height
+                .background(Colors.primary.edgesIgnoringSafeArea(.all)) // Semi-transparent background behind the modal
+            }
+            
             .background(Color(.white))
         }
         .background(Color(.white))
@@ -76,8 +143,18 @@ struct FoodLogView: View {
                         .frame(width: 22, height: 22)
                         .foregroundColor(Colors.primary)
                 }
+                Button(action: {
+                    editedGoals = viewModel.dailyGoals // Set current values in the edited state
+                    isSettingsPresented.toggle()
+                }) {
+                    Image(systemName: "gearshape.fill")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 22, height: 22)
+                        .foregroundColor(Colors.primary)
+                }
             }
-    
+            
             
             // Calories Progress
             if showCalories {
@@ -87,7 +164,7 @@ struct FoodLogView: View {
                         .foregroundColor(Colors.primary)
                         .bold()
                     ZStack(alignment: .leading) {
-                        (Color(UIColor(white: 0.9, alpha: 1.0)))  // Background color (empty space)
+                        Colors.gray  // Background color (empty space)
                             .frame(height: 30)
                         Colors.primaryLight
                             .opacity(0.2)
@@ -110,7 +187,7 @@ struct FoodLogView: View {
                         .foregroundColor(Colors.primary)
                         .bold()
                     ZStack(alignment: .leading) {
-                        (Color(UIColor(white: 0.9, alpha: 1.0)))  // Background color (empty space)
+                        Colors.gray  // Background color (empty space)
                             .frame(height: 30)
                         Colors.primaryLight
                             .opacity(0.2)
@@ -133,7 +210,7 @@ struct FoodLogView: View {
                         .foregroundColor(Colors.primary)
                         .bold()
                     ZStack(alignment: .leading) {
-                        (Color(UIColor(white: 0.9, alpha: 1.0)))  // Background color (empty space)
+                        Colors.gray  // Background color (empty space)
                             .frame(height: 30)
                         Colors.primaryLight
                             .opacity(0.2)
@@ -156,7 +233,7 @@ struct FoodLogView: View {
                         .foregroundColor(Colors.primary)
                         .bold()
                     ZStack(alignment: .leading) {
-                        (Color(UIColor(white: 0.9, alpha: 1.0)))  // Background color (empty space)
+                        Colors.gray    // Background color (empty space)
                             .frame(height: 30)
                         Colors.primaryLight
                             .opacity(0.2)
@@ -183,55 +260,67 @@ struct FoodLogView: View {
     var filterModal: some View {
         VStack {
             Text("Select Progress Bars")
-                .font(.headline)
+                .font(.system(size: 22))
+                .bold()
                 .padding()
-                .foregroundColor(Colors.primary)
-            
-            // Checkbox-like UI
-            Toggle(isOn: $showCalories) {
-                Text("Calories")
-                    .foregroundColor(Colors.primary)
-
+                .foregroundColor(Colors.secondary)
+            VStack {
+                // Checkbox-like UI
+                Toggle(isOn: $showCalories) {
+                    Text("Calories")
+                        .foregroundColor(Colors.primary)
+                        .bold()
+                }
+                .tint(Colors.primary)
+                .padding()
+                
+                Toggle(isOn: $showProtein) {
+                    Text("Protein")
+                        .foregroundColor(Colors.primary)
+                        .bold()
+                }
+                .tint(Colors.primary)
+                .padding()
+                
+                Toggle(isOn: $showCarbs) {
+                    Text("Carbs")
+                        .foregroundColor(Colors.primary)
+                        .bold()
+                }
+                .tint(Colors.primary)
+                .padding()
+                
+                Toggle(isOn: $showFat) {
+                    Text("Fat")
+                        .foregroundColor(Colors.primary)
+                        .bold()
+                }
+                .tint(Colors.primary)
+                .padding()
+                
+                // Dismiss Button
+                Button(action: {
+                    showFilterModal.toggle()
+                }) {
+                    Text("Done")
+                        .foregroundColor(Colors.primary)
+                        .fontWeight(.bold)
+                }
+                .padding()
             }
-            .tint(Colors.primary)
-            .padding()
-            
-            Toggle(isOn: $showProtein) {
-                Text("Protein")
-                    .foregroundColor(Colors.primary)
-            }
-            .tint(Colors.primary)
-            .padding()
-            
-            Toggle(isOn: $showCarbs) {
-                Text("Carbs")
-                    .foregroundColor(Colors.primary)
-            }
-            .tint(Colors.primary)
-            .padding()
-            
-            Toggle(isOn: $showFat) {
-                Text("Fat")
-                    .foregroundColor(Colors.primary)
-            }
-            .tint(Colors.primary)
-            .padding()
-            
-            // Dismiss Button
-            Button(action: {
-                showFilterModal.toggle()
-            }) {
-                Text("Done")
-                    .foregroundColor(Colors.primary)
-                    .fontWeight(.bold)
-            }
-            .padding()
+            .background(Colors.secondary) // Gray background for the whole sheet
+            .cornerRadius(10) // Optional: Corner radius if you want rounded corners
+            .shadow(radius: 8) // Optional: Shadow for the modal itself
+            Spacer()
         }
-        .padding()
-        .background(Colors.secondary)
-        .cornerRadius(10)
-        .shadow(radius: 5)
+        .padding() // Padding around the content
+        .frame(maxHeight: .infinity) // Make the VStack take up the full height
+        .background(Colors.primary) // Gray background for the whole sheet
+        .cornerRadius(10) // Optional: Corner radius if you want rounded corners
+        .shadow(radius: 8) // Optional: Shadow for the modal itself
+        .edgesIgnoringSafeArea(.all) // Ensures the gray background covers the entire screen
     }
+
     
     
     
@@ -244,7 +333,7 @@ struct FoodLogView: View {
                         .foregroundColor(Colors.secondary)
                         .font(.system(size: 17))
                         .padding(8)
-                        .background(Colors.primary, in: RoundedRectangle(cornerRadius: 10))
+                        .background(Colors.primaryLight, in: RoundedRectangle(cornerRadius: 10))
                 }
                 Spacer()
                 Button(action: viewModel.goToPreviousDay) {
@@ -271,7 +360,6 @@ struct FoodLogView: View {
             }
             //.padding()
             .frame(maxWidth: .infinity)
-            .background(Colors.primaryLight, in: RoundedRectangle(cornerRadius: 10))
             
             // Show DatePicker when showDatePicker is true
             if showDatePicker {
@@ -295,7 +383,7 @@ struct FoodLogView: View {
         
         .padding()
         .frame(maxWidth: .infinity)
-        .background(Colors.primaryLight, in: RoundedRectangle(cornerRadius: 10))
+        .background(Colors.primary, in: RoundedRectangle(cornerRadius: 10))
     }
     
     // Meal Section (for breakfast, lunch, dinner, snacks)
@@ -358,7 +446,7 @@ struct FoodLogView: View {
             }
             .padding()
             .frame(maxWidth: .infinity)  // Ensures the food item takes up the full width
-            .background(RoundedRectangle(cornerRadius: 8).fill(Color(UIColor(white: 0.9, alpha: 1.0))))
+            .background(RoundedRectangle(cornerRadius: 8).fill(Colors.gray))
             ForEach(viewModel.mealLogs[meal] ?? [], id: \.self) { food in
                 HStack {
                     VStack(alignment: .leading) {

@@ -8,6 +8,7 @@ struct Colors {
     static let secondary = Color(hex: "#ffffff")  // White
     // Primary light color (you had a string, now it's a Color)
     static let primaryLight = Color(hex: "#3f9c91")  // Example hex color
+    static let gray = (Color(UIColor(white: 0.9, alpha: 1.0)))
 }
 
 import SwiftUI

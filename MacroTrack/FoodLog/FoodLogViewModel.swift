@@ -6,15 +6,19 @@ class FoodLogViewModel: ObservableObject {
     @Published var currentDate: Date = Date()
     @Published var searchResults: [SearchedFood] = []
     @Published var servings: [String: Double] = [:] // Dictionary of servings for each food by food.id
-    var selectedMeal: Meal = .breakfast
-    var foodHelper = FoodHelper()
-    
-    let dailyGoals: [String: Double] = [
+    @Published var dailyGoals: [String: Double] = [
         "calories": 2000.0,  // Example: 2000 calories
         "protein": 150.0,    // Example: 150g protein
         "carbs": 250.0,      // Example: 250g carbs
         "fat": 70.0          // Example: 70g fat
     ]
+    
+    var selectedMeal: Meal = .breakfast
+    var foodHelper = FoodHelper()
+    
+    func saveDailyGoals(newGoals: [String: Double]) {
+        dailyGoals = newGoals
+    }
     
     // Function to get the total macros across all meals
     func getTotalMacros() -> MacronutrientInfo {
