@@ -9,6 +9,14 @@ import Foundation
 import SwiftUI
 
 struct MainContentView: View {
+    init() {
+        let appearance = UITabBarAppearance()
+        appearance.backgroundColor = UIColor(Colors.primary)
+        appearance.selectionIndicatorTintColor =  UIColor(Colors.primary)
+        UITabBar.appearance().tintColor = UIColor(Colors.gray)
+        UITabBar.appearance().standardAppearance = appearance
+        UITabBar.appearance().scrollEdgeAppearance = appearance
+    }
     var body: some View {
         TabView {
             // Food Log Tab
@@ -24,7 +32,16 @@ struct MainContentView: View {
                     Image(systemName: "calculator") // Icon for Macro Calculator
                     Text("Macro Calculator")      // Label for Macro Calculator
                 }
+            
         }
-        .accentColor(.blue) // Customize the tab bar accent color (optional)
+        .accentColor(Colors.secondary) // Customize the tab bar accent color (optional)
+        .background(Colors.gray)
+      
+    }
+}
+
+struct MainContentView_Preview: PreviewProvider {
+    static var previews: some View {
+        MainContentView()
     }
 }
