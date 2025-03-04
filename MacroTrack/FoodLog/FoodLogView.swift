@@ -35,6 +35,10 @@ struct FoodLogView: View {
                     mealSection(meal)
                 }
             }
+            .onChange(of: viewModel.currentDate) { _ in
+                // Trigger data fetching when the date changes
+                viewModel.fetchFoodLog()
+            }
             .padding()
             .background(Color(.white))
             .sheet(isPresented: $modalVisible) {
@@ -48,27 +52,35 @@ struct FoodLogView: View {
                         .bold()
                         .padding()
                     
-                    VStack(spacing: 8) { // Increased spacing for better separation between sections
+                    VStack(alignment: .leading, spacing: 8) { // Increased spacing for better separation between sections
                         // Editable fields for each goal
                         GoalEditorField(goalType: "Calories", value: $editedGoals["calories"])
-                        Text("You can calculate your macro goals based on your body weight.")
+                        Text("Typically BMR x TDEE.")
                             .font(.caption)
                             .foregroundColor(Colors.primary)
+                            .lineLimit(2)
+                            .padding(.horizontal, 8)
                         
                         GoalEditorField(goalType: "Protein", value: $editedGoals["protein"])
-                        Text("You can calculate your macro goals based on your body weight.")
+                        Text("Example calculation: protein (grams) = body weight (lbs) × protein range (0.73 to 1.0 g)")
                             .font(.caption)
                             .foregroundColor(Colors.primary)
+                            .lineLimit(2)
+                            .padding(.horizontal, 8)
                         
                         GoalEditorField(goalType: "Carbs", value: $editedGoals["carbs"])
-                        Text("You can calculate your macro goals based on your body weight.")
+                        Text("Example calculation: carbs (grams) = body weight (lbs) × carb range (1.36 to 2.73 g)")
                             .font(.caption)
                             .foregroundColor(Colors.primary)
+                            .lineLimit(2)
+                            .padding(.horizontal, 8)
                         
                         GoalEditorField(goalType: "Fat", value: $editedGoals["fat"])
-                        Text("You can calculate your macro goals based on your body weight.")
+                        Text("Example calculation: fat (grams) = body weight (lbs) × fat range (0.36 to 0.45 g)")
                             .font(.caption)
                             .foregroundColor(Colors.primary)
+                            .lineLimit(2)
+                            .padding(.horizontal, 8)
                         
                         // Save Button
                         Button(action: {
@@ -96,7 +108,7 @@ struct FoodLogView: View {
                         }
                     }
                     .padding()
-                    .background(Color.white)
+                    .background(Colors.secondary)
                     .cornerRadius(12) // Rounded corners for the modal
                     .shadow(radius: 10) // Shadow for the modal
                 }
@@ -115,13 +127,16 @@ struct FoodLogView: View {
             // Recalculate macros whenever mealLogs changes
             _ = viewModel.getTotalMacros()
         }
+        .onAppear {
+            viewModel.fetchFoodLog() // Fetch food log when the view appears
+        }
     }
     
     // Progress Bars for Daily Goals
     var progressChart: some View {
         let totalMacros = viewModel.getTotalMacros()
         let maxWidth: CGFloat = 300 // Maximum width for progress bars (adjust as needed)
-
+        
         return VStack(alignment: .leading, spacing: 20) {
             // Header with "Daily Total" and Filter Button
             HStack {
@@ -276,8 +291,8 @@ struct FoodLogView: View {
             filterModal
         }
     }
-
-
+    
+    
     
     var filterModal: some View {
         VStack {
@@ -342,7 +357,7 @@ struct FoodLogView: View {
         .shadow(radius: 8) // Optional: Shadow for the modal itself
         .edgesIgnoringSafeArea(.all) // Ensures the gray background covers the entire screen
     }
-
+    
     
     
     
@@ -541,7 +556,7 @@ struct FoodLogView: View {
                             .keyboardType(.decimalPad)
                             .padding()
                             .frame(width: 60, height: 40)
-                            .background(Color.white)
+                            .background(Colors.secondary)
                             .cornerRadius(8)
                             .foregroundColor(Colors.primary)
                             .textFieldStyle(PlainTextFieldStyle())
@@ -604,7 +619,7 @@ struct FoodLogView: View {
             // Search bar
             TextField("Search for food", text: $searchQuery)
                 .padding()
-                .background(Color.white)  // Set background of the entire TextField to white
+                .background(Colors.secondary)  // Set background of the entire TextField to white
                 .cornerRadius(8)          // Optional: round the corners for a nicer appearance
                 .foregroundColor(Colors.primary)  // Text color
                 .textFieldStyle(PlainTextFieldStyle()) // Use PlainTextFieldStyle to remove default styling

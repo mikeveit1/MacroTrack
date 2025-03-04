@@ -7,8 +7,7 @@
 
 import Foundation
 
-
-struct MacronutrientInfo {
+struct MacronutrientInfo: Codable {
     var calories: Double
     var protein: Double
     var carbs: Double

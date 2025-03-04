@@ -18,6 +18,14 @@ class FoodLogViewModel: ObservableObject {
     
     func saveDailyGoals(newGoals: [String: Double]) {
         dailyGoals = newGoals
+        guard let userID = FirebaseService.shared.getCurrentUserID() else { return }
+        FirebaseService.shared.saveDailyGoals(userID: userID, goals: newGoals) { success, error in
+            if let error = error {
+                print("Error saving daily goals: \(error.localizedDescription)")
+            } else {
+                print("Daily goals saved successfully.")
+            }
+        }
     }
     
     // Function to get the total macros across all meals
@@ -62,6 +70,7 @@ class FoodLogViewModel: ObservableObject {
     // Save food to the selected meal
     func saveFood(food: MacroFood) {
         addFoodToMeal(meal: selectedMeal, food: food)
+        saveFoodToFirebase(food: food) // Save the food to Firebase
     }
     
     // Add food to selected meal
@@ -80,12 +89,14 @@ class FoodLogViewModel: ObservableObject {
         DispatchQueue.main.async {
             self.mealLogs[meal]?.removeAll { $0.id == food.id }
         }
+        deleteFoodFromFirebase(food: food) // Delete food from Firebase
     }
     
     // Go to today's date
     func goToToday() {
         DispatchQueue.main.async {
             self.currentDate = Date()
+            self.fetchFoodLog()
         }
     }
     
@@ -93,6 +104,7 @@ class FoodLogViewModel: ObservableObject {
     func goToPreviousDay() {
         DispatchQueue.main.async {
             self.currentDate = Calendar.current.date(byAdding: .day, value: -1, to: self.currentDate) ?? Date()
+            self.fetchFoodLog()
         }
     }
     
@@ -100,13 +112,14 @@ class FoodLogViewModel: ObservableObject {
     func goToNextDay() {
         DispatchQueue.main.async {
             self.currentDate = Calendar.current.date(byAdding: .day, value: 1, to: self.currentDate) ?? Date()
+            self.fetchFoodLog()
         }
     }
-    
+
     // Format date into a readable string
     func formatDate(_ date: Date) -> String {
         let formatter = DateFormatter()
-        formatter.dateStyle = .medium
+        formatter.dateFormat = "MMM d, yyyy"  // Use a simpler format, e.g., "2025-03-05"
         return formatter.string(from: date)
     }
     
@@ -181,5 +194,89 @@ class FoodLogViewModel: ObservableObject {
         }
         
         return totalMacronutrients
+    }
+    
+    // MARK: - Firebase Integration Methods
+    func fetchFoodLog() {
+        guard let userID = FirebaseService.shared.getCurrentUserID() else {
+            print("No user is logged in")
+            return
+        }
+        
+        self.mealLogs = MealLogs()
+        
+        let date = formatDate(currentDate)  // Make sure the format is correct (e.g., "Mar 5, 2025")
+        print("Fetching food log for date: \(date)")  // Debugging log
+
+        FirebaseService.shared.getFoodLog(userID: userID, date: date) { [weak self] foodLogData, error in
+            if let error = error {
+                print("Error fetching food log: \(error.localizedDescription)")
+            } else if let foodLogData = foodLogData {
+                DispatchQueue.main.async {
+                    print("Food log fetched successfully")
+                        // Reset mealLogs to avoid stale data
+                    
+                    // Parse the fetched data
+                    for (mealKey, mealData) in foodLogData {
+                        if let meal = Meal(rawValue: mealKey) {
+                            var foods: [MacroFood] = []
+                            if let mealFoods = mealData as? [String: [String: Any]] {
+                                for (_, foodData) in mealFoods {
+                                    if let foodData = try? JSONSerialization.data(withJSONObject: foodData, options: []) {
+                                        let decoder = JSONDecoder()
+                                        do {
+                                            let food = try decoder.decode(MacroFood.self, from: foodData)
+                                            foods.append(food)
+                                        } catch {
+                                            print("Error decoding food data: \(error.localizedDescription)")
+                                        }
+                                    }
+                                }
+                            }
+                            self?.mealLogs[meal] = foods
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+
+
+
+    
+    // Save food to Firebase
+    func saveFoodToFirebase(food: MacroFood) {
+        guard let userID = FirebaseService.shared.getCurrentUserID() else {
+            print("No user is logged in")
+            return
+        }
+        
+        let date = formatDate(currentDate)
+        FirebaseService.shared.saveFoodToMeal(userID: userID, date: date, meal: selectedMeal.rawValue, food: food) { success, error in
+            if let error = error {
+                print("Error saving food to Firebase: \(error.localizedDescription)")
+            } else if success {
+                print("Food saved to Firebase successfully")
+            }
+        }
+    }
+    
+    // Delete food from Firebase
+    func deleteFoodFromFirebase(food: MacroFood) {
+        guard let userID = FirebaseService.shared.getCurrentUserID() else {
+            print("No user is logged in")
+            return
+        }
+        
+        let date = formatDate(currentDate)
+        FirebaseService.shared.deleteFoodFromFirebase(userID: userID, date: date, meal: selectedMeal.rawValue, food: food) { success, error in
+            if let error = error {
+                print("Error deleting food from Firebase: \(error.localizedDescription)")
+            } else if success {
+                print("Food deleted from Firebase successfully")
+            }
+        }
     }
 }
