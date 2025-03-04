@@ -73,7 +73,7 @@ struct FoodLogView: View {
                     Image(systemName: "line.horizontal.3.decrease.circle")
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 19, height: 19)
+                        .frame(width: 22, height: 22)
                         .foregroundColor(Colors.primary)
                 }
             }
@@ -315,7 +315,7 @@ struct FoodLogView: View {
                         .foregroundColor(Colors.primary)
                 }
                 .tint(Colors.primary)
-                .font(.system(size: 19))
+                .font(.system(size: 22))
             }
             .frame(maxWidth: .infinity)  // Ensures the button takes up the full width
             VStack(alignment: .leading) {
