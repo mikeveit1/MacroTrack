@@ -64,27 +64,39 @@ class FoodLogViewModel: ObservableObject {
     func addFoodToMeal(meal: Meal, food: MacroFood) {
         saveOriginalMacros(for: food)
         _ = getTotalMacros()
-        mealLogs[meal]?.append(food)
+        
+        // Ensuring mealLogs is updated on the main thread
+        DispatchQueue.main.async {
+            self.mealLogs[meal]?.append(food)
+        }
     }
     
     // Delete food from selected meal
     func deleteFoodFromMeal(meal: Meal, food: MacroFood) {
-        mealLogs[meal]?.removeAll { $0.id == food.id }
+        DispatchQueue.main.async {
+            self.mealLogs[meal]?.removeAll { $0.id == food.id }
+        }
     }
     
     // Go to today's date
     func goToToday() {
-        currentDate = Date()
+        DispatchQueue.main.async {
+            self.currentDate = Date()
+        }
     }
     
     // Go to the previous day
     func goToPreviousDay() {
-        currentDate = Calendar.current.date(byAdding: .day, value: -1, to: currentDate) ?? Date()
+        DispatchQueue.main.async {
+            self.currentDate = Calendar.current.date(byAdding: .day, value: -1, to: self.currentDate) ?? Date()
+        }
     }
     
     // Go to the next day
     func goToNextDay() {
-        currentDate = Calendar.current.date(byAdding: .day, value: 1, to: currentDate) ?? Date()
+        DispatchQueue.main.async {
+            self.currentDate = Calendar.current.date(byAdding: .day, value: 1, to: self.currentDate) ?? Date()
+        }
     }
     
     // Format date into a readable string
@@ -96,14 +108,18 @@ class FoodLogViewModel: ObservableObject {
     
     func convertSearchFoodToMacroFood(searchedFood: SearchedFood, completion: @escaping (MacroFood) -> Void) {
         foodHelper.convertSearchFoodToMacroFood(searchedFood: searchedFood) { macroFood in
-            completion(macroFood)
+            DispatchQueue.main.async {
+                completion(macroFood)
+            }
         }
     }
     
     var originalMacronutrients: [String: MacronutrientInfo] = [:]
     
     func saveOriginalMacros(for food: MacroFood) {
-        originalMacronutrients[food.id] = food.macronutrients
+        DispatchQueue.main.async {
+            self.originalMacronutrients[food.id] = food.macronutrients
+        }
     }
     
     func updateFoodMacrosForServings(food: MacroFood, servings: Double) -> MacroFood {
@@ -138,10 +154,12 @@ class FoodLogViewModel: ObservableObject {
     
     // Update the meal log with the updated food
     func updateMealLogWithUpdatedFood(updatedFood: MacroFood, meal: Meal) {
-        // Find the index of the food with the same ID in the selected meal's list
-        if let index = mealLogs[meal]?.firstIndex(where: { $0.id == updatedFood.id }) {
-            // Update the existing food in the meal
-            mealLogs[meal]?[index] = updatedFood
+        DispatchQueue.main.async {
+            // Find the index of the food with the same ID in the selected meal's list
+            if let index = self.mealLogs[meal]?.firstIndex(where: { $0.id == updatedFood.id }) {
+                // Update the existing food in the meal
+                self.mealLogs[meal]?[index] = updatedFood
+            }
         }
     }
     
@@ -160,5 +178,4 @@ class FoodLogViewModel: ObservableObject {
         
         return totalMacronutrients
     }
-    
 }
