@@ -8,6 +8,11 @@ struct FoodLogView: View {
     @State private var searchQuery = ""
     @State private var isLoading = false
     @State private var localServingsString: String = "1.0"
+    @State private var showCalories = true
+    @State private var showProtein = true
+    @State private var showCarbs = true
+    @State private var showFat = true
+    @State private var showFilterModal = false
     
     func selectMeal(meal: Meal) {
         viewModel.selectedMeal = meal
@@ -50,101 +55,185 @@ struct FoodLogView: View {
         let totalMacros = viewModel.getTotalMacros()
         
         let maxWidth: CGFloat = 80 // Maximum width for progress bars
-
+        
         return VStack(alignment: .leading, spacing: 20) {
+            // Header with "Daily Total" and Filter Button
+            HStack {
+                Text("Daily Total")
+                    .font(.system(size: 22))
+                    .bold()
+                    .foregroundColor(Colors.primary)
+                
+                Spacer()
+                
+                // Filter Button
+                Button(action: {
+                    showFilterModal.toggle()
+                }) {
+                    Image(systemName: "line.horizontal.3.decrease.circle")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 19, height: 19)
+                        .foregroundColor(Colors.primary)
+                }
+            }
+    
+            
             // Calories Progress
-            Text("Daily Total")
-                .font(.system(size: 22))
-                .bold()
-                .foregroundColor(Colors.primary)
-            HStack {
-                Text("Calories")
-                    .frame(width: 80, alignment: .leading)
-                    .foregroundColor(Colors.primary)
-                    .bold()
-                ZStack(alignment: .leading) {
-                    (Color(UIColor(white: 0.9, alpha: 1.0)))  // Background color (empty space)
-                        .frame(height: 30)
-                    Colors.primaryLight
-                        .opacity(0.2)
-                        .frame(width: min(CGFloat(totalMacros.calories / (viewModel.dailyGoals["calories"] ?? 0) * 100), maxWidth), height: 30)
-                    Text("\(Int(totalMacros.calories)) / \(Int(viewModel.dailyGoals["calories"] ?? 0)) kcal")
+            if showCalories {
+                HStack {
+                    Text("Calories")
+                        .frame(width: 80, alignment: .leading)
                         .foregroundColor(Colors.primary)
-                        .padding(.leading, 10)
                         .bold()
-                        .lineLimit(1)
+                    ZStack(alignment: .leading) {
+                        (Color(UIColor(white: 0.9, alpha: 1.0)))  // Background color (empty space)
+                            .frame(height: 30)
+                        Colors.primaryLight
+                            .opacity(0.2)
+                            .frame(width: min(CGFloat(totalMacros.calories / (viewModel.dailyGoals["calories"] ?? 0) * 100), maxWidth), height: 30)
+                        Text("\(Int(totalMacros.calories)) / \(Int(viewModel.dailyGoals["calories"] ?? 0)) kcal")
+                            .foregroundColor(Colors.primary)
+                            .padding(.leading, 10)
+                            .bold()
+                            .lineLimit(1)
+                    }
+                    .cornerRadius(8)
                 }
-                .cornerRadius(8)
             }
-
+            
             // Protein Progress
-            HStack {
-                Text("Protein")
-                    .frame(width: 80, alignment: .leading)
-                    .foregroundColor(Colors.primary)
-                    .bold()
-                ZStack(alignment: .leading) {
-                    (Color(UIColor(white: 0.9, alpha: 1.0)))  // Background color (empty space)
-                        .frame(height: 30)
-                    Colors.primaryLight
-                        .opacity(0.2)
-                        .frame(width: min(CGFloat(totalMacros.calories / (viewModel.dailyGoals["protein"] ?? 0) * 100), maxWidth), height: 30)
-                    Text("\(String(format: "%.2f", totalMacros.protein)) / \(Int(viewModel.dailyGoals["protein"] ?? 0)) g")
+            if showProtein {
+                HStack {
+                    Text("Protein")
+                        .frame(width: 80, alignment: .leading)
                         .foregroundColor(Colors.primary)
-                        .padding(.leading, 10)
                         .bold()
-                        .lineLimit(1)
+                    ZStack(alignment: .leading) {
+                        (Color(UIColor(white: 0.9, alpha: 1.0)))  // Background color (empty space)
+                            .frame(height: 30)
+                        Colors.primaryLight
+                            .opacity(0.2)
+                            .frame(width: min(CGFloat(totalMacros.protein / (viewModel.dailyGoals["protein"] ?? 0) * 100), maxWidth), height: 30)
+                        Text("\(String(format: "%.2f", totalMacros.protein)) / \(Int(viewModel.dailyGoals["protein"] ?? 0)) g")
+                            .foregroundColor(Colors.primary)
+                            .padding(.leading, 10)
+                            .bold()
+                            .lineLimit(1)
+                    }
+                    .cornerRadius(8)
                 }
-                .cornerRadius(8)
             }
+            
             // Carbs Progress
-            HStack {
-                Text("Carbs")
-                    .frame(width: 80, alignment: .leading)
-                    .foregroundColor(Colors.primary)
-                    .bold()
-                ZStack(alignment: .leading) {
-                    (Color(UIColor(white: 0.9, alpha: 1.0)))  // Background color (empty space)
-                        .frame(height: 30)
-                    Colors.primaryLight
-                        .opacity(0.2)
-                        .frame(width: min(CGFloat(totalMacros.calories / (viewModel.dailyGoals["carbs"] ?? 0) * 100), maxWidth), height: 30)
-                    Text("\(String(format: "%.2f", totalMacros.carbs)) / \(Int(viewModel.dailyGoals["carbs"] ?? 0)) g")
+            if showCarbs {
+                HStack {
+                    Text("Carbs")
+                        .frame(width: 80, alignment: .leading)
                         .foregroundColor(Colors.primary)
-                        .padding(.leading, 10)
                         .bold()
-                        .lineLimit(1)
+                    ZStack(alignment: .leading) {
+                        (Color(UIColor(white: 0.9, alpha: 1.0)))  // Background color (empty space)
+                            .frame(height: 30)
+                        Colors.primaryLight
+                            .opacity(0.2)
+                            .frame(width: min(CGFloat(totalMacros.calories / (viewModel.dailyGoals["carbs"] ?? 0) * 100), maxWidth), height: 30)
+                        Text("\(String(format: "%.2f", totalMacros.carbs)) / \(Int(viewModel.dailyGoals["carbs"] ?? 0)) g")
+                            .foregroundColor(Colors.primary)
+                            .padding(.leading, 10)
+                            .bold()
+                            .lineLimit(1)
+                    }
+                    .cornerRadius(8)
                 }
-                .cornerRadius(8)
             }
-
+            
             // Fat Progress
-            HStack {
-                Text("Fat")
-                    .frame(width: 80, alignment: .leading)
-                    .foregroundColor(Colors.primary)
-                    .bold()
-                ZStack(alignment: .leading) {
-                    (Color(UIColor(white: 0.9, alpha: 1.0)))  // Background color (empty space)
-                        .frame(height: 30)
-                    Colors.primaryLight
-                        .opacity(0.2)
-                        .frame(width: min(CGFloat(totalMacros.calories / (viewModel.dailyGoals["fat"] ?? 0) * 100), maxWidth), height: 30)
-                    Text("\(String(format: "%.2f", totalMacros.fat)) / \(Int(viewModel.dailyGoals["fat"] ?? 0)) g")
+            if showFat {
+                HStack {
+                    Text("Fat")
+                        .frame(width: 80, alignment: .leading)
                         .foregroundColor(Colors.primary)
-                        .padding(.leading, 10)
                         .bold()
-                        .lineLimit(1)
+                    ZStack(alignment: .leading) {
+                        (Color(UIColor(white: 0.9, alpha: 1.0)))  // Background color (empty space)
+                            .frame(height: 30)
+                        Colors.primaryLight
+                            .opacity(0.2)
+                            .frame(width: min(CGFloat(totalMacros.calories / (viewModel.dailyGoals["fat"] ?? 0) * 100), maxWidth), height: 30)
+                        Text("\(String(format: "%.2f", totalMacros.fat)) / \(Int(viewModel.dailyGoals["fat"] ?? 0)) g")
+                            .foregroundColor(Colors.primary)
+                            .padding(.leading, 10)
+                            .bold()
+                            .lineLimit(1)
+                    }
+                    .cornerRadius(8)
                 }
-                .cornerRadius(8)
             }
         }
         .padding()
         .background(Colors.secondary)
         .cornerRadius(10)
         .shadow(radius: 5)
+        .sheet(isPresented: $showFilterModal) {
+            filterModal
+        }
     }
+    
+    var filterModal: some View {
+        VStack {
+            Text("Select Progress Bars")
+                .font(.headline)
+                .padding()
+                .foregroundColor(Colors.primary)
+            
+            // Checkbox-like UI
+            Toggle(isOn: $showCalories) {
+                Text("Calories")
+                    .foregroundColor(Colors.primary)
 
+            }
+            .tint(Colors.primary)
+            .padding()
+            
+            Toggle(isOn: $showProtein) {
+                Text("Protein")
+                    .foregroundColor(Colors.primary)
+            }
+            .tint(Colors.primary)
+            .padding()
+            
+            Toggle(isOn: $showCarbs) {
+                Text("Carbs")
+                    .foregroundColor(Colors.primary)
+            }
+            .tint(Colors.primary)
+            .padding()
+            
+            Toggle(isOn: $showFat) {
+                Text("Fat")
+                    .foregroundColor(Colors.primary)
+            }
+            .tint(Colors.primary)
+            .padding()
+            
+            // Dismiss Button
+            Button(action: {
+                showFilterModal.toggle()
+            }) {
+                Text("Done")
+                    .foregroundColor(Colors.primary)
+                    .fontWeight(.bold)
+            }
+            .padding()
+        }
+        .padding()
+        .background(Colors.secondary)
+        .cornerRadius(10)
+        .shadow(radius: 5)
+    }
+    
+    
     
     var headerView: some View {
         VStack {
@@ -225,13 +314,12 @@ struct FoodLogView: View {
                     Image(systemName: "plus.circle")
                         .foregroundColor(Colors.primary)
                 }
-                .padding()
                 .tint(Colors.primary)
                 .font(.system(size: 19))
             }
             .frame(maxWidth: .infinity)  // Ensures the button takes up the full width
             VStack(alignment: .leading) {
-                Text("Meal Total")
+                Text("\(meal.rawValue.capitalized) Total")
                     .font(.system(size: 19))
                     .foregroundColor(Colors.primary)
                     .bold()
