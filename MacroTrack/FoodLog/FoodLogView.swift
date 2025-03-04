@@ -120,9 +120,8 @@ struct FoodLogView: View {
     // Progress Bars for Daily Goals
     var progressChart: some View {
         let totalMacros = viewModel.getTotalMacros()
-        
-        let maxWidth: CGFloat = 80 // Maximum width for progress bars
-        
+        let maxWidth: CGFloat = 300 // Maximum width for progress bars (adjust as needed)
+
         return VStack(alignment: .leading, spacing: 20) {
             // Header with "Daily Total" and Filter Button
             HStack {
@@ -143,6 +142,8 @@ struct FoodLogView: View {
                         .frame(width: 22, height: 22)
                         .foregroundColor(Colors.primary)
                 }
+                
+                // Settings Button
                 Button(action: {
                     editedGoals = viewModel.dailyGoals // Set current values in the edited state
                     isSettingsPresented.toggle()
@@ -155,7 +156,6 @@ struct FoodLogView: View {
                 }
             }
             
-            
             // Calories Progress
             if showCalories {
                 HStack {
@@ -163,19 +163,24 @@ struct FoodLogView: View {
                         .frame(width: 80, alignment: .leading)
                         .foregroundColor(Colors.primary)
                         .bold()
-                    ZStack(alignment: .leading) {
-                        Colors.gray  // Background color (empty space)
-                            .frame(height: 30)
-                        Colors.primaryLight
-                            .opacity(0.2)
-                            .frame(width: min(CGFloat(totalMacros.calories / (viewModel.dailyGoals["calories"] ?? 0) * 100), maxWidth), height: 30)
-                        Text("\(Int(totalMacros.calories)) / \(Int(viewModel.dailyGoals["calories"] ?? 0)) kcal")
-                            .foregroundColor(Colors.primary)
-                            .padding(.leading, 10)
-                            .bold()
-                            .lineLimit(1)
+                    
+                    GeometryReader { geometry in
+                        ZStack(alignment: .leading) {
+                            Colors.gray  // Background color (empty space)
+                                .frame(height: 30)
+                            Colors.primaryLight
+                                .opacity(0.2)
+                                .frame(width: min(CGFloat(totalMacros.calories / (viewModel.dailyGoals["calories"] ?? 0)) * geometry.size.width, geometry.size.width), height: 30)
+                            Text("\(Int(totalMacros.calories)) / \(Int(viewModel.dailyGoals["calories"] ?? 0)) kcal")
+                                .foregroundColor(Colors.primary)
+                                .padding(.leading, 10)
+                                .bold()
+                                .lineLimit(1)
+                        }
+                        .cornerRadius(8)
                     }
-                    .cornerRadius(8)
+                    .frame(height: 30) // Set height of progress bar here
+                    .frame(maxWidth: maxWidth) // Apply maxWidth constraint here
                 }
             }
             
@@ -186,19 +191,24 @@ struct FoodLogView: View {
                         .frame(width: 80, alignment: .leading)
                         .foregroundColor(Colors.primary)
                         .bold()
-                    ZStack(alignment: .leading) {
-                        Colors.gray  // Background color (empty space)
-                            .frame(height: 30)
-                        Colors.primaryLight
-                            .opacity(0.2)
-                            .frame(width: min(CGFloat(totalMacros.protein / (viewModel.dailyGoals["protein"] ?? 0) * 100), maxWidth), height: 30)
-                        Text("\(String(format: "%.2f", totalMacros.protein)) / \(Int(viewModel.dailyGoals["protein"] ?? 0)) g")
-                            .foregroundColor(Colors.primary)
-                            .padding(.leading, 10)
-                            .bold()
-                            .lineLimit(1)
+                    
+                    GeometryReader { geometry in
+                        ZStack(alignment: .leading) {
+                            Colors.gray  // Background color (empty space)
+                                .frame(height: 30)
+                            Colors.primaryLight
+                                .opacity(0.2)
+                                .frame(width: min(CGFloat(totalMacros.protein / (viewModel.dailyGoals["protein"] ?? 0)) * geometry.size.width, geometry.size.width), height: 30)
+                            Text("\(String(format: "%.2f", totalMacros.protein)) / \(Int(viewModel.dailyGoals["protein"] ?? 0)) g")
+                                .foregroundColor(Colors.primary)
+                                .padding(.leading, 10)
+                                .bold()
+                                .lineLimit(1)
+                        }
+                        .cornerRadius(8)
                     }
-                    .cornerRadius(8)
+                    .frame(height: 30) // Set height of progress bar here
+                    .frame(maxWidth: maxWidth) // Apply maxWidth constraint here
                 }
             }
             
@@ -209,19 +219,24 @@ struct FoodLogView: View {
                         .frame(width: 80, alignment: .leading)
                         .foregroundColor(Colors.primary)
                         .bold()
-                    ZStack(alignment: .leading) {
-                        Colors.gray  // Background color (empty space)
-                            .frame(height: 30)
-                        Colors.primaryLight
-                            .opacity(0.2)
-                            .frame(width: min(CGFloat(totalMacros.calories / (viewModel.dailyGoals["carbs"] ?? 0) * 100), maxWidth), height: 30)
-                        Text("\(String(format: "%.2f", totalMacros.carbs)) / \(Int(viewModel.dailyGoals["carbs"] ?? 0)) g")
-                            .foregroundColor(Colors.primary)
-                            .padding(.leading, 10)
-                            .bold()
-                            .lineLimit(1)
+                    
+                    GeometryReader { geometry in
+                        ZStack(alignment: .leading) {
+                            Colors.gray  // Background color (empty space)
+                                .frame(height: 30)
+                            Colors.primaryLight
+                                .opacity(0.2)
+                                .frame(width: min(CGFloat(totalMacros.carbs / (viewModel.dailyGoals["carbs"] ?? 0)) * geometry.size.width, geometry.size.width), height: 30)
+                            Text("\(String(format: "%.2f", totalMacros.carbs)) / \(Int(viewModel.dailyGoals["carbs"] ?? 0)) g")
+                                .foregroundColor(Colors.primary)
+                                .padding(.leading, 10)
+                                .bold()
+                                .lineLimit(1)
+                        }
+                        .cornerRadius(8)
                     }
-                    .cornerRadius(8)
+                    .frame(height: 30) // Set height of progress bar here
+                    .frame(maxWidth: maxWidth) // Apply maxWidth constraint here
                 }
             }
             
@@ -232,23 +247,28 @@ struct FoodLogView: View {
                         .frame(width: 80, alignment: .leading)
                         .foregroundColor(Colors.primary)
                         .bold()
-                    ZStack(alignment: .leading) {
-                        Colors.gray    // Background color (empty space)
-                            .frame(height: 30)
-                        Colors.primaryLight
-                            .opacity(0.2)
-                            .frame(width: min(CGFloat(totalMacros.calories / (viewModel.dailyGoals["fat"] ?? 0) * 100), maxWidth), height: 30)
-                        Text("\(String(format: "%.2f", totalMacros.fat)) / \(Int(viewModel.dailyGoals["fat"] ?? 0)) g")
-                            .foregroundColor(Colors.primary)
-                            .padding(.leading, 10)
-                            .bold()
-                            .lineLimit(1)
+                    
+                    GeometryReader { geometry in
+                        ZStack(alignment: .leading) {
+                            Colors.gray  // Background color (empty space)
+                                .frame(height: 30)
+                            Colors.primaryLight
+                                .opacity(0.2)
+                                .frame(width: min(CGFloat(totalMacros.fat / (viewModel.dailyGoals["fat"] ?? 0)) * geometry.size.width, geometry.size.width), height: 30)
+                            Text("\(String(format: "%.2f", totalMacros.fat)) / \(Int(viewModel.dailyGoals["fat"] ?? 0)) g")
+                                .foregroundColor(Colors.primary)
+                                .padding(.leading, 10)
+                                .bold()
+                                .lineLimit(1)
+                        }
+                        .cornerRadius(8)
                     }
-                    .cornerRadius(8)
+                    .frame(height: 30) // Set height of progress bar here
+                    .frame(maxWidth: maxWidth) // Apply maxWidth constraint here
                 }
             }
         }
-        .padding()
+        .padding()  // Proper padding around the entire progress chart
         .background(Colors.secondary)
         .cornerRadius(10)
         .shadow(radius: 5)
@@ -256,6 +276,8 @@ struct FoodLogView: View {
             filterModal
         }
     }
+
+
     
     var filterModal: some View {
         VStack {
