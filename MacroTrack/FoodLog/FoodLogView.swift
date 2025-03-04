@@ -562,7 +562,7 @@ struct FoodLogView: View {
                 }
                 .padding()
                 .frame(maxWidth: .infinity)  // Ensures the food item takes up the full width
-                .background(RoundedRectangle(cornerRadius: 8).fill(Colors.primaryLight))
+                .background(RoundedRectangle(cornerRadius: 8).fill(Colors.primary))
             }
         }
         .padding()
