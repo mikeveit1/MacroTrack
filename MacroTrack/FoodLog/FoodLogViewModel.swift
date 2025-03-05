@@ -2,10 +2,15 @@ import SwiftUI
 import FatSecretSwift
 
 class FoodLogViewModel: ObservableObject {
+    @Published var isLoading: Bool = false
     @Published var mealLogs: MealLogs = MealLogs()
     @Published var currentDate: Date = Date()
     @Published var searchResults: [SearchedFood] = []
     @Published var servings: [String: Double] = [:] // Dictionary of servings for each food by food.id
+    @Published var showCalories = true
+    @Published var showProtein = true
+    @Published var showCarbs = true
+    @Published var showFat = true
     @Published var dailyGoals: [String: Int] = [
         "calories": 2000,  // Example: 2000 calories
         "protein": 150,    // Example: 150g protein
@@ -28,8 +33,48 @@ class FoodLogViewModel: ObservableObject {
         }
     }
     
-    func fetchMacroGoals() {
+    func saveProgressBarData() {
         guard let userID = FirebaseService.shared.getCurrentUserID() else { return }
+        let progressBarData: [String: Bool] = [
+            "showCalories": showCalories,
+            "showProtein": showProtein,
+            "showCarbs": showCarbs,
+            "showFat": showFat
+        ]
+        FirebaseService.shared.saveProgressBarData(userID: userID, progressBarData: progressBarData) { success, error in
+            if let error = error {
+                print("Error saving daily goals: \(error.localizedDescription)")
+            } else {
+                print("Daily goals saved successfully.")
+            }
+        }
+    }
+    
+    func fetchProgressBarData() {
+        isLoading = true
+        guard let userID = FirebaseService.shared.getCurrentUserID() else {
+            self.isLoading = false
+            return
+        }
+        FirebaseService.shared.fetchProgressBarData(userID: userID) { data, error  in
+            if let error = error {
+                print(error.localizedDescription)
+            } else {
+                self.showCalories = data?["showCalories"] ?? true
+                self.showProtein = data?["showProtein"] ?? true
+                self.showCarbs = data?["showCarbs"] ?? true
+                self.showFat = data?["showFat"] ?? true
+            }
+            self.isLoading = false
+        }
+    }
+    
+    func fetchMacroGoals() {
+        isLoading = true
+        guard let userID = FirebaseService.shared.getCurrentUserID() else {
+            self.isLoading = false
+            return
+        }
         FirebaseService.shared.fetchUserMacroData(userId: userID) { data in
             self.dailyGoals = [
                 "calories": data?.totalCalories ?? 2000,  // Example: 2000 calories
@@ -38,6 +83,7 @@ class FoodLogViewModel: ObservableObject {
                 "fat": data?.fat ?? 70          // Example: 70g fat
             ]
         }
+        self.isLoading = false
     }
     
     // Function to get the total macros across all meals
@@ -205,8 +251,10 @@ class FoodLogViewModel: ObservableObject {
     
     // MARK: - Firebase Integration Methods
     func fetchFoodLog() {
+        isLoading = true
         guard let userID = FirebaseService.shared.getCurrentUserID() else {
             print("No user is logged in")
+            self.isLoading = false
             return
         }
         
@@ -222,7 +270,6 @@ class FoodLogViewModel: ObservableObject {
                 DispatchQueue.main.async {
                     print("Food log fetched successfully")
                         // Reset mealLogs to avoid stale data
-                    
                     // Parse the fetched data
                     for (mealKey, mealData) in foodLogData {
                         if let meal = Meal(rawValue: mealKey) {
@@ -245,6 +292,7 @@ class FoodLogViewModel: ObservableObject {
                     }
                 }
             }
+            self?.isLoading = false
         }
     }
 

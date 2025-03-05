@@ -6,11 +6,6 @@ struct FoodLogView: View {
     @State private var showDatePicker = false
     @StateObject private var viewModel = FoodLogViewModel()
     @State private var searchQuery = ""
-    @State private var isLoading = false
-    @State private var showCalories = true
-    @State private var showProtein = true
-    @State private var showCarbs = true
-    @State private var showFat = true
     @State private var showFilterModal = false
     @State private var editedGoals: [String: Int] = [:]
     @State private var isSettingsPresented = false
@@ -74,7 +69,7 @@ struct FoodLogView: View {
                                 .foregroundColor(.white)
                                 .cornerRadius(8)
                         }
-                         .padding(.top, 16) // Padding for spacing between the fields and the button
+                        .padding(.top, 16) // Padding for spacing between the fields and the button
                         
                         // Cancel Button
                         Button(action: {
@@ -99,6 +94,7 @@ struct FoodLogView: View {
             
             .background(Color(.white))
         }
+        
         .background(Color(.white))
         .onTapGesture {
             UIApplication.shared.endEditing() // This will dismiss the keyboard
@@ -110,6 +106,7 @@ struct FoodLogView: View {
         .onAppear {
             viewModel.fetchFoodLog() // Fetch food log when the view appears
             viewModel.fetchMacroGoals()
+            viewModel.fetchProgressBarData()
         }
     }
     
@@ -153,7 +150,7 @@ struct FoodLogView: View {
             }
             
             // Calories Progress
-            if showCalories {
+            if viewModel.showCalories {
                 HStack {
                     Text("Calories")
                         .frame(width: 80, alignment: .leading)
@@ -181,7 +178,7 @@ struct FoodLogView: View {
             }
             
             // Protein Progress
-            if showProtein {
+            if viewModel.showProtein {
                 HStack {
                     Text("Protein")
                         .frame(width: 80, alignment: .leading)
@@ -209,7 +206,7 @@ struct FoodLogView: View {
             }
             
             // Carbs Progress
-            if showCarbs {
+            if viewModel.showCarbs {
                 HStack {
                     Text("Carbs")
                         .frame(width: 80, alignment: .leading)
@@ -237,7 +234,7 @@ struct FoodLogView: View {
             }
             
             // Fat Progress
-            if showFat {
+            if viewModel.showFat {
                 HStack {
                     Text("Fat")
                         .frame(width: 80, alignment: .leading)
@@ -284,7 +281,7 @@ struct FoodLogView: View {
                 .foregroundColor(Colors.secondary)
             VStack {
                 // Checkbox-like UI
-                Toggle(isOn: $showCalories) {
+                Toggle(isOn: $viewModel.showCalories) {
                     Text("Calories")
                         .foregroundColor(Colors.primary)
                         .bold()
@@ -292,7 +289,7 @@ struct FoodLogView: View {
                 .tint(Colors.primary)
                 .padding()
                 
-                Toggle(isOn: $showProtein) {
+                Toggle(isOn: $viewModel.showProtein) {
                     Text("Protein")
                         .foregroundColor(Colors.primary)
                         .bold()
@@ -300,7 +297,7 @@ struct FoodLogView: View {
                 .tint(Colors.primary)
                 .padding()
                 
-                Toggle(isOn: $showCarbs) {
+                Toggle(isOn: $viewModel.showCarbs) {
                     Text("Carbs")
                         .foregroundColor(Colors.primary)
                         .bold()
@@ -308,7 +305,7 @@ struct FoodLogView: View {
                 .tint(Colors.primary)
                 .padding()
                 
-                Toggle(isOn: $showFat) {
+                Toggle(isOn: $viewModel.showFat) {
                     Text("Fat")
                         .foregroundColor(Colors.primary)
                         .bold()
@@ -319,8 +316,9 @@ struct FoodLogView: View {
                 // Dismiss Button
                 Button(action: {
                     showFilterModal.toggle()
+                    viewModel.saveProgressBarData()
                 }) {
-                    Text("Done")
+                    Text("Save")
                         .foregroundColor(Colors.primary)
                         .fontWeight(.bold)
                 }
@@ -346,28 +344,27 @@ struct FoodLogView: View {
         VStack {
             HStack(alignment: .center) {
                 Button(action: viewModel.goToToday) {
-                    Text("Today")
-                        .fontWeight(.bold)
+                   Image(systemName: "arrow.counterclockwise")
+                        .font(.title3)
                         .foregroundColor(Colors.secondary)
-                        .font(.headline)
-                        .padding(8)
-                        .background(Colors.primaryLight, in: RoundedRectangle(cornerRadius: 10))
                 }
                 Spacer()
-                Button(action: viewModel.goToPreviousDay) {
-                    Image(systemName: "chevron.left")
+                HStack(alignment: .center) {
+                    Button(action: viewModel.goToPreviousDay) {
+                        Image(systemName: "chevron.left")
+                            .font(.title3)
+                            .foregroundColor(Colors.secondary)
+                    }
+                    Text(viewModel.formatDate(viewModel.currentDate))
                         .font(.title3)
+                        .lineLimit(2)
+                        .fontWeight(.bold)
                         .foregroundColor(Colors.secondary)
-                }
-                Text(viewModel.formatDate(viewModel.currentDate))
-                    .font(.title3)
-                    .lineLimit(2)
-                    .fontWeight(.bold)
-                    .foregroundColor(Colors.secondary)
-                Button(action: viewModel.goToNextDay) {
-                    Image(systemName: "chevron.right")
-                        .font(.title3)
-                        .foregroundColor(Colors.secondary)
+                    Button(action: viewModel.goToNextDay) {
+                        Image(systemName: "chevron.right")
+                            .font(.title3)
+                            .foregroundColor(Colors.secondary)
+                    }
                 }
                 Spacer()
                 Button(action: { showDatePicker.toggle() }) {
@@ -516,25 +513,25 @@ struct FoodLogView: View {
                                 set: { newValue in
                                     // Handle the text input and update the servings value for this food
                                     var servingsToUpdate: Double = 1.0
-
+                                    
                                     if let newDoubleValue = Double(newValue), newDoubleValue > 0 {
                                         servingsToUpdate = newDoubleValue
                                     } else if newValue.isEmpty {
                                         // Handle empty string (backspace)
                                         servingsToUpdate = 1.0
                                     }
-
+                                    
                                     // Debugging logs to track what the user is entering
                                     print("New Value: \(newValue)")
                                     print("Servings to update: \(servingsToUpdate)")
-
+                                    
                                     // Update the food's macronutrients based on the new servings value
                                     let updatedFood = viewModel.updateFoodMacrosForServings(food: food, servings: servingsToUpdate)
                                     
                                     print( "2", updatedFood)
-
+                                    
                                     // Update the meal log with the updated food (also saving it to Firebase)
-                                   // viewModel.updateMealLogWithUpdatedFood(updatedFood: updatedFood, meal: viewModel.selectedMeal)
+                                    // viewModel.updateMealLogWithUpdatedFood(updatedFood: updatedFood, meal: viewModel.selectedMeal)
                                 }
                             ))
                             .accentColor(Colors.primary)
@@ -593,7 +590,7 @@ struct FoodLogView: View {
                     viewModel.searchFoods(query: newValue)
                 }
             
-            if isLoading {
+            if viewModel.isLoading {
                 ProgressView("Searching...")
                     .padding()
                     .foregroundColor(Colors.primary)

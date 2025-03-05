@@ -7,7 +7,7 @@ struct MacroCalculatorView: View {
         ScrollView {
             VStack {
                 Text("Macro Calculator")
-                    .font(.headline)
+                    .font(.title3)
                     .bold()
                     .foregroundColor(Colors.primary)
                     .padding(.top)

@@ -11,6 +11,22 @@ class FirebaseService {
         return Auth.auth().currentUser?.uid
     }
     
+    func saveProgressBarData(userID: String, progressBarData: [String: Bool], completion: @escaping (Bool, Error?) -> Void) {
+        db.child("users").child(userID).child("progressBarData").setValue(progressBarData) { error, _ in
+            self.handleFirebaseError(error, completion: completion)
+        }
+    }
+    
+    func fetchProgressBarData(userID: String, completion: @escaping ([String: Bool]?, Error?) -> Void) {
+        db.child("users").child(userID).child("progressBarData").observe(.value, with: { snapshot in
+            if let data = snapshot.value as? [String: Bool] {
+                completion(data, nil)
+            } else {
+                completion(nil, nil)
+            }
+        })
+    }
+    
     // Save daily goals to Firebase Realtime Database
     func saveDailyGoals(userID: String, goals: [String: Int], completion: @escaping (Bool, Error?) -> Void) {
         db.child("users").child(userID).child("dailyGoals").setValue(goals) { error, _ in
