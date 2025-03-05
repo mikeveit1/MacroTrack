@@ -103,6 +103,7 @@ struct SignUpView: View {
                     ProgressView()
                         .progressViewStyle(CircularProgressViewStyle())
                         .padding()
+                        .foregroundColor(Colors.primary)
                 }
                 
                 Button(action: {

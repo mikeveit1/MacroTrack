@@ -24,6 +24,7 @@ struct GoalEditorField: View {
                 .foregroundColor(Colors.primary)
                 .cornerRadius(8)
                 .keyboardType(.decimalPad)
+                .accentColor(Colors.primary)
         }
     }
 }

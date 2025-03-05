@@ -11,26 +11,20 @@ class SignInViewModel: ObservableObject {
     
     func signIn(completion: @escaping (Bool) -> Void) {
         isLoading = true
-        Auth.auth().signIn(withEmail: email, password: password) { result, error in
+        FirebaseService.shared.signIn(email: email, password: password) { success, error in
             self.isLoading = false
             if let error = error {
-                self.errorMessage = error.localizedDescription
+                self.errorMessage = error
                 completion(false)
                 return
             }
-
-            // On successful sign-in
-            if result != nil {
+            if success {
                 self.isLoggedIn = true // Persist the login state
                 completion(true)
             } else {
-                self.errorMessage = "Unexpected error occurred."
+                self.errorMessage = error
                 completion(false)
             }
         }
-    }
-
-    func checkLoginStatus() -> Bool {
-        return isLoggedIn
     }
 }

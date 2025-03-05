@@ -30,15 +30,15 @@ class SignUpViewModel: ObservableObject {
             return
         }
         
-        // Create a new user with Firebase
-        Auth.auth().createUser(withEmail: email, password: password) { result, error in
-            self.isLoading = false
-            if let error = error {
-                self.errorMessage = error.localizedDescription
-                completion(false) // Sign-up failed
+        FirebaseService.shared.signUp(email: email, password: password) { success, error in
+            if success {
+                self.isLoggedIn = true
+                self.isLoading = false
+                completion(true)
             } else {
-                self.isLoggedIn = true // Persist the login state
-                completion(true) // Sign-up successful
+                self.errorMessage = error
+                self.isLoading = false
+                completion(false)
             }
         }
     }

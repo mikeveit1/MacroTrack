@@ -64,6 +64,7 @@ struct SignInView: View {
                     ProgressView()
                         .progressViewStyle(CircularProgressViewStyle())
                         .padding()
+                        .foregroundColor(Colors.primary)
                 }
                 
                 Button(action: {

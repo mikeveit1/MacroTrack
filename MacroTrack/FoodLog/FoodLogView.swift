@@ -7,7 +7,6 @@ struct FoodLogView: View {
     @StateObject private var viewModel = FoodLogViewModel()
     @State private var searchQuery = ""
     @State private var isLoading = false
-    @State private var localServingsString: String = "1.0"
     @State private var showCalories = true
     @State private var showProtein = true
     @State private var showCarbs = true
@@ -47,7 +46,7 @@ struct FoodLogView: View {
             .sheet(isPresented: $isSettingsPresented) {
                 VStack {
                     Text("Edit Your Daily Goals")
-                        .font(.system(size: 22))
+                        .font(.headline)
                         .foregroundColor(Colors.secondary)
                         .bold()
                         .padding()
@@ -55,32 +54,12 @@ struct FoodLogView: View {
                     VStack(alignment: .leading, spacing: 8) { // Increased spacing for better separation between sections
                         // Editable fields for each goal
                         GoalEditorField(goalType: "Calories", value: $editedGoals["calories"])
-                        Text("Typically BMR x TDEE.")
-                            .font(.caption)
-                            .foregroundColor(Colors.primary)
-                            .lineLimit(2)
-                            .padding(.horizontal, 8)
                         
                         GoalEditorField(goalType: "Protein", value: $editedGoals["protein"])
-                        Text("Example calculation: protein (grams) = body weight (lbs) × protein range (0.73 to 1.0 g)")
-                            .font(.caption)
-                            .foregroundColor(Colors.primary)
-                            .lineLimit(2)
-                            .padding(.horizontal, 8)
                         
                         GoalEditorField(goalType: "Carbs", value: $editedGoals["carbs"])
-                        Text("Example calculation: carbs (grams) = body weight (lbs) × carb range (1.36 to 2.73 g)")
-                            .font(.caption)
-                            .foregroundColor(Colors.primary)
-                            .lineLimit(2)
-                            .padding(.horizontal, 8)
                         
                         GoalEditorField(goalType: "Fat", value: $editedGoals["fat"])
-                        Text("Example calculation: fat (grams) = body weight (lbs) × fat range (0.36 to 0.45 g)")
-                            .font(.caption)
-                            .foregroundColor(Colors.primary)
-                            .lineLimit(2)
-                            .padding(.horizontal, 8)
                         
                         // Save Button
                         Button(action: {
@@ -95,7 +74,7 @@ struct FoodLogView: View {
                                 .foregroundColor(.white)
                                 .cornerRadius(8)
                         }
-                        .padding(.top, 16) // Padding for spacing between the fields and the button
+                         .padding(.top, 16) // Padding for spacing between the fields and the button
                         
                         // Cancel Button
                         Button(action: {
@@ -111,6 +90,7 @@ struct FoodLogView: View {
                     .background(Colors.secondary)
                     .cornerRadius(12) // Rounded corners for the modal
                     .shadow(radius: 10) // Shadow for the modal
+                    Spacer()
                 }
                 .padding()
                 .frame(maxHeight: .infinity) // Make the VStack take up the full height
@@ -141,7 +121,7 @@ struct FoodLogView: View {
             // Header with "Daily Total" and Filter Button
             HStack {
                 Text("Daily Total")
-                    .font(.system(size: 22))
+                    .font(.headline)
                     .bold()
                     .foregroundColor(Colors.primary)
                 
@@ -154,7 +134,7 @@ struct FoodLogView: View {
                     Image(systemName: "line.horizontal.3.decrease.circle")
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 22, height: 22)
+                        .frame(width: 19, height: 19)
                         .foregroundColor(Colors.primary)
                 }
                 
@@ -166,7 +146,7 @@ struct FoodLogView: View {
                     Image(systemName: "gearshape.fill")
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 22, height: 22)
+                        .frame(width: 19, height: 19)
                         .foregroundColor(Colors.primary)
                 }
             }
@@ -297,7 +277,7 @@ struct FoodLogView: View {
     var filterModal: some View {
         VStack {
             Text("Select Progress Bars")
-                .font(.system(size: 22))
+                .font(.headline)
                 .bold()
                 .padding()
                 .foregroundColor(Colors.secondary)
@@ -363,35 +343,35 @@ struct FoodLogView: View {
     
     var headerView: some View {
         VStack {
-            HStack {
+            HStack(alignment: .center) {
                 Button(action: viewModel.goToToday) {
                     Text("Today")
                         .fontWeight(.bold)
                         .foregroundColor(Colors.secondary)
-                        .font(.system(size: 17))
+                        .font(.headline)
                         .padding(8)
                         .background(Colors.primaryLight, in: RoundedRectangle(cornerRadius: 10))
                 }
                 Spacer()
                 Button(action: viewModel.goToPreviousDay) {
                     Image(systemName: "chevron.left")
-                        .font(.title)
+                        .font(.title3)
                         .foregroundColor(Colors.secondary)
                 }
                 Text(viewModel.formatDate(viewModel.currentDate))
-                    .font(.system(size: 22))
+                    .font(.title3)
                     .lineLimit(2)
                     .fontWeight(.bold)
                     .foregroundColor(Colors.secondary)
                 Button(action: viewModel.goToNextDay) {
                     Image(systemName: "chevron.right")
-                        .font(.title)
+                        .font(.title3)
                         .foregroundColor(Colors.secondary)
                 }
                 Spacer()
                 Button(action: { showDatePicker.toggle() }) {
                     Image(systemName: "calendar")
-                        .font(.title)
+                        .font(.title3)
                         .foregroundColor(Colors.secondary)
                 }
             }
@@ -431,7 +411,7 @@ struct FoodLogView: View {
                 Image(systemName: meal.iconName)
                     .foregroundColor(Colors.primary)
                 Text(meal.rawValue.capitalized)
-                    .font(.system(size: 22))
+                    .font(.headline)
                     .bold()
                     .foregroundColor(Colors.primary)
                 Spacer()
@@ -440,12 +420,12 @@ struct FoodLogView: View {
                         .foregroundColor(Colors.primary)
                 }
                 .tint(Colors.primary)
-                .font(.system(size: 22))
+                .font(.headline)
             }
             .frame(maxWidth: .infinity)  // Ensures the button takes up the full width
             VStack(alignment: .leading) {
                 Text("\(meal.rawValue.capitalized) Total")
-                    .font(.system(size: 19))
+                    .font(.headline)
                     .foregroundColor(Colors.primary)
                     .bold()
                 Text("\(Int(totalMacronutrients.calories)) kcal")
@@ -491,7 +471,7 @@ struct FoodLogView: View {
                             Text("\(food.name) (serving size: \(food.servingDescription))")
                                 .foregroundColor(Colors.secondary)
                                 .bold()
-                                .font(.system(size: 19))
+                                .font(.headline)
                         }
                         VStack(alignment: .leading) {
                             Text("\(Int(food.macronutrients.calories)) kcal")
@@ -530,32 +510,36 @@ struct FoodLogView: View {
                             TextField("", text: Binding(
                                 get: {
                                     // Return the current servings value for this food, or default to "1.0" if not found
-                                    String(viewModel.servings[food.id] ?? 1.0)
+                                    String(food.servings)
                                 },
                                 set: { newValue in
                                     // Handle the text input and update the servings value for this food
                                     var servingsToUpdate: Double = 1.0
-                                    
+
                                     if let newDoubleValue = Double(newValue), newDoubleValue > 0 {
                                         servingsToUpdate = newDoubleValue
                                     } else if newValue.isEmpty {
                                         // Handle empty string (backspace)
                                         servingsToUpdate = 1.0
                                     }
-                                    
-                                    // Update the servings dictionary for this specific food
-                                    viewModel.servings[food.id] = servingsToUpdate
-                                    
-                                    // Update the food's macronutrients based on the new servings
+
+                                    // Debugging logs to track what the user is entering
+                                    print("New Value: \(newValue)")
+                                    print("Servings to update: \(servingsToUpdate)")
+
+                                    // Update the food's macronutrients based on the new servings value
                                     let updatedFood = viewModel.updateFoodMacrosForServings(food: food, servings: servingsToUpdate)
                                     
-                                    // Update the meal log with the updated food
-                                    viewModel.updateMealLogWithUpdatedFood(updatedFood: updatedFood, meal: viewModel.selectedMeal)
+                                    print( "2", updatedFood)
+
+                                    // Update the meal log with the updated food (also saving it to Firebase)
+                                   // viewModel.updateMealLogWithUpdatedFood(updatedFood: updatedFood, meal: viewModel.selectedMeal)
                                 }
                             ))
+                            .accentColor(Colors.primary)
                             .keyboardType(.decimalPad)
                             .padding()
-                            .frame(width: 60, height: 40)
+                            .frame(width: 80, height: 40)
                             .background(Colors.secondary)
                             .cornerRadius(8)
                             .foregroundColor(Colors.primary)
@@ -564,30 +548,6 @@ struct FoodLogView: View {
                                 RoundedRectangle(cornerRadius: 8)
                                     .stroke(Color.gray, lineWidth: 1)
                             )
-                            .onChange(of: localServingsString) { newValue in
-                                // Handle backspace (empty string case) and conversion to Double
-                                var servingsToUpdate: Double = 1.0  // Default value
-                                
-                                if let newDoubleValue = Double(newValue), newDoubleValue > 0 {
-                                    servingsToUpdate = newDoubleValue
-                                } else if newValue.isEmpty {
-                                    // Handle empty case (backspace scenario)
-                                    servingsToUpdate = 1.0
-                                }
-                                
-                                // Debugging logs
-                                print("New Value: \(newValue)")
-                                print("Servings to update: \(servingsToUpdate)")
-                                
-                                // Update the servings dictionary in the view model
-                                viewModel.servings[food.id] = servingsToUpdate
-                                
-                                // Get the updated food with scaled macros
-                                let updatedFood = viewModel.updateFoodMacrosForServings(food: food, servings: servingsToUpdate)
-                                
-                                // Update the meal log with the updated food
-                                viewModel.updateMealLogWithUpdatedFood(updatedFood: updatedFood, meal: viewModel.selectedMeal)
-                            }
                         }
                         
                     }
@@ -618,6 +578,7 @@ struct FoodLogView: View {
             
             // Search bar
             TextField("Search for food", text: $searchQuery)
+                .accentColor(Colors.primary)
                 .padding()
                 .background(Colors.secondary)  // Set background of the entire TextField to white
                 .cornerRadius(8)          // Optional: round the corners for a nicer appearance
@@ -634,6 +595,7 @@ struct FoodLogView: View {
             if isLoading {
                 ProgressView("Searching...")
                     .padding()
+                    .foregroundColor(Colors.primary)
             }
             
             // List of food items
