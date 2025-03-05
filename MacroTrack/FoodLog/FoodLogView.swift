@@ -40,8 +40,8 @@ struct FoodLogView: View {
             }
             .sheet(isPresented: $isSettingsPresented) {
                 VStack {
-                    Text("Edit Your Daily Goals")
-                        .font(.headline)
+                    Text("Edit Your Daily Macronutrient Goals")
+                        .font(.title3)
                         .foregroundColor(Colors.secondary)
                         .bold()
                         .padding()
@@ -119,7 +119,7 @@ struct FoodLogView: View {
             // Header with "Daily Total" and Filter Button
             HStack {
                 Text("Daily Goals")
-                    .font(.headline)
+                    .font(.title3)
                     .bold()
                     .foregroundColor(Colors.primary)
                 
@@ -275,7 +275,7 @@ struct FoodLogView: View {
     var filterModal: some View {
         VStack {
             Text("Select Progress Bars")
-                .font(.headline)
+                .font(.title3)
                 .bold()
                 .padding()
                 .foregroundColor(Colors.secondary)
@@ -409,7 +409,7 @@ struct FoodLogView: View {
                 Image(systemName: meal.iconName)
                     .foregroundColor(Colors.primary)
                 Text(meal.rawValue.capitalized)
-                    .font(.headline)
+                    .font(.title3)
                     .bold()
                     .foregroundColor(Colors.primary)
                 Spacer()
@@ -418,12 +418,11 @@ struct FoodLogView: View {
                         .foregroundColor(Colors.primary)
                 }
                 .tint(Colors.primary)
-                .font(.headline)
+                .font(.title3)
             }
             .frame(maxWidth: .infinity)  // Ensures the button takes up the full width
             VStack(alignment: .leading) {
-                Text("\(meal.rawValue.capitalized) Total")
-                    .font(.headline)
+                Text("Total")
                     .foregroundColor(Colors.primary)
                     .bold()
                 Text("\(Int(totalMacronutrients.calories)) kcal")
@@ -469,7 +468,6 @@ struct FoodLogView: View {
                             Text("\(food.name) (serving size: \(food.servingDescription))")
                                 .foregroundColor(Colors.secondary)
                                 .bold()
-                                .font(.headline)
                         }
                         VStack(alignment: .leading) {
                             Text("\(Int(food.macronutrients.calories)) kcal")
@@ -537,7 +535,7 @@ struct FoodLogView: View {
                             .accentColor(Colors.primary)
                             .keyboardType(.decimalPad)
                             .padding()
-                            .frame(width: 80, height: 40)
+                            .frame(width: 60, height: 40)
                             .background(Colors.secondary)
                             .cornerRadius(8)
                             .foregroundColor(Colors.primary)
@@ -570,7 +568,7 @@ struct FoodLogView: View {
     var foodModalView: some View {
         VStack {
             Text("Search for Food")
-                .font(.headline)
+                .font(.title3)
                 .foregroundColor(Colors.primary)
                 .bold()
             

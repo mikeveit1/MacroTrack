@@ -22,14 +22,14 @@ struct MainContentView: View {
             // Food Log Tab
             FoodLogView()
                 .tabItem {
-                    Image(systemName: "list.dash") // Icon for Food Log
+                    Image(systemName: "pencil.and.list.clipboard") // Icon for Food Log
                     Text("Food Log")               // Label for Food Log
                 }
             
             // Macro Calculator Tab
             MacroCalculatorView()
                 .tabItem {
-                    Image(systemName: "calculator") // Icon for Macro Calculator
+                    Image(systemName: "figure.run") // Icon for Macro Calculator
                     Text("Macro Calculator")      // Label for Macro Calculator
                 }
             

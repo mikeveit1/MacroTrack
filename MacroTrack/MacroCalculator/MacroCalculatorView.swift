@@ -6,7 +6,7 @@ struct MacroCalculatorView: View {
     var body: some View {
         ScrollView {
             VStack {
-                Text("Macro Calculator")
+                Text("Macronutrient Calculator")
                     .font(.title3)
                     .bold()
                     .foregroundColor(Colors.primary)
@@ -68,7 +68,7 @@ struct MacroCalculatorView: View {
                     VStack {
                         Text("Activity Level")
                             .foregroundColor(Colors.primary) // Change this to your desired color
-                            .font(.headline)
+                            .font(.title3)
                             .bold()
                         Picker("", selection: $viewModel.activityLevel) {
                             ForEach(viewModel.activityLevels, id: \.self) { level in
@@ -88,7 +88,7 @@ struct MacroCalculatorView: View {
                     VStack {
                         Text("Fitness Goal")
                             .foregroundColor(Colors.primary) // Change this to your desired color
-                            .font(.headline)
+                            .font(.title3)
                             .bold()
                         Picker("", selection: $viewModel.fitnessGoal) {
                             ForEach(viewModel.fitnessGoals, id: \.self) { goal in
@@ -108,7 +108,6 @@ struct MacroCalculatorView: View {
                         viewModel.calculateMacronutrients()
                     }) {
                         Text("Calculate")
-                            .font(.headline)
                             .foregroundColor(.white)
                             .padding()
                             .background(Colors.primary)
@@ -118,8 +117,8 @@ struct MacroCalculatorView: View {
                     // Display results if calculations are done
                     if viewModel.totalCalories > 0 {
                         VStack(spacing: 10) {
-                            Text("Your Daily Macro Goals:")
-                                .font(.headline)
+                            Text("Your Daily Macronutrient Goals:")
+                                .font(.title3)
                                 .bold()
                                 .foregroundColor(Colors.primary)
                             Text("Calories: \(Int(viewModel.totalCalories)) kcal")
