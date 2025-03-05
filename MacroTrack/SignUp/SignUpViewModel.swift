@@ -7,7 +7,6 @@
 
 import Foundation
 import SwiftUI
-import FirebaseAuth
 
 class SignUpViewModel: ObservableObject {
     @Published var email: String = ""

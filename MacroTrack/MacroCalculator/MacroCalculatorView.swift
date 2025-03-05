@@ -5,6 +5,7 @@ struct MacroCalculatorView: View {
     
     var body: some View {
         ScrollView {
+            Spacer()
             VStack {
                 Text("Macronutrient Calculator")
                     .font(.title3)
@@ -12,7 +13,7 @@ struct MacroCalculatorView: View {
                     .foregroundColor(Colors.primary)
                     .padding(.top)
                 
-                VStack(spacing: 20) {
+                VStack(spacing: 8) {
                     // Weight input
                     ZStack(alignment: .leading) {
                         if viewModel.weight.isEmpty {

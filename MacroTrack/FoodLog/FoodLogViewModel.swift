@@ -20,11 +20,11 @@ class FoodLogViewModel: ObservableObject {
     
     var selectedMeal: Meal = .breakfast
     var foodHelper = FoodHelper()
+    var fetchUserDataHelper = FetchUserDataHelper()
     
     func saveDailyGoals(newGoals: [String: Int]) {
         dailyGoals = newGoals
-        guard let userID = FirebaseService.shared.getCurrentUserID() else { return }
-        FirebaseService.shared.saveDailyGoals(userID: userID, goals: newGoals) { success, error in
+        FirebaseService.shared.saveDailyGoals(goals: newGoals) { success, error in
             if let error = error {
                 print("Error saving daily goals: \(error.localizedDescription)")
             } else {
@@ -34,14 +34,13 @@ class FoodLogViewModel: ObservableObject {
     }
     
     func saveProgressBarData() {
-        guard let userID = FirebaseService.shared.getCurrentUserID() else { return }
         let progressBarData: [String: Bool] = [
             "showCalories": showCalories,
             "showProtein": showProtein,
             "showCarbs": showCarbs,
             "showFat": showFat
         ]
-        FirebaseService.shared.saveProgressBarData(userID: userID, progressBarData: progressBarData) { success, error in
+        FirebaseService.shared.saveProgressBarData(progressBarData: progressBarData) { success, error in
             if let error = error {
                 print("Error saving daily goals: \(error.localizedDescription)")
             } else {
@@ -56,7 +55,7 @@ class FoodLogViewModel: ObservableObject {
             self.isLoading = false
             return
         }
-        FirebaseService.shared.fetchProgressBarData(userID: userID) { data, error  in
+        FirebaseService.shared.fetchProgressBarData() { data, error  in
             if let error = error {
                 print(error.localizedDescription)
             } else {
@@ -71,19 +70,10 @@ class FoodLogViewModel: ObservableObject {
     
     func fetchMacroGoals() {
         isLoading = true
-        guard let userID = FirebaseService.shared.getCurrentUserID() else {
+        fetchUserDataHelper.fetchMacroGoals { goals in
+            self.dailyGoals = goals
             self.isLoading = false
-            return
         }
-        FirebaseService.shared.fetchUserMacroData(userId: userID) { data in
-            self.dailyGoals = [
-                "calories": data?.totalCalories ?? 2000,  // Example: 2000 calories
-                "protein": data?.protein ?? 150,    // Example: 150g protein
-                "carbs": data?.carbs ?? 250,      // Example: 250g carbs
-                "fat": data?.fat ?? 70          // Example: 70g fat
-            ]
-        }
-        self.isLoading = false
     }
     
     // Function to get the total macros across all meals
@@ -263,7 +253,7 @@ class FoodLogViewModel: ObservableObject {
         let date = formatDate(currentDate)  // Make sure the format is correct (e.g., "Mar 5, 2025")
         print("Fetching food log for date: \(date)")  // Debugging log
 
-        FirebaseService.shared.getFoodLog(userID: userID, date: date) { [weak self] foodLogData, error in
+        FirebaseService.shared.getFoodLog(date: date) { [weak self] foodLogData, error in
             if let error = error {
                 print("Error fetching food log: \(error.localizedDescription)")
             } else if let foodLogData = foodLogData {
@@ -295,11 +285,6 @@ class FoodLogViewModel: ObservableObject {
             self?.isLoading = false
         }
     }
-
-
-
-
-
     
     // Save food to Firebase
     func saveFoodToFirebase(food: MacroFood) {
@@ -309,7 +294,7 @@ class FoodLogViewModel: ObservableObject {
         }
         
         let date = formatDate(currentDate)
-        FirebaseService.shared.saveFoodToMeal(userID: userID, date: date, meal: selectedMeal.rawValue, food: food) { success, error in
+        FirebaseService.shared.saveFoodToMeal(date: date, meal: selectedMeal.rawValue, food: food) { success, error in
             if let error = error {
                 print("Error saving food to Firebase: \(error.localizedDescription)")
             } else if success {
@@ -326,7 +311,7 @@ class FoodLogViewModel: ObservableObject {
         }
         
         let date = formatDate(currentDate)
-        FirebaseService.shared.deleteFoodFromFirebase(userID: userID, date: date, meal: selectedMeal.rawValue, food: food) { success, error in
+        FirebaseService.shared.deleteFoodFromFirebase(date: date, meal: selectedMeal.rawValue, food: food) { success, error in
             if let error = error {
                 print("Error deleting food from Firebase: \(error.localizedDescription)")
             } else if success {

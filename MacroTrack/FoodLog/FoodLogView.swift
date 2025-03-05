@@ -92,10 +92,10 @@ struct FoodLogView: View {
                 .background(Colors.primary.edgesIgnoringSafeArea(.all)) // Semi-transparent background behind the modal
             }
             
-            .background(Color(.white))
+            .background(Colors.secondary)
         }
         
-        .background(Color(.white))
+        .background(Colors.secondary)
         .onTapGesture {
             UIApplication.shared.endEditing() // This will dismiss the keyboard
         }

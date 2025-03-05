@@ -11,13 +11,15 @@ class FirebaseService {
         return Auth.auth().currentUser?.uid
     }
     
-    func saveProgressBarData(userID: String, progressBarData: [String: Bool], completion: @escaping (Bool, Error?) -> Void) {
+    func saveProgressBarData(progressBarData: [String: Bool], completion: @escaping (Bool, Error?) -> Void) {
+        guard let userID = getCurrentUserID() else { return }
         db.child("users").child(userID).child("progressBarData").setValue(progressBarData) { error, _ in
             self.handleFirebaseError(error, completion: completion)
         }
     }
     
-    func fetchProgressBarData(userID: String, completion: @escaping ([String: Bool]?, Error?) -> Void) {
+    func fetchProgressBarData(completion: @escaping ([String: Bool]?, Error?) -> Void) {
+        guard let userID = getCurrentUserID() else { return }
         db.child("users").child(userID).child("progressBarData").observe(.value, with: { snapshot in
             if let data = snapshot.value as? [String: Bool] {
                 completion(data, nil)
@@ -28,14 +30,16 @@ class FirebaseService {
     }
     
     // Save daily goals to Firebase Realtime Database
-    func saveDailyGoals(userID: String, goals: [String: Int], completion: @escaping (Bool, Error?) -> Void) {
+    func saveDailyGoals(goals: [String: Int], completion: @escaping (Bool, Error?) -> Void) {
+        guard let userID = getCurrentUserID() else { return }
         db.child("users").child(userID).child("dailyGoals").setValue(goals) { error, _ in
             self.handleFirebaseError(error, completion: completion)
         }
     }
     
     // Get daily goals from Firebase Realtime Database
-    func getDailyGoals(userID: String, completion: @escaping ([String: Double]?, Error?) -> Void) {
+    func getDailyGoals(completion: @escaping ([String: Double]?, Error?) -> Void) {
+        guard let userID = getCurrentUserID() else { return }
         db.child("users").child(userID).child("dailyGoals").observe(.value, with: { snapshot in
             if let data = snapshot.value as? [String: Double] {
                 completion(data, nil)
@@ -46,14 +50,16 @@ class FirebaseService {
     }
     
     // Save food log to Firebase Realtime Database
-    func saveFoodLog(userID: String, date: String, foodLogData: [String: Any], completion: @escaping (Bool, Error?) -> Void) {
+    func saveFoodLog(date: String, foodLogData: [String: Any], completion: @escaping (Bool, Error?) -> Void) {
+        guard let userID = getCurrentUserID() else { return }
         db.child("users").child(userID).child("foodLogs").child(date).setValue(foodLogData) { error, _ in
             self.handleFirebaseError(error, completion: completion)
         }
     }
     
     // Save food to a meal in Firebase Realtime Database
-    func saveFoodToMeal(userID: String, date: String, meal: String, food: MacroFood, completion: @escaping (Bool, Error?) -> Void) {
+    func saveFoodToMeal(date: String, meal: String, food: MacroFood, completion: @escaping (Bool, Error?) -> Void) {
+        guard let userID = getCurrentUserID() else { return }
         do {
             // The food object passed in here should have the updated servings and macronutrients
             let encoder = JSONEncoder()
@@ -73,7 +79,8 @@ class FirebaseService {
         }
     }
     
-    func updateFood(userID: String, date: String, meal: String, food: MacroFood, completion: @escaping (Bool, Error?) -> Void) {
+    func updateFood(date: String, meal: String, food: MacroFood, completion: @escaping (Bool, Error?) -> Void) {
+        guard let userID = getCurrentUserID() else { return }
         do {
             
             let encoder = JSONEncoder()
@@ -89,7 +96,8 @@ class FirebaseService {
     }
     
     // Get food log from Firebase Realtime Database
-    func getFoodLog(userID: String, date: String, completion: @escaping ([String: Any]?, Error?) -> Void) {
+    func getFoodLog(date: String, completion: @escaping ([String: Any]?, Error?) -> Void) {
+        guard let userID = getCurrentUserID() else { return }
         db.child("users").child(userID).child("foodLogs").child(date).observe(.value, with: { snapshot in
            if let data = snapshot.value as? [String: Any] {
                 completion(data, nil)
@@ -99,8 +107,20 @@ class FirebaseService {
         })
     }
     
+    func getAllFoodLogs(completion: @escaping ([String: Any]?, Error?) -> Void) {
+        guard let userID = getCurrentUserID() else { return }
+        db.child("users").child(userID).child("foodLogs").observe(.value, with: { snapshot in
+            if let foodLogs = snapshot.value as? [String: [String: Any]] {
+                completion(foodLogs, nil)
+            } else {
+                completion(nil, nil)
+            }
+        })
+    }
+    
     // Get food for a meal from Firebase Realtime Database
-    func getFoodForMeal(userID: String, date: String, meal: String, completion: @escaping ([MacroFood]?, Error?) -> Void) {
+    func getFoodForMeal(date: String, meal: String, completion: @escaping ([MacroFood]?, Error?) -> Void) {
+        guard let userID = getCurrentUserID() else { return }
         db.child("users").child(userID).child("foodLogs").child(date).child(meal).observe(.value, with: { snapshot in
             if snapshot.exists() {
                 var foods: [MacroFood] = []
@@ -125,8 +145,9 @@ class FirebaseService {
     }
     
     // Update user macro data in Firebase
-    func updateUserMacroData(userId: String, userMacroData: UserMacroData) {
-        let userMacroDataRef = db.child("users").child(userId).child("macroData")
+    func updateUserMacroData(userMacroData: UserMacroData) {
+        guard let userID = getCurrentUserID() else { return }
+        let userMacroDataRef = db.child("users").child(userID).child("macroData")
         
         userMacroDataRef.setValue([
             "weight": userMacroData.weight,
@@ -148,8 +169,9 @@ class FirebaseService {
     }
     
     // Fetch user macro data from Firebase
-    func fetchUserMacroData(userId: String, completion: @escaping (UserMacroData?) -> Void) {
-        let userMacroDataRef = db.child("users").child(userId).child("macroData")
+    func fetchUserMacroData(completion: @escaping (UserMacroData?) -> Void) {
+        guard let userID = getCurrentUserID() else { return }
+        let userMacroDataRef = db.child("users").child(userID).child("macroData")
         
         userMacroDataRef.observe(.value, with: { snapshot in
             if snapshot.exists() {
@@ -178,7 +200,8 @@ class FirebaseService {
     }
     
     // Delete food from Firebase Realtime Database
-    func deleteFoodFromFirebase(userID: String, date: String, meal: String, food: MacroFood, completion: @escaping (Bool, Error?) -> Void) {
+    func deleteFoodFromFirebase(date: String, meal: String, food: MacroFood, completion: @escaping (Bool, Error?) -> Void) {
+        guard let userID = getCurrentUserID() else { return }
         db.child("users").child(userID).child("foodLogs").child(date).child(meal).child(food.id).removeValue { error, _ in
             self.handleFirebaseError(error, completion: completion)
         }

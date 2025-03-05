@@ -18,9 +18,6 @@ class MacroCalculatorViewModel: ObservableObject {
     let activityLevels = ["Sedentary", "Lightly Active", "Moderately Active", "Very Active", "Super Active"]
     let fitnessGoals = ["Lose Weight", "Maintain Weight", "Gain Weight"]
     
-    // Reference to Firebase service
-    private var firebaseService = FirebaseService.shared
-    
     func calculateMacronutrients() {
         // Ensure the inputs are valid
         guard let weight = Double(weight), let height = Double(height), let age = Int(age) else {
@@ -77,12 +74,12 @@ class MacroCalculatorViewModel: ObservableObject {
         carbs = Int(carbsGrams)
         fat = Int(fatGrams)
         
-        saveUserMacroDataToFirebase(userId: FirebaseService.shared.getCurrentUserID() ?? "")
+        saveUserMacroDataToFirebase()
     }
 
     
     // Save the calculated data to Firebase
-    func saveUserMacroDataToFirebase(userId: String) {
+    func saveUserMacroDataToFirebase() {
         let userMacroData = UserMacroData(
             weight: Double(weight) ?? 0,
             height: Double(height) ?? 0,
@@ -95,12 +92,12 @@ class MacroCalculatorViewModel: ObservableObject {
             fat: fat
         )
         
-        firebaseService.updateUserMacroData(userId: userId, userMacroData: userMacroData)
+        FirebaseService.shared.updateUserMacroData(userMacroData: userMacroData)
     }
     
     // Fetch user data from Firebase
-    func fetchUserMacroData(userId: String) {
-        firebaseService.fetchUserMacroData(userId: userId) { [weak self] userMacroData in
+    func fetchUserMacroData() {
+        FirebaseService.shared.fetchUserMacroData() { [weak self] userMacroData in
             if let data = userMacroData {
                 self?.weight = String(data.weight)
                 self?.height = String(data.height)

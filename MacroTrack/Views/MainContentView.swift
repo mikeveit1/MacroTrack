@@ -33,6 +33,12 @@ struct MainContentView: View {
                     Text("Macro Calculator")      // Label for Macro Calculator
                 }
             
+            ProfileView()
+                .tabItem {
+                    Image(systemName: "person")
+                    Text("Profile")
+                }
+            
         }
         .accentColor(Colors.secondary) // Customize the tab bar accent color (optional)
         .background(Colors.gray)

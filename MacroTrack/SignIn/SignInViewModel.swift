@@ -1,4 +1,3 @@
-import FirebaseAuth
 import SwiftUI
 
 class SignInViewModel: ObservableObject {
