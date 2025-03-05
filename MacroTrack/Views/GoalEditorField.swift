@@ -11,7 +11,7 @@ import SwiftUI
 
 struct GoalEditorField: View {
     var goalType: String
-    @Binding var value: Double?
+    @Binding var value: Int?
     
     var body: some View {
         VStack(alignment: .leading) {

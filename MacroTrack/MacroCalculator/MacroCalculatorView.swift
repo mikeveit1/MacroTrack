@@ -7,7 +7,7 @@ struct MacroCalculatorView: View {
         ScrollView {
             VStack {
                 Text("Macro Calculator")
-                    .font(.system(size: 22))
+                    .font(.headline)
                     .bold()
                     .foregroundColor(Colors.primary)
                     .padding(.top)
@@ -27,6 +27,7 @@ struct MacroCalculatorView: View {
                             .foregroundColor(Colors.primary)
                             .background(Color.gray.opacity(0.1))
                             .cornerRadius(8)
+                            .accentColor(Colors.primary)
                     }
                     
                     // Height input
@@ -43,6 +44,7 @@ struct MacroCalculatorView: View {
                             .foregroundColor(Colors.primary)
                             .background(Color.gray.opacity(0.1))
                             .cornerRadius(8)
+                            .accentColor(Colors.primary)
                     }
                     
                     // Age input
@@ -59,13 +61,14 @@ struct MacroCalculatorView: View {
                             .foregroundColor(Colors.primary)
                             .background(Color.gray.opacity(0.1))
                             .cornerRadius(8)
+                            .accentColor(Colors.primary) 
                     }
                     
                     // Activity level picker
                     VStack {
                         Text("Activity Level")
                             .foregroundColor(Colors.primary) // Change this to your desired color
-                            .font(.system(size: 19))
+                            .font(.headline)
                             .bold()
                         Picker("", selection: $viewModel.activityLevel) {
                             ForEach(viewModel.activityLevels, id: \.self) { level in
@@ -85,7 +88,7 @@ struct MacroCalculatorView: View {
                     VStack {
                         Text("Fitness Goal")
                             .foregroundColor(Colors.primary) // Change this to your desired color
-                            .font(.system(size: 19))
+                            .font(.headline)
                             .bold()
                         Picker("", selection: $viewModel.fitnessGoal) {
                             ForEach(viewModel.fitnessGoals, id: \.self) { goal in
@@ -116,7 +119,7 @@ struct MacroCalculatorView: View {
                     if viewModel.totalCalories > 0 {
                         VStack(spacing: 10) {
                             Text("Your Daily Macro Goals:")
-                                .font(.system(size: 19))
+                                .font(.headline)
                                 .bold()
                                 .foregroundColor(Colors.primary)
                             Text("Calories: \(Int(viewModel.totalCalories)) kcal")

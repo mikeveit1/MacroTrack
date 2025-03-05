@@ -12,7 +12,7 @@ class FirebaseService {
     }
     
     // Save daily goals to Firebase Realtime Database
-    func saveDailyGoals(userID: String, goals: [String: Double], completion: @escaping (Bool, Error?) -> Void) {
+    func saveDailyGoals(userID: String, goals: [String: Int], completion: @escaping (Bool, Error?) -> Void) {
         db.child("users").child(userID).child("dailyGoals").setValue(goals) { error, _ in
             self.handleFirebaseError(error, completion: completion)
         }
@@ -110,7 +110,7 @@ class FirebaseService {
     
     // Update user macro data in Firebase
     func updateUserMacroData(userId: String, userMacroData: UserMacroData) {
-        let userMacroDataRef = db.child("users").child(userId).child("macroData").child("currentMacroData")
+        let userMacroDataRef = db.child("users").child(userId).child("macroData")
         
         userMacroDataRef.setValue([
             "weight": userMacroData.weight,
@@ -133,7 +133,7 @@ class FirebaseService {
     
     // Fetch user macro data from Firebase
     func fetchUserMacroData(userId: String, completion: @escaping (UserMacroData?) -> Void) {
-        let userMacroDataRef = db.child("users").child(userId).child("macroData").child("currentMacroData")
+        let userMacroDataRef = db.child("users").child(userId).child("macroData")
         
         userMacroDataRef.observe(.value, with: { snapshot in
             if snapshot.exists() {
@@ -144,10 +144,10 @@ class FirebaseService {
                         age: data["age"] as? Int ?? 0,
                         activityLevel: data["activityLevel"] as? String ?? "",
                         fitnessGoal: data["fitnessGoal"] as? String ?? "",
-                        totalCalories: data["totalCalories"] as? Double ?? 0,
-                        protein: data["protein"] as? Double ?? 0,
-                        carbs: data["carbs"] as? Double ?? 0,
-                        fat: data["fat"] as? Double ?? 0
+                        totalCalories: data["totalCalories"] as? Int ?? 0,
+                        protein: data["protein"] as? Int ?? 0,
+                        carbs: data["carbs"] as? Int ?? 0,
+                        fat: data["fat"] as? Int ?? 0
                     )
                     completion(userMacroData)
                 } else {

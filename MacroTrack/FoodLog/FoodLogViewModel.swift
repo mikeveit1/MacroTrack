@@ -6,17 +6,17 @@ class FoodLogViewModel: ObservableObject {
     @Published var currentDate: Date = Date()
     @Published var searchResults: [SearchedFood] = []
     @Published var servings: [String: Double] = [:] // Dictionary of servings for each food by food.id
-    @Published var dailyGoals: [String: Double] = [
-        "calories": 2000.0,  // Example: 2000 calories
-        "protein": 150.0,    // Example: 150g protein
-        "carbs": 250.0,      // Example: 250g carbs
-        "fat": 70.0          // Example: 70g fat
+    @Published var dailyGoals: [String: Int] = [
+        "calories": 2000,  // Example: 2000 calories
+        "protein": 150,    // Example: 150g protein
+        "carbs": 250,      // Example: 250g carbs
+        "fat": 70          // Example: 70g fat
     ]
     
     var selectedMeal: Meal = .breakfast
     var foodHelper = FoodHelper()
     
-    func saveDailyGoals(newGoals: [String: Double]) {
+    func saveDailyGoals(newGoals: [String: Int]) {
         dailyGoals = newGoals
         guard let userID = FirebaseService.shared.getCurrentUserID() else { return }
         FirebaseService.shared.saveDailyGoals(userID: userID, goals: newGoals) { success, error in
@@ -25,6 +25,18 @@ class FoodLogViewModel: ObservableObject {
             } else {
                 print("Daily goals saved successfully.")
             }
+        }
+    }
+    
+    func fetchMacroGoals() {
+        guard let userID = FirebaseService.shared.getCurrentUserID() else { return }
+        FirebaseService.shared.fetchUserMacroData(userId: userID) { data in
+            self.dailyGoals = [
+                "calories": data?.totalCalories ?? 2000,  // Example: 2000 calories
+                "protein": data?.protein ?? 150,    // Example: 150g protein
+                "carbs": data?.carbs ?? 250,      // Example: 250g carbs
+                "fat": data?.fat ?? 70          // Example: 70g fat
+            ]
         }
     }
     
@@ -130,14 +142,6 @@ class FoodLogViewModel: ObservableObject {
             }
         }
     }
-    
-   /* var originalMacronutrients: [String: MacronutrientInfo] = [:]
-    
-    func saveOriginalMacros(for food: MacroFood) {
-        DispatchQueue.main.async {
-            self.originalMacronutrients[food.id] = food.macronutrients
-        }
-    }*/
     
     func updateFoodMacrosForServings(food: MacroFood, servings: Double) -> MacroFood {
         // If servings are reset to 1, return the original food

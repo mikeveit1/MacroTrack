@@ -9,10 +9,10 @@ class MacroCalculatorViewModel: ObservableObject {
     @Published var fitnessGoal: String = "Maintain Weight" // Fitness goal added
     
     // Calculation results
-    @Published var protein: Double = 0
-    @Published var carbs: Double = 0
-    @Published var fat: Double = 0
-    @Published var totalCalories: Double = 0
+    @Published var protein: Int = 0
+    @Published var carbs: Int = 0
+    @Published var fat: Int = 0
+    @Published var totalCalories: Int = 0
     
     // Activity and fitness goal options
     let activityLevels = ["Sedentary", "Lightly Active", "Moderately Active", "Very Active", "Super Active"]
@@ -27,21 +27,10 @@ class MacroCalculatorViewModel: ObservableObject {
             return // Exit if any input is invalid
         }
         
-        // Calculate BMR using the Mifflin-St Jeor Formula (for pounds/inches)
-        let bmr: Double
-        if activityLevel == "Sedentary" {
-            bmr = 66 + (6.23 * weight) + (12.7 * height) - (6.8 * Double(age))
-        } else if activityLevel == "Lightly Active" {
-            bmr = 66 + (6.23 * weight) + (12.7 * height) - (6.8 * Double(age))
-        } else if activityLevel == "Moderately Active" {
-            bmr = 66 + (6.23 * weight) + (12.7 * height) - (6.8 * Double(age))
-        } else if activityLevel == "Very Active" {
-            bmr = 66 + (6.23 * weight) + (12.7 * height) - (6.8 * Double(age))
-        } else {
-            bmr = 66 + (6.23 * weight) + (12.7 * height) - (6.8 * Double(age))
-        }
+        // Calculate BMR using the Mifflin-St Jeor Formula (pounds and inches)
+        let bmr = 66 + (6.23 * weight) + (12.7 * height) - (6.8 * Double(age))
         
-        // TDEE (Total Daily Energy Expenditure)
+        // TDEE (Total Daily Energy Expenditure) based on activity level
         var tdee: Double
         switch activityLevel {
         case "Sedentary":
@@ -61,18 +50,36 @@ class MacroCalculatorViewModel: ObservableObject {
         // Adjust TDEE based on fitness goal
         switch fitnessGoal {
         case "Lose Weight":
-            totalCalories = tdee - 500 // Calorie deficit
+            totalCalories = Int(tdee - 500) // Calorie deficit
         case "Gain Weight":
-            totalCalories = tdee + 500 // Calorie surplus
+            totalCalories = Int(tdee + 500) // Calorie surplus
         default:
-            totalCalories = tdee // Maintain weight
+            totalCalories = Int(tdee) // Maintain weight
         }
         
-        // Macronutrient calculations (adjust based on weight)
-        protein = weight * 0.73
-        carbs = weight * 1.36
-        fat = weight * 0.36
+        // Macronutrient breakdown (percentages based on total calories)
+        let proteinPercentage = 0.25  // 30% of total calories from protein
+        let carbsPercentage = 0.45    // 40% of total calories from carbs
+        let fatPercentage = 0.30      // 30% of total calories from fat
+        
+        // Calories per gram for each macro
+        let proteinCalories = 4
+        let carbsCalories = 4
+        let fatCalories = 9
+        
+        // Calculate grams of each macronutrient
+        let proteinGrams = (Double(totalCalories) * proteinPercentage) / Double(proteinCalories)
+        let carbsGrams = (Double(totalCalories) * carbsPercentage) / Double(carbsCalories)
+        let fatGrams = (Double(totalCalories) * fatPercentage) / Double(fatCalories)
+        
+        // Assign the calculated values to variables
+        protein = Int(proteinGrams)
+        carbs = Int(carbsGrams)
+        fat = Int(fatGrams)
+        
+        saveUserMacroDataToFirebase(userId: FirebaseService.shared.getCurrentUserID() ?? "")
     }
+
     
     // Save the calculated data to Firebase
     func saveUserMacroDataToFirebase(userId: String) {

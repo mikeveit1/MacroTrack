@@ -12,7 +12,7 @@ struct FoodLogView: View {
     @State private var showCarbs = true
     @State private var showFat = true
     @State private var showFilterModal = false
-    @State private var editedGoals: [String: Double] = [:]
+    @State private var editedGoals: [String: Int] = [:]
     @State private var isSettingsPresented = false
     
     func selectMeal(meal: Meal) {
@@ -109,6 +109,7 @@ struct FoodLogView: View {
         }
         .onAppear {
             viewModel.fetchFoodLog() // Fetch food log when the view appears
+            viewModel.fetchMacroGoals()
         }
     }
     
@@ -120,7 +121,7 @@ struct FoodLogView: View {
         return VStack(alignment: .leading, spacing: 20) {
             // Header with "Daily Total" and Filter Button
             HStack {
-                Text("Daily Total")
+                Text("Daily Goals")
                     .font(.headline)
                     .bold()
                     .foregroundColor(Colors.primary)
@@ -165,7 +166,7 @@ struct FoodLogView: View {
                                 .frame(height: 30)
                             Colors.primaryLight
                                 .opacity(0.2)
-                                .frame(width: min(CGFloat(totalMacros.calories / (viewModel.dailyGoals["calories"] ?? 0)) * geometry.size.width, geometry.size.width), height: 30)
+                                .frame(width: min(CGFloat(totalMacros.calories / Double((viewModel.dailyGoals["calories"] ?? 0))) * geometry.size.width, geometry.size.width), height: 30)
                             Text("\(Int(totalMacros.calories)) / \(Int(viewModel.dailyGoals["calories"] ?? 0)) kcal")
                                 .foregroundColor(Colors.primary)
                                 .padding(.leading, 10)
@@ -193,7 +194,7 @@ struct FoodLogView: View {
                                 .frame(height: 30)
                             Colors.primaryLight
                                 .opacity(0.2)
-                                .frame(width: min(CGFloat(totalMacros.protein / (viewModel.dailyGoals["protein"] ?? 0)) * geometry.size.width, geometry.size.width), height: 30)
+                                .frame(width: min(CGFloat(totalMacros.protein / Double((viewModel.dailyGoals["protein"] ?? 0))) * geometry.size.width, geometry.size.width), height: 30)
                             Text("\(String(format: "%.2f", totalMacros.protein)) / \(Int(viewModel.dailyGoals["protein"] ?? 0)) g")
                                 .foregroundColor(Colors.primary)
                                 .padding(.leading, 10)
@@ -221,7 +222,7 @@ struct FoodLogView: View {
                                 .frame(height: 30)
                             Colors.primaryLight
                                 .opacity(0.2)
-                                .frame(width: min(CGFloat(totalMacros.carbs / (viewModel.dailyGoals["carbs"] ?? 0)) * geometry.size.width, geometry.size.width), height: 30)
+                                .frame(width: min(CGFloat(totalMacros.carbs / Double((viewModel.dailyGoals["carbs"] ?? 0))) * geometry.size.width, geometry.size.width), height: 30)
                             Text("\(String(format: "%.2f", totalMacros.carbs)) / \(Int(viewModel.dailyGoals["carbs"] ?? 0)) g")
                                 .foregroundColor(Colors.primary)
                                 .padding(.leading, 10)
@@ -249,7 +250,7 @@ struct FoodLogView: View {
                                 .frame(height: 30)
                             Colors.primaryLight
                                 .opacity(0.2)
-                                .frame(width: min(CGFloat(totalMacros.fat / (viewModel.dailyGoals["fat"] ?? 0)) * geometry.size.width, geometry.size.width), height: 30)
+                                .frame(width: min(CGFloat(totalMacros.fat / Double((viewModel.dailyGoals["fat"] ?? 0))) * geometry.size.width, geometry.size.width), height: 30)
                             Text("\(String(format: "%.2f", totalMacros.fat)) / \(Int(viewModel.dailyGoals["fat"] ?? 0)) g")
                                 .foregroundColor(Colors.primary)
                                 .padding(.leading, 10)

@@ -13,12 +13,12 @@ struct UserMacroData {
     var age: Int
     var activityLevel: String
     var fitnessGoal: String
-    var totalCalories: Double
-    var protein: Double
-    var carbs: Double
-    var fat: Double
+    var totalCalories: Int
+    var protein: Int
+    var carbs: Int
+    var fat: Int
     
-    init(weight: Double, height: Double, age: Int, activityLevel: String, fitnessGoal: String, totalCalories: Double, protein: Double, carbs: Double, fat: Double) {
+    init(weight: Double, height: Double, age: Int, activityLevel: String, fitnessGoal: String, totalCalories: Int, protein: Int, carbs: Int, fat: Int) {
         self.weight = weight
         self.height = height
         self.age = age
@@ -54,9 +54,9 @@ struct UserMacroData {
         self.age = data["age"] as? Int ?? 0
         self.activityLevel = data["activityLevel"] as? String ?? "Moderately Active"
         self.fitnessGoal = data["fitnessGoal"] as? String ?? "Maintain Weight"
-        self.totalCalories = data["totalCalories"] as? Double ?? 0.0
-        self.protein = data["protein"] as? Double ?? 0.0
-        self.carbs = data["carbs"] as? Double ?? 0.0
-        self.fat = data["fat"] as? Double ?? 0.0
+        self.totalCalories = data["totalCalories"] as? Int ?? 0
+        self.protein = data["protein"] as? Int ?? 0
+        self.carbs = data["carbs"] as? Int ?? 0
+        self.fat = data["fat"] as? Int ?? 0
     }
 }
