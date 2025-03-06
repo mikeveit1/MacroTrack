@@ -56,7 +56,7 @@ class FirebaseService {
             self.handleFirebaseError(error, completion: completion)
         }
     }
-    
+
     // Save food to a meal in Firebase Realtime Database
     func saveFoodToMeal(date: String, meal: String, food: MacroFood, completion: @escaping (Bool, Error?) -> Void) {
         guard let userID = getCurrentUserID() else { return }
@@ -68,7 +68,6 @@ class FirebaseService {
             
             // Convert the JSON data to a dictionary
             let foodDict = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
-            print(foodDict)  // For debugging purposes, you can check the dictionary
             
             // Save the food data to Firebase
             db.child("users").child(userID).child("foodLogs").child(date).child(meal).child(food.id).setValue(foodDict) { error, _ in
@@ -194,7 +193,6 @@ class FirebaseService {
             }
         }
     }
-    
     func fetchSavedMealsFromFirebase(completion: @escaping ([UserMeal]) -> Void) {
         guard let userID = FirebaseService.shared.getCurrentUserID() else {
             print("No user is logged in")
@@ -224,13 +222,48 @@ class FirebaseService {
                                let macronutrients = foodData["macronutrients"] as? [String: Any],
                                let originalMacros = foodData["originalMacros"] as? [String: Any],
                                let servings = foodData["servings"] as? Double,
-                               let addDate = foodData["addDate"] as? Date
-                            {
-                                foods.append(MacroFood(id: id, name: name, macronutrients: MacronutrientInfo(calories: macronutrients["calories"] as? Double ?? 0, protein: macronutrients["protein"] as? Double ?? 0, carbs: macronutrients["carbs"] as? Double ?? 0, fat: macronutrients["fat"] as? Double ?? 0), originalMacros: MacronutrientInfo(calories: originalMacros["calories"] as? Double ?? 0, protein: originalMacros["protein"] as? Double ?? 0, carbs: originalMacros["carbs"] as? Double ?? 0, fat: originalMacros["fat"] as? Double ?? 0), servingDescription: servingDescription, servings: servings, addDate: addDate))
+                               let addDateString = foodData["addDate"] as? String {
+
+                                // Convert addDate from timestamp (Double) to Date
+                                let dateFormatter = DateFormatter()
+                                
+                                // Set the date format to match the string's format
+                                dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss" // Adjust this based on your date string format
+                                
+                                // Convert the string to a Date
+                                let addDate = dateFormatter.date(from: addDateString)
+                                // Create a MacroFood object
+                                let macronutrientInfo = MacronutrientInfo(
+                                    calories: macronutrients["calories"] as? Double ?? 0,
+                                    protein: macronutrients["protein"] as? Double ?? 0,
+                                    carbs: macronutrients["carbs"] as? Double ?? 0,
+                                    fat: macronutrients["fat"] as? Double ?? 0
+                                )
+
+                                let originalMacronutrientInfo = MacronutrientInfo(
+                                    calories: originalMacros["calories"] as? Double ?? 0,
+                                    protein: originalMacros["protein"] as? Double ?? 0,
+                                    carbs: originalMacros["carbs"] as? Double ?? 0,
+                                    fat: originalMacros["fat"] as? Double ?? 0
+                                )
+
+                                let macroFood = MacroFood(
+                                    id: id,
+                                    name: name,
+                                    macronutrients: macronutrientInfo,
+                                    originalMacros: originalMacronutrientInfo,
+                                    servingDescription: servingDescription,
+                                    servings: servings,
+                                    addDate: addDate ?? Date()
+                                )
+                                
+                                foods.append(macroFood)
                             }
                         }
 
-                        meals.append(UserMeal(id: mealId, name: mealName, foods: foods))
+                        // Create a UserMeal object and append to meals array
+                        let userMeal = UserMeal(id: mealId, name: mealName, foods: foods)
+                        meals.append(userMeal)
                     }
                 }
             }
@@ -239,6 +272,8 @@ class FirebaseService {
             completion(meals)
         })
     }
+
+
 
     
     // Fetch user macro data from Firebase

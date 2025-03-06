@@ -6,6 +6,8 @@ struct FoodLogView: View {
     @State private var showDatePicker = false
     @StateObject private var viewModel = FoodLogViewModel()
     @State private var searchQuery = ""
+    @State private var searchTab: Int = 0 // 0 for Food tab, 1 for Meals tab
+    @State private var mealSearchQuery: String = ""
     @State private var mealName = ""
     @State private var showFilterModal = false
     @State private var editedGoals: [String: Int] = [:]
@@ -476,7 +478,7 @@ struct FoodLogView: View {
             .padding()
             .frame(maxWidth: .infinity)  // Ensures the food item takes up the full width
             .background(RoundedRectangle(cornerRadius: 8).fill(Colors.gray))
-            ForEach(viewModel.mealLogs[meal] ?? [], id: \.self) { food in
+            ForEach(viewModel.mealLogs[meal]?.sorted(by: {$0.addDate < $1.addDate}) ?? [], id: \.id) { food in
                 HStack {
                     VStack(alignment: .leading) {
                         HStack {
@@ -534,17 +536,7 @@ struct FoodLogView: View {
                                         servingsToUpdate = 1.0
                                     }
                                     
-                                    // Debugging logs to track what the user is entering
-                                    print("New Value: \(newValue)")
-                                    print("Servings to update: \(servingsToUpdate)")
-                                    
-                                    // Update the food's macronutrients based on the new servings value
-                                    let updatedFood = viewModel.updateFoodMacrosForServings(food: food, servings: servingsToUpdate)
-                                    
-                                    print( "2", updatedFood)
-                                    
-                                    // Update the meal log with the updated food (also saving it to Firebase)
-                                    // viewModel.updateMealLogWithUpdatedFood(updatedFood: updatedFood, meal: viewModel.selectedMeal)
+                                    let updatedFood = viewModel.updateFoodMacrosForServings(meal: meal, food: food, servings: servingsToUpdate)
                                 }
                             ))
                             .accentColor(Colors.primary)
@@ -638,79 +630,123 @@ struct FoodLogView: View {
     // Modal for Food Details Entry with search
     var foodModalView: some View {
         VStack {
-            Text("Search for Food")
+            Text("Search")
                 .font(.title3)
                 .foregroundColor(Colors.primary)
                 .bold()
-            
-            // Search bar
-            TextField("Search for food", text: $searchQuery)
-                .accentColor(Colors.primary)
                 .padding()
-                .background(Colors.secondary)  // Set background of the entire TextField to white
-                .cornerRadius(8)          // Optional: round the corners for a nicer appearance
-                .foregroundColor(Colors.primary)  // Text color
-                .textFieldStyle(PlainTextFieldStyle()) // Use PlainTextFieldStyle to remove default styling
-                .overlay(
-                    RoundedRectangle(cornerRadius: 8)
-                        .stroke(Color.gray, lineWidth: 1) // Optional: add a border to the TextField
-                )
-                .onChange(of: searchQuery) { newValue in
-                    viewModel.searchFoods(query: newValue)
-                }
             
-            if viewModel.isLoading {
-                ProgressView("Searching...")
-                    .padding()
-                    .foregroundColor(Colors.primary)
-            }
-            
-            // List of food items
-            List(viewModel.searchResults, id: \.id) { food in
-                Section {
-                    Button(action: {
-                        // Prompt user for servings after selecting a food
-                        viewModel.convertSearchFoodToMacroFood(searchedFood: food) { macroFood in
-                            viewModel.saveFood(food: macroFood)
-                            modalVisible = false
+            // Tab View for searching foods and meals
+            TabView(selection: $searchTab) {
+                
+                // First Tab: Search for food
+                VStack {
+                    TextField("Search for food", text: $searchQuery)
+                        .accentColor(Colors.primary)
+                        .padding()
+                        .background(Colors.secondary)
+                        .cornerRadius(8)
+                        .foregroundColor(Colors.primary)
+                        .textFieldStyle(PlainTextFieldStyle())
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8)
+                                .stroke(Color.gray, lineWidth: 1)
+                        )
+                        .onChange(of: searchQuery) { newValue in
+                            viewModel.searchFoods(query: newValue)
                         }
-                    }) {
-                        VStack(alignment: .leading) {
-                            Text(food.name)
-                                .foregroundColor(Colors.primary)
-                                .bold()
-                                .lineLimit(2)
-                            (food.brand != nil) ? Text(food.brand ?? "")
-                                .foregroundColor(Colors.primaryLight)
-                            : nil
+                    
+                    // List of food items
+                    List(viewModel.searchResults, id: \.id) { food in
+                        Section {
+                            Button(action: {
+                                // Prompt user for servings after selecting a food
+                                viewModel.convertSearchFoodToMacroFood(searchedFood: food) { macroFood in
+                                    viewModel.saveFood(meal: viewModel.selectedMeal, food: macroFood)
+                                    modalVisible = false
+                                }
+                            }) {
+                                VStack(alignment: .leading) {
+                                    Text(food.name)
+                                        .foregroundColor(Colors.primary)
+                                        .bold()
+                                        .lineLimit(2)
+                                    if let brand = food.brand {
+                                        Text(brand)
+                                            .foregroundColor(Colors.primaryLight)
+                                    }
+                                }
+                            }
+                        }
+                        .listRowBackground(Colors.secondary)
+                    }
+                    .listStyle(.plain)
+                }
+                .tabItem {
+                    Label("Food", systemImage: "")
+                }
+                .tag(0) // Tag for first tab
+                .padding()
+                .cornerRadius(10)
+                .background(Colors.secondary)
+                .frame(maxHeight: .infinity)
+                
+                VStack {
+                    TextField("Search for meals", text: $mealSearchQuery)
+                        .accentColor(Colors.primary)
+                        .padding()
+                        .background(Colors.secondary)
+                        .cornerRadius(8)
+                        .foregroundColor(Colors.primary)
+                        .textFieldStyle(PlainTextFieldStyle())
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8)
+                                .stroke(Color.gray, lineWidth: 1)
+                        )
+                    // List of saved meals
+                    List {
+                        // Check if the search query is empty
+                        let filteredMeals = mealSearchQuery.isEmpty ? viewModel.userMeals :
+                                             viewModel.userMeals.filter { meal in
+                                                 // Perform case-insensitive search by checking meal name
+                                                 meal.name.lowercased().contains(mealSearchQuery.lowercased())
+                                             }
+                        
+                        // Loop through filtered meals and display them
+                        ForEach(filteredMeals, id: \.id) { meal in
+                            Section {
+                                Button(action: {
+                                    // Populate foods from the selected meal
+                                    viewModel.populateFoodsFromMeal(meal: viewModel.selectedMeal, userMeal: meal)
+                                    modalVisible = false
+                                }) {
+                                    VStack(alignment: .leading) {
+                                        Text(meal.name)
+                                            .foregroundColor(Colors.primary)
+                                            .bold()
+                                            .lineLimit(2)
+                                    }
+                                }
+                            }
+                            .listRowBackground(Colors.secondary)
                         }
                     }
+                    .listStyle(.plain)
                 }
-                .listRowBackground(Colors.secondary)
-            }
-            //.padding(.vertical)
-            .listStyle(.plain)
-            .overlay(
-                RoundedRectangle(cornerRadius: 8)
-                    .stroke(Color.gray, lineWidth: 1) // Optional: add a border to the TextField
-            )
-            // Buttons for canceling and saving
-            HStack {
-                Button("Cancel") {
-                    modalVisible = false
+                .tabItem {
+                    Label("My Meals", systemImage: "")
                 }
+                .tag(1) // Tag for first tab
                 .padding()
-                .background(RoundedRectangle(cornerRadius: 8).fill(Color.red))
-                .foregroundColor(.white)
-                .bold()
+                .cornerRadius(10)
+                .background(Colors.secondary)
+                .frame(maxHeight: .infinity)
             }
-            .padding(.top)
+            .background(Colors.secondary)
+            .frame(maxHeight: .infinity)
         }
-        .padding()
-        .cornerRadius(10)
-        .shadow(radius: 10)
-        .background(Colors.secondary)
-    }
+        .frame(maxHeight: .infinity)
+        .background(Colors.secondary)    }
 }
 
 struct FoodLogScreen_Previews: PreviewProvider {

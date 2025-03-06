@@ -117,9 +117,9 @@ class FoodLogViewModel: ObservableObject {
     }
     
     // Save food to the selected meal
-    func saveFood(food: MacroFood) {
+    func saveFood(meal: Meal, food: MacroFood) {
         addFoodToMeal(meal: selectedMeal, food: food)
-        saveFoodToFirebase(food: food) // Save the food to Firebase
+        saveFoodToFirebase(meal: meal, food: food) // Save the food to Firebase
     }
     
     // Add food to selected meal
@@ -138,7 +138,7 @@ class FoodLogViewModel: ObservableObject {
         DispatchQueue.main.async {
             self.mealLogs[meal]?.removeAll { $0.id == food.id }
         }
-        deleteFoodFromFirebase(food: food) // Delete food from Firebase
+        deleteFoodFromFirebase(meal: meal, food: food) // Delete food from Firebase
     }
     
     // Go to today's date
@@ -180,13 +180,13 @@ class FoodLogViewModel: ObservableObject {
         }
     }
     
-    func updateFoodMacrosForServings(food: MacroFood, servings: Double) -> MacroFood {
+    func updateFoodMacrosForServings(meal: Meal, food: MacroFood, servings: Double) -> MacroFood {
         // If servings are reset to 1, return the original food
         let originalMacros = food.originalMacros
         
         if servings == 1 {
             let updatedFood = MacroFood(id: food.id, name: food.name, macronutrients: originalMacros, originalMacros: originalMacros, servingDescription: food.servingDescription, servings: 1, addDate: food.addDate)
-            saveFoodToFirebase(food: updatedFood)
+            saveFoodToFirebase(meal: meal, food: updatedFood)
             return updatedFood
         }
         
@@ -207,7 +207,7 @@ class FoodLogViewModel: ObservableObject {
         updatedFood.macronutrients.fat = updatedFood.macronutrients.fat.rounded(toPlaces: 2)
         updatedFood.macronutrients.calories = updatedFood.macronutrients.calories.rounded(toPlaces: 2)
         
-        saveFoodToFirebase(food: updatedFood)
+        saveFoodToFirebase(meal: meal, food: updatedFood)
         
         return updatedFood
     }
@@ -324,9 +324,9 @@ class FoodLogViewModel: ObservableObject {
 
     
     // Save food to Firebase
-    func saveFoodToFirebase(food: MacroFood) {
+    func saveFoodToFirebase(meal: Meal, food: MacroFood) {
         let date = formatDate(currentDate)
-        FirebaseService.shared.saveFoodToMeal(date: date, meal: selectedMeal.rawValue, food: food) { success, error in
+        FirebaseService.shared.saveFoodToMeal(date: date, meal: meal.rawValue, food: food) { success, error in
             if let error = error {
                 print("Error saving food to Firebase: \(error.localizedDescription)")
             } else if success {
@@ -336,14 +336,21 @@ class FoodLogViewModel: ObservableObject {
     }
     
     // Delete food from Firebase
-    func deleteFoodFromFirebase(food: MacroFood) {
+    func deleteFoodFromFirebase(meal: Meal, food: MacroFood) {
         let date = formatDate(currentDate)
-        FirebaseService.shared.deleteFoodFromFirebase(date: date, meal: selectedMeal.rawValue, food: food) { success, error in
+        FirebaseService.shared.deleteFoodFromFirebase(date: date, meal: meal.rawValue, food: food) { success, error in
             if let error = error {
                 print("Error deleting food from Firebase: \(error.localizedDescription)")
             } else if success {
                 print("Food deleted from Firebase successfully")
             }
+        }
+    }
+
+    func populateFoodsFromMeal(meal: Meal, userMeal: UserMeal) {
+        // Add the foods from the selected meal into the current meal log
+        for food in userMeal.foods {
+            saveFood(meal: meal, food: food)
         }
     }
 }
