@@ -113,6 +113,17 @@ struct FoodLogView: View {
             viewModel.fetchProgressBarData()
             viewModel.fetchUserMeals()
         }
+        .gesture(DragGesture(minimumDistance: 20, coordinateSpace: .global).onEnded { value in
+                    // Detect swipe direction
+                    if value.translation.width < 0 {
+                        // Swipe left (next day)
+                        viewModel.goToNextDay()
+                    } else if value.translation.width > 0 {
+                        // Swipe right (previous day)
+                        viewModel.goToPreviousDay()
+                    }
+                }
+        )
     }
     
     // Progress Bars for Daily Goals
