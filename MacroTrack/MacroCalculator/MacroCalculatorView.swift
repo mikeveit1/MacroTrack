@@ -5,16 +5,14 @@ struct MacroCalculatorView: View {
     
     var body: some View {
         ScrollView {
-            Spacer()
             VStack {
                 Text("Macronutrient Calculator")
                     .font(.title3)
                     .bold()
                     .foregroundColor(Colors.primary)
                     .padding(.top)
-                
+                // Weight input
                 VStack(spacing: 8) {
-                    // Weight input
                     ZStack(alignment: .leading) {
                         if viewModel.weight.isEmpty {
                             Text("Enter Weight (lbs)")
@@ -30,6 +28,7 @@ struct MacroCalculatorView: View {
                             .cornerRadius(8)
                             .accentColor(Colors.primary)
                     }
+                    
                     
                     // Height input
                     ZStack(alignment: .leading) {
@@ -62,10 +61,13 @@ struct MacroCalculatorView: View {
                             .foregroundColor(Colors.primary)
                             .background(Color.gray.opacity(0.1))
                             .cornerRadius(8)
-                            .accentColor(Colors.primary) 
+                            .accentColor(Colors.primary)
                     }
-                    
-                    // Activity level picker
+                }
+                .padding()
+                
+                // Activity level picker
+                VStack(spacing: 16) {
                     VStack {
                         Text("Activity Level")
                             .foregroundColor(Colors.primary) // Change this to your desired color
@@ -84,8 +86,6 @@ struct MacroCalculatorView: View {
                         .cornerRadius(10)
                     }
                     
-                    
-                    // Fitness goal picker
                     VStack {
                         Text("Fitness Goal")
                             .foregroundColor(Colors.primary) // Change this to your desired color
@@ -103,7 +103,10 @@ struct MacroCalculatorView: View {
                         .background(Colors.gray)
                         .cornerRadius(10)
                     }
-                    
+                }
+             //   .padding()
+                
+                VStack(spacing: 8) {
                     // Calculate Button
                     Button(action: {
                         viewModel.calculateMacronutrients()
@@ -114,29 +117,27 @@ struct MacroCalculatorView: View {
                             .background(Colors.primary)
                             .cornerRadius(8)
                     }
-                    
-                    // Display results if calculations are done
-                    if viewModel.totalCalories > 0 {
-                        VStack(spacing: 10) {
-                            Text("Your Daily Macronutrient Goals:")
-                                .font(.title3)
-                                .bold()
-                                .foregroundColor(Colors.primary)
-                            Text("Calories: \(Int(viewModel.totalCalories)) kcal")
-                                .bold()
-                                .foregroundColor(Colors.primary)
-                            Text("Protein: \(Int(viewModel.protein)) grams")
-                                .bold()
-                                .foregroundColor(Colors.primary)
-                            Text("Carbs: \(Int(viewModel.carbs)) grams")
-                                .bold()
-                                .foregroundColor(Colors.primary)
-                            Text("Fat: \(Int(viewModel.fat)) grams")
-                                .bold()
-                                .foregroundColor(Colors.primary)
-                        }
-                        .padding()
-                    }
+                }
+                .padding(.top)
+                
+                // Display results if calculations are done
+                VStack(spacing: 8) {
+                    Text("Your Daily Macronutrient Goals:")
+                        .font(.title3)
+                        .bold()
+                        .foregroundColor(Colors.primary)
+                    Text("Calories: \(Int(viewModel.totalCalories)) kcal")
+                        .bold()
+                        .foregroundColor(Colors.primary)
+                    Text("Protein: \(Int(viewModel.protein)) grams")
+                        .bold()
+                        .foregroundColor(Colors.primary)
+                    Text("Carbs: \(Int(viewModel.carbs)) grams")
+                        .bold()
+                        .foregroundColor(Colors.primary)
+                    Text("Fat: \(Int(viewModel.fat)) grams")
+                        .bold()
+                        .foregroundColor(Colors.primary)
                 }
                 .padding()
             }

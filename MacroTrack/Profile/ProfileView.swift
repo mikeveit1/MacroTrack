@@ -52,13 +52,13 @@ struct ProfileView: View {
             HStack {
                 Spacer()
                 VStack(spacing: 4) {  // Reduced spacing between cards
-                    Text("Your Stats (per day)")
+                    Text("Your Daily Averages")
                         .font(.title3)
                         .bold()
                         .foregroundColor(Colors.primary)
                     HStack {
                         Spacer()
-                        Text("Average calories:")
+                        Text("Calories:")
                             .foregroundColor(Colors.primary)
                         Text("\(viewModel.averageCalories) kcal")
                             .bold()
@@ -66,21 +66,21 @@ struct ProfileView: View {
                         Spacer()
                     }
                     HStack {
-                        Text("Average protein intake:")
+                        Text("Protein:")
                             .foregroundColor(Colors.primary)
                         Text("\(String(format: "%.2f", viewModel.averageProtein)) g")
                             .bold()
                             .foregroundColor(Colors.primary)
                     }
                     HStack {
-                        Text("Average carbs intake:")
+                        Text("Carbs:")
                             .foregroundColor(Colors.primary)
                         Text("\(String(format: "%.2f", viewModel.averageCarbs)) g")
                             .bold()
                             .foregroundColor(Colors.primary)
                     }
                     HStack {
-                        Text("Average fat intake:")
+                        Text("Fat:")
                             .foregroundColor(Colors.primary)
                         Text("\(String(format: "%.2f", viewModel.averageFat)) g")
                             .bold()
