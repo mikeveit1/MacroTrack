@@ -168,6 +168,79 @@ class FirebaseService {
         }
     }
     
+    func saveUserMeal(mealName: String, meal: Meal, foodsList: [[String: Any]]) {
+        guard let userID = FirebaseService.shared.getCurrentUserID() else {
+            print("No user is logged in")
+            return
+        }
+
+        // Create a unique ID for the meal
+        let mealID = UUID().uuidString  // You can choose another method to generate an ID
+        let mealRef = db.child("users").child(userID).child("meals").child(mealID)
+
+        // Save the meal data
+        let mealData: [String: Any] = [
+            "id": mealID,
+            "mealName": mealName,
+            "foods": foodsList,
+            "createdAt": "\(Date())"  // Optionally add a timestamp
+        ]
+
+        mealRef.setValue(mealData) { error, _ in
+            if let error = error {
+                print("Error saving meal to Firebase: \(error.localizedDescription)")
+            } else {
+                print("Meal saved to Firebase successfully!")
+            }
+        }
+    }
+    
+    func fetchSavedMealsFromFirebase(completion: @escaping ([UserMeal]) -> Void) {
+        guard let userID = FirebaseService.shared.getCurrentUserID() else {
+            print("No user is logged in")
+            return
+        }
+
+        // Reference to the meals node in Realtime Database
+        let mealsRef = db.child("users").child(userID).child("meals")
+
+        // Retrieve the saved meals from Firebase
+        mealsRef.observe(.value, with: { snapshot in
+            var meals: [UserMeal] = []
+
+            // Iterate over the meals data
+            for childSnapshot in snapshot.children.allObjects as? [DataSnapshot] ?? [] {
+                if let mealData = childSnapshot.value as? [String: Any] {
+                    if let mealName = mealData["mealName"] as? String,
+                       let mealId = mealData["id"] as? String,
+                       let foodsData = mealData["foods"] as? [[String: Any]] {
+                        var foods: [MacroFood] = []
+
+                        // Map the foods data to MacroFood objects
+                        for foodData in foodsData {
+                            if let name = foodData["name"] as? String,
+                               let id = foodData["id"] as? String,
+                               let servingDescription = foodData["servingDescription"] as? String,
+                               let macronutrients = foodData["macronutrients"] as? [String: Any],
+                               let originalMacros = foodData["originalMacros"] as? [String: Any],
+                               let servings = foodData["servings"] as? Double,
+                               let addDate = foodData["addDate"] as? Date
+                            {
+                                foods.append(MacroFood(id: id, name: name, macronutrients: MacronutrientInfo(calories: macronutrients["calories"] as? Double ?? 0, protein: macronutrients["protein"] as? Double ?? 0, carbs: macronutrients["carbs"] as? Double ?? 0, fat: macronutrients["fat"] as? Double ?? 0), originalMacros: MacronutrientInfo(calories: originalMacros["calories"] as? Double ?? 0, protein: originalMacros["protein"] as? Double ?? 0, carbs: originalMacros["carbs"] as? Double ?? 0, fat: originalMacros["fat"] as? Double ?? 0), servingDescription: servingDescription, servings: servings, addDate: addDate))
+                            }
+                        }
+
+                        meals.append(UserMeal(id: mealId, name: mealName, foods: foods))
+                    }
+                }
+            }
+
+            // Return the array of meals
+            completion(meals)
+        })
+    }
+
+    
     // Fetch user macro data from Firebase
     func fetchUserMacroData(completion: @escaping (UserMacroData?) -> Void) {
         guard let userID = getCurrentUserID() else { return }

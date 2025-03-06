@@ -6,9 +6,11 @@ struct FoodLogView: View {
     @State private var showDatePicker = false
     @StateObject private var viewModel = FoodLogViewModel()
     @State private var searchQuery = ""
+    @State private var mealName = ""
     @State private var showFilterModal = false
     @State private var editedGoals: [String: Int] = [:]
     @State private var isSettingsPresented = false
+    @State private var showingMealNameAlert = false
     
     func selectMeal(meal: Meal) {
         viewModel.selectedMeal = meal
@@ -76,14 +78,14 @@ struct FoodLogView: View {
                             isSettingsPresented = false // Close the modal without saving
                         }) {
                             Text("Cancel")
+                                .padding()
                                 .foregroundColor(.red)
                                 .frame(maxWidth: .infinity)
-                                .padding()
                         }
                     }
                     .padding()
                     .background(Colors.secondary)
-                    .cornerRadius(12) // Rounded corners for the modal
+                    .cornerRadius(8) // Rounded corners for the modal
                     .shadow(radius: 10) // Shadow for the modal
                     Spacer()
                 }
@@ -104,9 +106,10 @@ struct FoodLogView: View {
             _ = viewModel.getTotalMacros()
         }
         .onAppear {
-            viewModel.fetchFoodLog() // Fetch food log when the view appears
+            viewModel.fetchFoodLog()
             viewModel.fetchMacroGoals()
             viewModel.fetchProgressBarData()
+            viewModel.fetchUserMeals()
         }
     }
     
@@ -319,6 +322,7 @@ struct FoodLogView: View {
                     viewModel.saveProgressBarData()
                 }) {
                     Text("Save")
+                        .padding()
                         .foregroundColor(Colors.primary)
                         .fontWeight(.bold)
                 }
@@ -413,6 +417,17 @@ struct FoodLogView: View {
                     .bold()
                     .foregroundColor(Colors.primary)
                 Spacer()
+                Button(action: {
+                    viewModel.selectedMeal = meal
+                    showingMealNameAlert = true
+                }) {
+                    Text("Save")
+                        .foregroundColor(Colors.secondary)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 5)
+                        .background(Colors.primary)
+                        .cornerRadius(8)
+                }
                 Button(action: { selectMeal(meal: meal )}) {
                     Image(systemName: "plus.circle")
                         .foregroundColor(Colors.primary)
@@ -562,6 +577,62 @@ struct FoodLogView: View {
         .background(Colors.secondary)
         .cornerRadius(10)
         .shadow(radius: 5)
+        .sheet(isPresented: $showingMealNameAlert) {
+            VStack {
+                Text("Save Meal")
+                    .font(.title3)
+                    .foregroundColor(Colors.primary)
+                    .padding()
+                    .bold()
+                Text("Enter a name for this meal:")
+                    .foregroundColor(Colors.primary)
+                    .padding()
+                ZStack(alignment: .leading) {
+                    if mealName.isEmpty {
+                        Text("Meal Name")
+                            .foregroundColor(Colors.primaryLight)  // Placeholder text color
+                            .padding(32)
+                    }
+                    TextField("", text: $mealName)
+                        .padding()
+                        .cornerRadius(8)
+                        .accentColor(Colors.primary)
+                        .foregroundColor(Colors.primary)
+                        .textFieldStyle(PlainTextFieldStyle())
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8)
+                                .stroke(Colors.primary, lineWidth: 1)
+                        )
+                        .padding()
+                }
+
+                
+                HStack {
+                    Button("Cancel") {
+                        self.showingMealNameAlert = false
+                    }
+                    .padding()
+                    .background(Color.red)
+                    .foregroundColor(Colors.secondary)
+                    .cornerRadius(8)
+                    
+                    Button("Save") {
+                        if !mealName.isEmpty {
+                            viewModel.saveMealToFirebase(mealName: mealName, meal: viewModel.selectedMeal)
+                        }
+                        self.showingMealNameAlert = false
+                    }
+                    .padding()
+                    .background(Colors.primary)
+                    .foregroundColor(Colors.secondary)
+                    .cornerRadius(8)
+                }
+                Spacer()
+            }
+            .frame(maxHeight: .infinity)
+            .background(Colors.secondary)
+            //.padding()
+        }
     }
     
     // Modal for Food Details Entry with search

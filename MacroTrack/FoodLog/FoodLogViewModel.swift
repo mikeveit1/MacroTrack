@@ -11,6 +11,7 @@ class FoodLogViewModel: ObservableObject {
     @Published var showProtein = true
     @Published var showCarbs = true
     @Published var showFat = true
+    @Published var userMeals: [UserMeal] = []
     @Published var dailyGoals: [String: Int] = [
         "calories": 2000,  // Example: 2000 calories
         "protein": 150,    // Example: 150g protein
@@ -286,13 +287,44 @@ class FoodLogViewModel: ObservableObject {
         }
     }
     
+    func fetchUserMeals() {
+        self.isLoading = true
+        FirebaseService.shared.fetchSavedMealsFromFirebase { meals in
+            self.userMeals = meals
+            self.isLoading = false
+        }
+    }
+    
+    func saveMealToFirebase(mealName: String, meal: Meal) {
+        // Prepare the foods list (the selected foods from the meal)
+        let foodsList = mealLogs[meal]?.map { food in
+            return [
+                "id":food.id,
+                "name": food.name,
+                "servingDescription": food.servingDescription,
+                "macronutrients": [
+                    "calories": food.macronutrients.calories,
+                    "protein": food.macronutrients.protein,
+                    "carbs": food.macronutrients.carbs,
+                    "fat": food.macronutrients.fat
+                ],
+                "originalMacros": [
+                    "calories": food.originalMacros.calories,
+                    "protein": food.originalMacros.protein,
+                    "carbs": food.originalMacros.carbs,
+                    "fat": food.originalMacros.fat
+                ],
+                "servings": food.servings,
+                "addDate": "\(food.addDate)"
+                
+            ]
+        } ?? []
+        FirebaseService.shared.saveUserMeal(mealName: mealName, meal: meal, foodsList: foodsList)
+    }
+
+    
     // Save food to Firebase
     func saveFoodToFirebase(food: MacroFood) {
-        guard let userID = FirebaseService.shared.getCurrentUserID() else {
-            print("No user is logged in")
-            return
-        }
-        
         let date = formatDate(currentDate)
         FirebaseService.shared.saveFoodToMeal(date: date, meal: selectedMeal.rawValue, food: food) { success, error in
             if let error = error {
@@ -305,11 +337,6 @@ class FoodLogViewModel: ObservableObject {
     
     // Delete food from Firebase
     func deleteFoodFromFirebase(food: MacroFood) {
-        guard let userID = FirebaseService.shared.getCurrentUserID() else {
-            print("No user is logged in")
-            return
-        }
-        
         let date = formatDate(currentDate)
         FirebaseService.shared.deleteFoodFromFirebase(date: date, meal: selectedMeal.rawValue, food: food) { success, error in
             if let error = error {

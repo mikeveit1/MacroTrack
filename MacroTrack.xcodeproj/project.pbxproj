@@ -54,6 +54,7 @@
 		E4DE45182D79049C00E681A9 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4DE45172D79049C00E681A9 /* ProfileView.swift */; };
 		E4DE451A2D7904A400E681A9 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4DE45192D7904A400E681A9 /* ProfileViewModel.swift */; };
 		E4DE451C2D7905D200E681A9 /* FetchUserDataHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4DE451B2D7905D200E681A9 /* FetchUserDataHelper.swift */; };
+		E4DE451E2D79EA0400E681A9 /* UserMeal.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4DE451D2D79EA0400E681A9 /* UserMeal.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -89,6 +90,7 @@
 		E4DE45172D79049C00E681A9 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		E4DE45192D7904A400E681A9 /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
 		E4DE451B2D7905D200E681A9 /* FetchUserDataHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchUserDataHelper.swift; sourceTree = "<group>"; };
+		E4DE451D2D79EA0400E681A9 /* UserMeal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserMeal.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -182,6 +184,7 @@
 				E48DF3372D72540700F92063 /* MealLogs.swift */,
 				E48DF3552D77541500F92063 /* UserMacroData.swift */,
 				E4DE44FB2D77570D00E681A9 /* UserFoodLogData.swift */,
+				E4DE451D2D79EA0400E681A9 /* UserMeal.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -378,6 +381,7 @@
 				E48DF3452D73965A00F92063 /* ApplicationHelper.swift in Sources */,
 				E4DE45042D775AB200E681A9 /* SignUpView.swift in Sources */,
 				E48DF34C2D7744C300F92063 /* MacroCalculatorViewModel.swift in Sources */,
+				E4DE451E2D79EA0400E681A9 /* UserMeal.swift in Sources */,
 				E4DE45002D775AA400E681A9 /* SignInView.swift in Sources */,
 				E48DF3382D72540700F92063 /* MealLogs.swift in Sources */,
 				E48DF33B2D7254C700F92063 /* FoodHelper.swift in Sources */,
