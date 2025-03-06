@@ -261,7 +261,6 @@ struct ProfileView: View {
                             }
                         )
                     }
-                    .padding()
                     Text("App Version: \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown")")
                         .foregroundColor(Colors.primary)
                         .padding()
