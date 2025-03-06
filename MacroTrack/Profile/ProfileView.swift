@@ -99,7 +99,7 @@ struct ProfileView: View {
             VStack(spacing: 4) {  // Reduced spacing between cards
                 HStack {
                     Spacer()
-                    Text("Logging Streak")
+                    Text("You Logging Streak")
                         .foregroundColor(Colors.primary)
                         .bold()
                         .font(.title3)

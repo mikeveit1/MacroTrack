@@ -115,7 +115,7 @@ class ProfileViewModel: ObservableObject {
         FirebaseService.shared.getAllFoodLogs() { foodLogs, error in
             // Ensure we have food logs
             guard let foodLogs = foodLogs else {
-                self.consecutiveDaysLogged = (0)  // Return 0 if no food logs are available
+                self.consecutiveDaysLogged = 0  // Return 0 if no food logs are available
                 return
             }
             
@@ -132,7 +132,7 @@ class ProfileViewModel: ObservableObject {
             
             // If no dates are found, return 0 (no logged days)
             guard !sortedDates.isEmpty else {
-                self.consecutiveDaysLogged = (0)
+                self.consecutiveDaysLogged = 0
                 return
             }
             
@@ -150,13 +150,18 @@ class ProfileViewModel: ObservableObject {
                     
                     // Check if the current date is the day after the previous date
                     let calendar = Calendar.current
-                    if calendar.isDate(currentDate, inSameDayAs: prevDate.addingTimeInterval(86400)) {
+                    let dayDifference = calendar.dateComponents([.day], from: prevDate, to: currentDate).day ?? 0
+                    
+                    if dayDifference == 1 {
+                        // If the difference is 1, increment consecutive day count
                         consecutiveDaysCount += 1
-                    } else {
-                        // Reset count for non-consecutive days
-                        maxConsecutiveDays = max(maxConsecutiveDays, consecutiveDaysCount)
+                    } else if dayDifference > 1 {
+                        // If the difference is more than 1 (i.e., user missed a day), reset count to 1
                         consecutiveDaysCount = 1
                     }
+                    
+                    // Update the max consecutive days
+                    maxConsecutiveDays = max(maxConsecutiveDays, consecutiveDaysCount)
                 }
                 
                 // Update the previousDate to the current date
@@ -165,8 +170,9 @@ class ProfileViewModel: ObservableObject {
                 }
             }
             
-            // Return the maximum consecutive days count via the completion handler
-            self.consecutiveDaysLogged = (max(maxConsecutiveDays, consecutiveDaysCount))
+            // Set the final consecutive days count
+            self.consecutiveDaysLogged = max(maxConsecutiveDays, consecutiveDaysCount)
         }
     }
+
 }
