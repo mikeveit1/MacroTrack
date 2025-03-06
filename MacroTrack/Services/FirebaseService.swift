@@ -368,29 +368,25 @@ class FirebaseService {
         
         let id = currentUser.uid
         
-        // Re-authenticate the user with email and password
-        let credential = EmailAuthProvider.credential(withEmail: email, password: password)
         
-        currentUser.reauthenticate(with: credential) { result, error in
+        Auth.auth().signIn(withEmail: email, password: password) { result, error in
             if let error = error {
-                // If re-authentication fails, return the error
+                // If an error occurs during deletion, return the error
                 completion(false, error)
-                return
-            }
-            
-            // Now proceed to delete the account
-            currentUser.delete { error in
-                if let error = error {
-                    // If an error occurs during deletion, return the error
-                    completion(false, error)
-                } else {
-                    // Successfully deleted the account, also remove user data from the database
-                    self.db.child("users").child(id).setValue(nil) { error, _ in
-                        if let error = error {
-                            print("Failed to delete user data from database: \(error.localizedDescription)")
+            } else {
+                self.db.child("users").child(id).setValue(nil) { error, _ in
+                    if let error = error {
+                        print("Failed to delete user data from database: \(error.localizedDescription)")
+                    } else {
+                        currentUser.delete { error in
+                            if let error = error {
+                                // If an error occurs during deletion, return the error
+                                completion(false, error)
+                            } else {
+                                completion(true, nil) // Successfully deleted the account
+                            }
                         }
                     }
-                    completion(true, nil) // Successfully deleted the account
                 }
             }
         }
