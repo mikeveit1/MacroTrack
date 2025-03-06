@@ -72,7 +72,7 @@ struct ReauthenticationSheet: View {
                 .foregroundColor(Colors.secondary)
                 .cornerRadius(8)
 
-                Button("Confirm") {
+                Button("Delete") {
                     onDelete() // Call the delete action
                 }
                 .fontWeight(.bold)
