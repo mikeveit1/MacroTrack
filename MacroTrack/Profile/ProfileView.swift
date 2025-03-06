@@ -119,6 +119,7 @@ struct ProfileView: View {
                 
                 Spacer()
             }
+            .padding()
         }
         .background(Colors.secondary)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
