@@ -9,18 +9,17 @@ import Foundation
 import FatSecretSwift
 
 class FoodHelper: ObservableObject {
-    
-    let apiKey = "d0439c098ae940d4845d84f57a1e6312" // Set your API key here
-    let apiSecret = "2c59553aefc64fe29ea4215d1dab1056" // Set your API secret here
-    
     // Create a FatSecret client
     let fatSecretClient = FatSecretClient()
     
     // No need for override init, initialization is done here
     init() {
-        // Set credentials for the FatSecret API
-        FatSecretCredentials.setConsumerKey(apiKey)
-        FatSecretCredentials.setSharedSecret(apiSecret)
+        FirebaseService.shared.getFatSecretKey { key in
+            FatSecretCredentials.setConsumerKey(key)
+        }
+        FirebaseService.shared.getFatSecretSecret { secret in
+            FatSecretCredentials.setSharedSecret(secret)
+        }
     }
     
     // Search for foods by name
@@ -45,7 +44,7 @@ class FoodHelper: ObservableObject {
             carbs: (Double(food.servings?[0].carbohydrate ?? "") ?? 0).rounded(toPlaces: 2),
             fat: (Double(food.servings?[0].fat ?? "") ?? 0).rounded(toPlaces: 2)
         ))
-
+        
     }
     
     func getOriginalFood(id: String, completion: @escaping (MacroFood) -> Void) {

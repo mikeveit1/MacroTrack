@@ -392,6 +392,20 @@ class FirebaseService {
         }
     }
     
+    func getFatSecretKey(completion: @escaping (String) -> Void) {
+        db.child("secret").child("key").observe(.value, with: { snapshot in
+            let key = snapshot.value as? String ?? ""
+            completion(key) // Call the completion handler with the value
+        })
+    }
+    
+    func getFatSecretSecret(completion: @escaping (String) -> Void) {
+        db.child("secret").child("secret").observe(.value, with: { snapshot in
+            let secret = snapshot.value as? String ?? ""
+            completion(secret) // Call the completion handler with the value
+        })
+    }
+    
     // Helper function to handle Firebase error
     private func handleFirebaseError(_ error: Error?, completion: @escaping (Bool, Error?) -> Void) {
         if let error = error {
