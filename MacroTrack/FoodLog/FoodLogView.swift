@@ -738,20 +738,26 @@ struct FoodLogView: View {
     // View for searching foods
     private var searchFoodsView: some View {
         VStack {
-            TextField("Search for foods", text: $searchQuery)
-                //.accentColor(Colors.primary)
-                .padding()
-                //.background(Colors.secondary)
-                .cornerRadius(8)
-                .foregroundColor(Colors.primary)
-                .textFieldStyle(PlainTextFieldStyle())
-                .overlay(
-                    RoundedRectangle(cornerRadius: 8)
-                        .stroke(Colors.primary, lineWidth: 1)
-                )
-                .onChange(of: searchQuery) { newValue in
-                    viewModel.searchFoods(query: newValue)
+            ZStack(alignment: .leading) {
+                if searchQuery.isEmpty {
+                    Text("Search for foods")
+                        .foregroundColor(Colors.primaryLight)
+                        .padding(.leading, 15)
                 }
+                TextField("", text: $searchQuery)
+                    .accentColor(Colors.primary)
+                    .padding()
+                    .cornerRadius(8)
+                    .foregroundColor(Colors.primary)
+                    .textFieldStyle(PlainTextFieldStyle())
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 8)
+                            .stroke(Colors.primary, lineWidth: 1)
+                    )
+                    .onChange(of: searchQuery) { newValue in
+                        viewModel.searchFoods(query: newValue)
+                    }
+            }
             
             // List of food items
             List(viewModel.searchResults, id: \.id) { food in
@@ -788,18 +794,23 @@ struct FoodLogView: View {
     // View for searching meals
     private var searchMealsView: some View {
         VStack {
-            TextField("Search your meals", text: $mealSearchQuery)
-                .accentColor(Colors.primary)
-                .padding()
-                .background(Colors.secondary)
-                .cornerRadius(8)
-                .foregroundColor(Colors.primary)
-                .textFieldStyle(PlainTextFieldStyle())
-                .overlay(
-                    RoundedRectangle(cornerRadius: 8)
-                        .stroke(Colors.primary, lineWidth: 1)
-                )
-                .tint(Colors.primary)
+            ZStack(alignment: .leading) {
+                if mealSearchQuery.isEmpty {
+                    Text("Search your meals")
+                        .foregroundColor(Colors.primaryLight)
+                        .padding(.leading, 15)
+                }
+                TextField("", text: $mealSearchQuery)
+                    .accentColor(Colors.primary)
+                    .padding()
+                    .cornerRadius(8)
+                    .foregroundColor(Colors.primary)
+                    .textFieldStyle(PlainTextFieldStyle())
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 8)
+                            .stroke(Colors.primary, lineWidth: 1)
+                    )
+            }
             
             // List of saved meals
             List {
