@@ -75,10 +75,11 @@ struct SignInView: View {
                     }
                 }) {
                     Text("Sign In")
-                        .foregroundColor(Colors.secondary)
+                        .fontWeight(.bold)
+                        .frame(maxWidth: 200)
                         .padding()
-                        .bold()
                         .background(Colors.primary)
+                        .foregroundColor(Colors.secondary)
                         .cornerRadius(10)
                 }
                 .padding()

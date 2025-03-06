@@ -55,6 +55,8 @@
 		E4DE451A2D7904A400E681A9 /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4DE45192D7904A400E681A9 /* ProfileViewModel.swift */; };
 		E4DE451C2D7905D200E681A9 /* FetchUserDataHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4DE451B2D7905D200E681A9 /* FetchUserDataHelper.swift */; };
 		E4DE451E2D79EA0400E681A9 /* UserMeal.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4DE451D2D79EA0400E681A9 /* UserMeal.swift */; };
+		E4DE45222D7A30B100E681A9 /* LinkHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4DE45212D7A30B100E681A9 /* LinkHelper.swift */; };
+		E4DE45242D7A411300E681A9 /* ReauthenticationSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4DE45232D7A411300E681A9 /* ReauthenticationSheet.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -91,6 +93,8 @@
 		E4DE45192D7904A400E681A9 /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
 		E4DE451B2D7905D200E681A9 /* FetchUserDataHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchUserDataHelper.swift; sourceTree = "<group>"; };
 		E4DE451D2D79EA0400E681A9 /* UserMeal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserMeal.swift; sourceTree = "<group>"; };
+		E4DE45212D7A30B100E681A9 /* LinkHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkHelper.swift; sourceTree = "<group>"; };
+		E4DE45232D7A411300E681A9 /* ReauthenticationSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReauthenticationSheet.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -205,6 +209,7 @@
 				E48DF3422D73797E00F92063 /* RoundingHelper.swift */,
 				E48DF3442D73965A00F92063 /* ApplicationHelper.swift */,
 				E4DE451B2D7905D200E681A9 /* FetchUserDataHelper.swift */,
+				E4DE45212D7A30B100E681A9 /* LinkHelper.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -215,6 +220,7 @@
 				E48DF3402D7291CD00F92063 /* AlertView.swift */,
 				E48DF3462D7681A900F92063 /* GoalEditorField.swift */,
 				E4DE45072D775BE300E681A9 /* MainContentView.swift */,
+				E4DE45232D7A411300E681A9 /* ReauthenticationSheet.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -387,12 +393,14 @@
 				E48DF33B2D7254C700F92063 /* FoodHelper.swift in Sources */,
 				E48DF3542D774C9000F92063 /* FirebaseService.swift in Sources */,
 				E48DF2FE2D72129300F92063 /* MacroTrackApp.swift in Sources */,
+				E4DE45222D7A30B100E681A9 /* LinkHelper.swift in Sources */,
 				E4DE45082D775BE300E681A9 /* MainContentView.swift in Sources */,
 				E48DF34A2D7744AE00F92063 /* MacroCalculatorView.swift in Sources */,
 				E48DF3432D73797E00F92063 /* RoundingHelper.swift in Sources */,
 				E48DF3332D7252D600F92063 /* FoodLogViewModel.swift in Sources */,
 				E4DE45062D775AB900E681A9 /* SignUpViewModel.swift in Sources */,
 				E4DE451C2D7905D200E681A9 /* FetchUserDataHelper.swift in Sources */,
+				E4DE45242D7A411300E681A9 /* ReauthenticationSheet.swift in Sources */,
 				E4DE44FC2D77570D00E681A9 /* UserFoodLogData.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

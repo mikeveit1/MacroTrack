@@ -15,6 +15,8 @@ class SignUpViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var errorMessage: String?
     @AppStorage("isLoggedIn") private var isLoggedIn: Bool = false // Persist login state
+    @Published var termsLink: String = ""
+    private var linkHelper = LinkHelper()
     
     // Sign-up function with a completion handler
     func signUp(completion: @escaping (Bool) -> Void) {
@@ -39,6 +41,12 @@ class SignUpViewModel: ObservableObject {
                 self.isLoading = false
                 completion(false)
             }
+        }
+    }
+    
+    func getTermsLink() {
+        linkHelper.getTermsLink { link in
+            self.termsLink = link
         }
     }
 }

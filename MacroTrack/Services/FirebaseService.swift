@@ -56,7 +56,7 @@ class FirebaseService {
             self.handleFirebaseError(error, completion: completion)
         }
     }
-
+    
     // Save food to a meal in Firebase Realtime Database
     func saveFoodToMeal(date: String, meal: String, food: MacroFood, completion: @escaping (Bool, Error?) -> Void) {
         guard let userID = getCurrentUserID() else { return }
@@ -98,7 +98,7 @@ class FirebaseService {
     func getFoodLog(date: String, completion: @escaping ([String: Any]?, Error?) -> Void) {
         guard let userID = getCurrentUserID() else { return }
         db.child("users").child(userID).child("foodLogs").child(date).observe(.value, with: { snapshot in
-           if let data = snapshot.value as? [String: Any] {
+            if let data = snapshot.value as? [String: Any] {
                 completion(data, nil)
             } else {
                 completion(nil, nil)
@@ -172,11 +172,11 @@ class FirebaseService {
             print("No user is logged in")
             return
         }
-
+        
         // Create a unique ID for the meal
         let mealID = UUID().uuidString  // You can choose another method to generate an ID
         let mealRef = db.child("users").child(userID).child("meals").child(mealID)
-
+        
         // Save the meal data
         let mealData: [String: Any] = [
             "id": mealID,
@@ -184,7 +184,7 @@ class FirebaseService {
             "foods": foodsList,
             "createdAt": "\(Date())"  // Optionally add a timestamp
         ]
-
+        
         mealRef.setValue(mealData) { error, _ in
             if let error = error {
                 print("Error saving meal to Firebase: \(error.localizedDescription)")
@@ -198,14 +198,14 @@ class FirebaseService {
             print("No user is logged in")
             return
         }
-
+        
         // Reference to the meals node in Realtime Database
         let mealsRef = db.child("users").child(userID).child("meals")
-
+        
         // Retrieve the saved meals from Firebase
         mealsRef.observe(.value, with: { snapshot in
             var meals: [UserMeal] = []
-
+            
             // Iterate over the meals data
             for childSnapshot in snapshot.children.allObjects as? [DataSnapshot] ?? [] {
                 if let mealData = childSnapshot.value as? [String: Any] {
@@ -213,7 +213,7 @@ class FirebaseService {
                        let mealId = mealData["id"] as? String,
                        let foodsData = mealData["foods"] as? [[String: Any]] {
                         var foods: [MacroFood] = []
-
+                        
                         // Map the foods data to MacroFood objects
                         for foodData in foodsData {
                             if let name = foodData["name"] as? String,
@@ -223,7 +223,7 @@ class FirebaseService {
                                let originalMacros = foodData["originalMacros"] as? [String: Any],
                                let servings = foodData["servings"] as? Double,
                                let addDateString = foodData["addDate"] as? String {
-
+                                
                                 // Convert addDate from timestamp (Double) to Date
                                 let dateFormatter = DateFormatter()
                                 
@@ -239,14 +239,14 @@ class FirebaseService {
                                     carbs: macronutrients["carbs"] as? Double ?? 0,
                                     fat: macronutrients["fat"] as? Double ?? 0
                                 )
-
+                                
                                 let originalMacronutrientInfo = MacronutrientInfo(
                                     calories: originalMacros["calories"] as? Double ?? 0,
                                     protein: originalMacros["protein"] as? Double ?? 0,
                                     carbs: originalMacros["carbs"] as? Double ?? 0,
                                     fat: originalMacros["fat"] as? Double ?? 0
                                 )
-
+                                
                                 let macroFood = MacroFood(
                                     id: id,
                                     name: name,
@@ -260,21 +260,21 @@ class FirebaseService {
                                 foods.append(macroFood)
                             }
                         }
-
+                        
                         // Create a UserMeal object and append to meals array
                         let userMeal = UserMeal(id: mealId, name: mealName, foods: foods)
                         meals.append(userMeal)
                     }
                 }
             }
-
+            
             // Return the array of meals
             completion(meals)
         })
     }
-
-
-
+    
+    
+    
     
     // Fetch user macro data from Firebase
     func fetchUserMacroData(completion: @escaping (UserMacroData?) -> Void) {
@@ -340,6 +340,58 @@ class FirebaseService {
                 completion(true, nil)
             } else {
                 completion(false, "Unexpected error")
+            }
+        }
+    }
+    
+    func getLink(linkName: String, completion: @escaping (String) -> Void) {
+        db.child("links").child(linkName).observe(.value, with: { snapshot in
+            let link = snapshot.value as? String ?? ""
+            completion(link)  // Call the completion handler with the value
+        })
+    }
+    
+    func signOut(completion: @escaping (Bool, Error?) -> Void) {
+        do {
+            try Auth.auth().signOut()
+            completion(true, nil) // Successfully signed out
+        } catch let signOutError as NSError {
+            completion(false, signOutError) // Handle error if sign-out fails
+        }
+    }
+    
+    func deleteAccount(email: String, password: String, completion: @escaping (Bool, Error?) -> Void) {
+        guard let currentUser = Auth.auth().currentUser else {
+            completion(false, NSError(domain: "FirebaseError", code: 0, userInfo: [NSLocalizedDescriptionKey: "No user is currently logged in."]))
+            return
+        }
+        
+        let id = currentUser.uid
+        
+        // Re-authenticate the user with email and password
+        let credential = EmailAuthProvider.credential(withEmail: email, password: password)
+        
+        currentUser.reauthenticate(with: credential) { result, error in
+            if let error = error {
+                // If re-authentication fails, return the error
+                completion(false, error)
+                return
+            }
+            
+            // Now proceed to delete the account
+            currentUser.delete { error in
+                if let error = error {
+                    // If an error occurs during deletion, return the error
+                    completion(false, error)
+                } else {
+                    // Successfully deleted the account, also remove user data from the database
+                    self.db.child("users").child(id).setValue(nil) { error, _ in
+                        if let error = error {
+                            print("Failed to delete user data from database: \(error.localizedDescription)")
+                        }
+                    }
+                    completion(true, nil) // Successfully deleted the account
+                }
             }
         }
     }

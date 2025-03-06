@@ -67,7 +67,7 @@ struct MacroCalculatorView: View {
                 .padding()
                 
                 // Activity level picker
-                VStack(spacing: 16) {
+                VStack(spacing: 8) {
                     VStack {
                         Text("Activity Level")
                             .foregroundColor(Colors.primary) // Change this to your desired color
@@ -78,13 +78,15 @@ struct MacroCalculatorView: View {
                                 Text(level)
                             }
                         }
-                        .padding(8)
                         .foregroundColor(Colors.primary)
                         .pickerStyle(MenuPickerStyle())
                         .tint(Colors.primary)
+                        .padding(8)
+                        .frame(maxWidth: 200)
                         .background(Colors.gray)
                         .cornerRadius(10)
                     }
+                    .padding(8)
                     
                     VStack {
                         Text("Fitness Goal")
@@ -100,9 +102,11 @@ struct MacroCalculatorView: View {
                         .pickerStyle(MenuPickerStyle())
                         .tint(Colors.primary)
                         .padding(8)
+                        .frame(maxWidth: 200)
                         .background(Colors.gray)
                         .cornerRadius(10)
                     }
+                    .padding(8)
                 }
              //   .padding()
                 
@@ -112,11 +116,14 @@ struct MacroCalculatorView: View {
                         viewModel.calculateMacronutrients()
                     }) {
                         Text("Calculate")
-                            .foregroundColor(.white)
+                            .fontWeight(.bold)
+                            .frame(maxWidth: 200)
                             .padding()
                             .background(Colors.primary)
-                            .cornerRadius(8)
+                            .foregroundColor(Colors.secondary)
+                            .cornerRadius(10)
                     }
+                    .padding()
                 }
                 .padding(.top)
                 

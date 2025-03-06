@@ -16,7 +16,7 @@ struct SignUpView: View {
             Spacer()
             VStack(spacing: 8) {
                 Text("Sign Up")
-                    .font(.system(size: 22))
+                    .font(.title3)
                     .bold()
                     .foregroundColor(Colors.primary)
                     .padding()
@@ -105,18 +105,36 @@ struct SignUpView: View {
                         .padding()
                         .foregroundColor(Colors.primary)
                 }
-                
-                Button(action: {
-                    viewModel.signUp { user in
-                        print(user)
+                VStack {
+                    Button(action: {
+                        viewModel.signUp { user in
+                            print(user)
+                        }
+                    }) {
+                        Text("Sign Up")
+                            .fontWeight(.bold)
+                            .frame(maxWidth: 200)
+                            .padding()
+                            .background(Colors.primary)
+                            .foregroundColor(Colors.secondary)
+                            .cornerRadius(10)
                     }
-                }) {
-                    Text("Sign Up")
-                        .foregroundColor(Colors.secondary)
-                        .padding()
-                        .bold()
-                        .background(Colors.primary)
-                        .cornerRadius(10)
+                    HStack {
+                        if let url = URL(string: viewModel.termsLink), UIApplication.shared.canOpenURL(url) {
+                            let termsText = "By creating an account, you are agreeing to our [terms and conditions](\(url))."
+                            Text(.init(termsText))
+                                .foregroundColor(Colors.primary)
+                                .font(.caption)
+                                .multilineTextAlignment(.center)
+                        } else {
+                            let termsText = "By creating an account, you are agreeing to our [terms and conditions]()."
+                            Text(.init(termsText))
+                                .foregroundColor(Colors.primary)
+                                .font(.caption)
+                                .multilineTextAlignment(.center)
+                        }
+                    }
+                    .padding()
                 }
                 .padding()
             }
@@ -124,6 +142,9 @@ struct SignUpView: View {
             Spacer()
         }
         .background(Colors.secondary)
+        .onAppear {
+            viewModel.getTermsLink()
+        }
     }
 }
 

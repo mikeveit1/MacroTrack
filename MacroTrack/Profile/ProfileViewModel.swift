@@ -21,7 +21,13 @@ class ProfileViewModel: ObservableObject {
         "carbs": 250,      // Example: 250g carbs
         "fat": 70          // Example: 70g fat
     ]
+    @Published var termsLink: String = ""
+    @Published var privacyLink: String = ""
+    @Published var errorMessage: String = ""
+    @Published var error: Bool = false
     var fetchUserDataHelper = FetchUserDataHelper()
+    private var linkHelper = LinkHelper()
+    @AppStorage("isLoggedIn") private var isLoggedIn: Bool = false // Persist login state
     
     func fetchMacroGoals() {
         isLoading = true
@@ -29,6 +35,11 @@ class ProfileViewModel: ObservableObject {
             self.dailyGoals = goals
             self.isLoading = false
         }
+    }
+    
+    func resetError() {
+        error = false
+        errorMessage = ""
     }
     
     func calculateAverageMacros() {
@@ -172,6 +183,40 @@ class ProfileViewModel: ObservableObject {
             
             // Set the final consecutive days count
             self.consecutiveDaysLogged = max(maxConsecutiveDays, consecutiveDaysCount)
+        }
+    }
+    
+    func signOut() {
+        FirebaseService.shared.signOut { result, error in
+            if let error = error {
+                print(error.localizedDescription)
+            }
+            if result {
+                self.isLoggedIn = false
+            }
+        }
+    }
+    
+    func deleteAccount(email: String, password: String) {
+        FirebaseService.shared.deleteAccount(email: email, password: password, completion: { result, error in
+            if let error = error {
+                self.errorMessage = error.localizedDescription
+                self.error = true
+            } else if result {
+                self.isLoggedIn = false
+            }
+        })
+    }
+    
+    func getTermsLink() {
+        linkHelper.getTermsLink { link in
+            self.termsLink = link
+        }
+    }
+    
+    func getPrivacyPolicyLink() {
+        linkHelper.getTermsLink { link in
+            self.privacyLink = link
         }
     }
 

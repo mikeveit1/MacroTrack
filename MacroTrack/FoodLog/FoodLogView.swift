@@ -60,29 +60,40 @@ struct FoodLogView: View {
                         
                         GoalEditorField(goalType: "Fat", value: $editedGoals["fat"])
                         
-                        // Save Button
-                        Button(action: {
-                            viewModel.saveDailyGoals(newGoals: editedGoals)
-                            isSettingsPresented = false // Close the modal
-                        }) {
-                            Text("Save")
-                                .fontWeight(.bold)
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(Colors.primary)
-                                .foregroundColor(.white)
-                                .cornerRadius(8)
+                        HStack {
+                            Spacer()
+                            // Save Button
+                            Button(action: {
+                                viewModel.saveDailyGoals(newGoals: editedGoals)
+                                isSettingsPresented = false // Close the modal
+                            }) {
+                                Text("Save")
+                                    .fontWeight(.bold)
+                                    .frame(maxWidth: 200)
+                                    .padding()
+                                    .background(Colors.primary)
+                                    .foregroundColor(Colors.secondary)
+                                    .cornerRadius(10)
+                            }
+                            .padding(.top, 16) // Padding for spacing between the fields and the button
+                            Spacer()
                         }
-                        .padding(.top, 16) // Padding for spacing between the fields and the button
                         
                         // Cancel Button
-                        Button(action: {
-                            isSettingsPresented = false // Close the modal without saving
-                        }) {
-                            Text("Cancel")
-                                .padding()
-                                .foregroundColor(.red)
-                                .frame(maxWidth: .infinity)
+                        HStack {
+                            Spacer()
+                            Button(action: {
+                                isSettingsPresented = false // Close the modal without saving
+                            }) {
+                                Text("Cancel")
+                                    .fontWeight(.bold)
+                                    .frame(maxWidth: 200)
+                                    .padding()
+                                    .background(Color.red)
+                                    .foregroundColor(Colors.secondary)
+                                    .cornerRadius(10)
+                            }
+                            Spacer()
                         }
                     }
                     .padding()
@@ -290,7 +301,7 @@ struct FoodLogView: View {
     
     var filterModal: some View {
         VStack {
-            Text("Select Progress Bars")
+            Text("Filter Daily Macronutrient Goals")
                 .font(.title3)
                 .bold()
                 .padding()
@@ -330,16 +341,23 @@ struct FoodLogView: View {
                 .padding()
                 
                 // Dismiss Button
-                Button(action: {
-                    showFilterModal.toggle()
-                    viewModel.saveProgressBarData()
-                }) {
-                    Text("Save")
-                        .padding()
-                        .foregroundColor(Colors.primary)
-                        .fontWeight(.bold)
+                HStack {
+                    Spacer()
+                    Button(action: {
+                        showFilterModal.toggle()
+                        viewModel.saveProgressBarData()
+                    }) {
+                        Text("Save")
+                            .fontWeight(.bold)
+                            .frame(maxWidth: 200)
+                            .padding()
+                            .background(Colors.primary)
+                            .foregroundColor(Colors.secondary)
+                            .cornerRadius(10)
+                    }
+                    .padding()
+                    Spacer()
                 }
-                .padding()
             }
             .background(Colors.secondary) // Gray background for the whole sheet
             .cornerRadius(10) // Optional: Corner radius if you want rounded corners
@@ -582,14 +600,15 @@ struct FoodLogView: View {
         .shadow(radius: 5)
         .sheet(isPresented: $showingMealNameAlert) {
             VStack {
-                Text("Save Meal")
-                    .font(.title3)
-                    .foregroundColor(Colors.primary)
-                    .padding()
-                    .bold()
-                Text("Enter a name for this meal:")
-                    .foregroundColor(Colors.primary)
-                    .padding()
+                VStack {
+                    Text("Save Meal")
+                        .font(.title3)
+                        .foregroundColor(Colors.primary)
+                        .bold()
+                    Text("Enter a name for this meal:")
+                        .foregroundColor(Colors.primary)
+                }
+                .padding()
                 ZStack(alignment: .leading) {
                     if mealName.isEmpty {
                         Text("Meal Name")
@@ -610,27 +629,39 @@ struct FoodLogView: View {
                 }
 
                 
-                HStack {
-                    Button("Cancel") {
-                        self.showingMealNameAlert = false
-                    }
-                    .padding()
-                    .background(Color.red)
-                    .foregroundColor(Colors.secondary)
-                    .cornerRadius(8)
-                    
-                    Button("Save") {
-                        if !mealName.isEmpty {
-                            viewModel.saveMealToFirebase(mealName: mealName, meal: viewModel.selectedMeal)
+                VStack {
+                    HStack {
+                        Spacer()
+                        
+                        Button("Save") {
+                            if !mealName.isEmpty {
+                                viewModel.saveMealToFirebase(mealName: mealName, meal: viewModel.selectedMeal)
+                            }
+                            self.showingMealNameAlert = false
                         }
-                        self.showingMealNameAlert = false
+                        .fontWeight(.bold)
+                        .frame(maxWidth: 200)
+                        .padding()
+                        .background(Colors.primary)
+                        .foregroundColor(Colors.secondary)
+                        .cornerRadius(10)
+                        Spacer()
                     }
-                    .padding()
-                    .background(Colors.primary)
-                    .foregroundColor(Colors.secondary)
-                    .cornerRadius(8)
+                    HStack {
+                        Spacer()
+                        Button("Cancel") {
+                            self.showingMealNameAlert = false
+                        }
+                        .fontWeight(.bold)
+                        .frame(maxWidth: 200)
+                        .padding()
+                        .background(Color.red)
+                        .foregroundColor(Colors.secondary)
+                        .cornerRadius(10)
+                        Spacer()
+                    }
                 }
-                Spacer()
+                .padding()
             }
             .frame(maxHeight: .infinity)
             .background(Colors.secondary)
