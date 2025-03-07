@@ -14,7 +14,7 @@ struct ProfileView: View {
             VStack(spacing: 8) {
                 // First Card: Daily Goals
                 LogoGreen
-                    .padding(.bottom)
+                    .padding(.bottom, 8)
                 VStack(spacing: 4) {  // Reduced spacing between cards
                     Text("Your Daily Goals")
                         .font(.title3)
@@ -271,11 +271,11 @@ struct ProfileView: View {
                     }
                     Text("App Version: \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown")")
                         .foregroundColor(Colors.primary)
-                        //.padding()
+                        .padding(8)
                     
                 }
+                .padding(.bottom)
             }
-            .padding()
         }
         .background(Colors.secondary)
         .frame(maxWidth: .infinity, maxHeight: .infinity)

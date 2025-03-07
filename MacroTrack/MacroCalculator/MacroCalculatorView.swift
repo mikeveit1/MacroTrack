@@ -7,7 +7,7 @@ struct MacroCalculatorView: View {
         ScrollView {
             VStack(spacing: 8) {
                 LogoGreen
-                    .padding(.bottom)
+                    .padding(.bottom, 8)
                 VStack(spacing: 4) {
                     Text("Macronutrient Calculator")
                         .font(.title3)
@@ -158,7 +158,8 @@ struct MacroCalculatorView: View {
                 .shadow(radius: 5)
                 .frame(maxWidth: .infinity) // Fixed
             }
-            .padding()
+            .padding(.horizontal)
+            .padding(.bottom)
         }
         .background(Colors.secondary)
         .frame(maxWidth: .infinity, maxHeight: .infinity)

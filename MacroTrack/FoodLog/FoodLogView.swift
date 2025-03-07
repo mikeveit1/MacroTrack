@@ -23,7 +23,7 @@ struct FoodLogView: View {
         ScrollView {
             VStack {
                 LogoGreen
-                    .padding(.bottom)
+                    .padding(.bottom, 8)
                 // Header View (Date Navigation)
                 headerView
                 
@@ -39,8 +39,9 @@ struct FoodLogView: View {
                 // Trigger data fetching when the date changes
                 viewModel.fetchFoodLog()
             }
-            .padding()
-            .background(Color(.white))
+            .padding(.horizontal)
+            .padding(.bottom)
+            .background(Colors.secondary)
             .sheet(isPresented: $modalVisible) {
                 foodModalView
             }
@@ -610,7 +611,7 @@ struct FoodLogView: View {
                     Text("Enter a name for this meal:")
                         .foregroundColor(Colors.primary)
                 }
-                .padding()
+                .padding(.top)
                 ZStack(alignment: .leading) {
                     if mealName.isEmpty {
                         Text("Meal Name")
@@ -663,6 +664,7 @@ struct FoodLogView: View {
                         Spacer()
                     }
                 }
+                Spacer()
                 .padding()
             }
             .frame(maxHeight: .infinity)
@@ -678,7 +680,7 @@ struct FoodLogView: View {
                 .font(.title3)
                 .foregroundColor(Colors.primary)
                 .bold()
-                .padding()
+                .padding(.top)
             
             // Top Tab Bar with Underline
             HStack {

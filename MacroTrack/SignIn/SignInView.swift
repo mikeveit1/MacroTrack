@@ -12,7 +12,7 @@ struct SignInView: View {
                     .font(.title3)
                     .bold()
                     .foregroundColor(Colors.primary)
-                    .padding()
+                    .padding(8)
                 TextField("", text: $viewModel.email, prompt: Text("Email").foregroundColor(Colors.primary.opacity(0.5)))
                     .padding()
                     .background(Colors.secondary)  // Set background of the entire TextField to white
@@ -86,7 +86,7 @@ struct SignInView: View {
                 }
                 Spacer()
             }
-            .padding()
+            .padding(.horizontal)
             .background(Colors.secondary)
         }
         .accentColor(Colors.primary)
