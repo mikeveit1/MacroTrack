@@ -58,6 +58,8 @@
 		E4DE45222D7A30B100E681A9 /* LinkHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4DE45212D7A30B100E681A9 /* LinkHelper.swift */; };
 		E4DE45242D7A411300E681A9 /* ReauthenticationSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4DE45232D7A411300E681A9 /* ReauthenticationSheet.swift */; };
 		E4DE45262D7B4C7200E681A9 /* LogoGreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4DE45252D7B4C7200E681A9 /* LogoGreen.swift */; };
+		E4DE45282D7B625A00E681A9 /* SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4DE45272D7B625A00E681A9 /* SplashView.swift */; };
+		E4DE452D2D7B693A00E681A9 /* LogoAnimated.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = E4DE452B2D7B664100E681A9 /* LogoAnimated.mp4 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -97,6 +99,8 @@
 		E4DE45212D7A30B100E681A9 /* LinkHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkHelper.swift; sourceTree = "<group>"; };
 		E4DE45232D7A411300E681A9 /* ReauthenticationSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReauthenticationSheet.swift; sourceTree = "<group>"; };
 		E4DE45252D7B4C7200E681A9 /* LogoGreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogoGreen.swift; sourceTree = "<group>"; };
+		E4DE45272D7B625A00E681A9 /* SplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashView.swift; sourceTree = "<group>"; };
+		E4DE452B2D7B664100E681A9 /* LogoAnimated.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = LogoAnimated.mp4; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -146,6 +150,7 @@
 		E48DF2FC2D72129300F92063 /* MacroTrack */ = {
 			isa = PBXGroup;
 			children = (
+				E4DE452B2D7B664100E681A9 /* LogoAnimated.mp4 */,
 				E4DE45162D79049300E681A9 /* Profile */,
 				E4DE45122D7794E400E681A9 /* GoogleService-Info.plist */,
 				E4DE45092D77842C00E681A9 /* App */,
@@ -224,6 +229,7 @@
 				E4DE45072D775BE300E681A9 /* MainContentView.swift */,
 				E4DE45232D7A411300E681A9 /* ReauthenticationSheet.swift */,
 				E4DE45252D7B4C7200E681A9 /* LogoGreen.swift */,
+				E4DE45272D7B625A00E681A9 /* SplashView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -362,6 +368,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E4DE452D2D7B693A00E681A9 /* LogoAnimated.mp4 in Resources */,
 				E48DF3062D72129400F92063 /* Preview Assets.xcassets in Resources */,
 				E48DF3022D72129400F92063 /* Assets.xcassets in Resources */,
 				E4DE45132D7794E400E681A9 /* GoogleService-Info.plist in Resources */,
@@ -392,6 +399,7 @@
 				E4DE45042D775AB200E681A9 /* SignUpView.swift in Sources */,
 				E48DF34C2D7744C300F92063 /* MacroCalculatorViewModel.swift in Sources */,
 				E4DE451E2D79EA0400E681A9 /* UserMeal.swift in Sources */,
+				E4DE45282D7B625A00E681A9 /* SplashView.swift in Sources */,
 				E4DE45002D775AA400E681A9 /* SignInView.swift in Sources */,
 				E48DF3382D72540700F92063 /* MealLogs.swift in Sources */,
 				E48DF33B2D7254C700F92063 /* FoodHelper.swift in Sources */,
@@ -535,7 +543,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"MacroTrack/Preview Content\"";
-				DEVELOPMENT_TEAM = Y3NV8759Z7;
+				DEVELOPMENT_TEAM = HRR73Q9W36;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -574,7 +582,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"MacroTrack/Preview Content\"";
-				DEVELOPMENT_TEAM = Y3NV8759Z7;
+				DEVELOPMENT_TEAM = HRR73Q9W36;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
