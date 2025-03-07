@@ -7,9 +7,9 @@ struct SignInView: View {
     var body: some View {
         NavigationView {
             VStack(spacing: 8) {
-                Spacer()
+                LogoGreen
                 Text("Sign In")
-                    .font(.system(size: 22))
+                    .font(.title3)
                     .bold()
                     .foregroundColor(Colors.primary)
                     .padding()
@@ -59,14 +59,7 @@ struct SignInView: View {
                         .foregroundColor(.red)
                         .padding()
                 }
-                
-                if viewModel.isLoading {
-                    ProgressView()
-                        .progressViewStyle(CircularProgressViewStyle())
-                        .padding()
-                        .foregroundColor(Colors.primary)
-                }
-                
+            
                 Button(action: {
                     viewModel.signIn { success in
                         if success {
@@ -88,8 +81,8 @@ struct SignInView: View {
                 NavigationLink(destination: SignUpView()) {
                     Text("Don't have an account? Sign Up")
                         .foregroundColor(Colors.primaryLight)
-                        .padding()
                         .bold()
+                        .font(.caption)
                 }
                 Spacer()
             }

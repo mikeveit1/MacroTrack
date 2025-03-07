@@ -5,14 +5,16 @@ struct MacroCalculatorView: View {
     
     var body: some View {
         ScrollView {
-            VStack {
-                Text("Macronutrient Calculator")
-                    .font(.title3)
-                    .bold()
-                    .foregroundColor(Colors.primary)
-                    .padding(.top)
-                // Weight input
-                VStack(spacing: 8) {
+            VStack(spacing: 8) {
+                LogoGreen
+                    .padding(.bottom)
+                VStack(spacing: 4) {
+                    Text("Macronutrient Calculator")
+                        .font(.title3)
+                        .bold()
+                        .foregroundColor(Colors.primary)
+                        .padding()
+                    // Weight input
                     ZStack(alignment: .leading) {
                         if viewModel.weight.isEmpty {
                             Text("Enter Weight (lbs)")
@@ -63,30 +65,30 @@ struct MacroCalculatorView: View {
                             .cornerRadius(8)
                             .accentColor(Colors.primary)
                     }
-                }
-                .padding()
                 
-                // Activity level picker
-                VStack(spacing: 8) {
-                    VStack {
-                        Text("Activity Level")
-                            .foregroundColor(Colors.primary) // Change this to your desired color
-                            .font(.title3)
-                            .bold()
-                        Picker("", selection: $viewModel.activityLevel) {
-                            ForEach(viewModel.activityLevels, id: \.self) { level in
-                                Text(level)
+                    HStack {
+                        Spacer()
+                        VStack {
+                            Text("Activity Level")
+                                .foregroundColor(Colors.primary) // Change this to your desired color
+                                .font(.title3)
+                                .bold()
+                            Picker("", selection: $viewModel.activityLevel) {
+                                ForEach(viewModel.activityLevels, id: \.self) { level in
+                                    Text(level)
+                                }
                             }
+                            .foregroundColor(Colors.primary)
+                            .pickerStyle(MenuPickerStyle())
+                            .tint(Colors.primary)
+                            .padding(8)
+                            .frame(maxWidth: 200)
+                            .background(Colors.gray)
+                            .cornerRadius(10)
                         }
-                        .foregroundColor(Colors.primary)
-                        .pickerStyle(MenuPickerStyle())
-                        .tint(Colors.primary)
                         .padding(8)
-                        .frame(maxWidth: 200)
-                        .background(Colors.gray)
-                        .cornerRadius(10)
+                        Spacer()
                     }
-                    .padding(8)
                     
                     VStack {
                         Text("Fitness Goal")
@@ -107,11 +109,7 @@ struct MacroCalculatorView: View {
                         .cornerRadius(10)
                     }
                     .padding(8)
-                }
-             //   .padding()
-                
-                VStack(spacing: 8) {
-                    // Calculate Button
+                    
                     Button(action: {
                         viewModel.calculateMacronutrients()
                     }) {
@@ -125,14 +123,22 @@ struct MacroCalculatorView: View {
                     }
                     .padding()
                 }
-                .padding(.top)
-                
+                .padding()  // Proper padding around the entire progress chart
+                .background(Colors.secondary)
+                .cornerRadius(10)
+                .shadow(radius: 5)
+                .frame(maxWidth: .infinity) // Fixed
                 // Display results if calculations are done
                 VStack(spacing: 8) {
-                    Text("Your Daily Macronutrient Goals:")
-                        .font(.title3)
-                        .bold()
-                        .foregroundColor(Colors.primary)
+                    HStack {
+                        Spacer()
+                        Text("Your Daily Macronutrient Goals:")
+                            .font(.title3)
+                            .bold()
+                            .foregroundColor(Colors.primary)
+                            //.padding(.horizontal)
+                        Spacer()
+                    }
                     Text("Calories: \(Int(viewModel.totalCalories)) kcal")
                         .bold()
                         .foregroundColor(Colors.primary)
@@ -146,25 +152,24 @@ struct MacroCalculatorView: View {
                         .bold()
                         .foregroundColor(Colors.primary)
                 }
-                .padding()
+                .padding()  // Proper padding around the entire progress chart
+                .background(Colors.secondary)
+                .cornerRadius(10)
+                .shadow(radius: 5)
+                .frame(maxWidth: .infinity) // Fixed
             }
-            .background(Colors.secondary)
-            .ignoresSafeArea(.all)
-            .cornerRadius(10)
-            .shadow(radius: 5)
             .padding()
-            .onTapGesture {
-                UIApplication.shared.endEditing() // This will dismiss the keyboard
-            }
-            .cornerRadius(10)
-            .background(Colors.secondary)
         }
         .background(Colors.secondary)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .onTapGesture {
+            UIApplication.shared.endEditing() // This will dismiss the keyboard
+        }
     }
 }
-
-struct MacroCalculatorView_Previews: PreviewProvider {
-    static var previews: some View {
-        MacroCalculatorView()
+    
+    struct MacroCalculatorView_Previews: PreviewProvider {
+        static var previews: some View {
+            MacroCalculatorView()
+        }
     }
-}

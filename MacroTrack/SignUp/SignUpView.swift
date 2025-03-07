@@ -13,8 +13,8 @@ struct SignUpView: View {
     
     var body: some View {
         VStack {
-            Spacer()
             VStack(spacing: 8) {
+                LogoGreen
                 Text("Sign Up")
                     .font(.title3)
                     .bold()
@@ -99,12 +99,6 @@ struct SignUpView: View {
                         .padding()
                 }
                 
-                if viewModel.isLoading {
-                    ProgressView()
-                        .progressViewStyle(CircularProgressViewStyle())
-                        .padding()
-                        .foregroundColor(Colors.primary)
-                }
                 VStack {
                     Button(action: {
                         viewModel.signUp { user in
@@ -125,12 +119,14 @@ struct SignUpView: View {
                             Text(.init(termsText))
                                 .foregroundColor(Colors.primary)
                                 .font(.caption)
+                                .bold()
                                 .multilineTextAlignment(.center)
                         } else {
                             let termsText = "By creating an account, you are agreeing to our [terms and conditions]()."
                             Text(.init(termsText))
                                 .foregroundColor(Colors.primary)
                                 .font(.caption)
+                                .bold()
                                 .multilineTextAlignment(.center)
                         }
                     }

@@ -22,4 +22,11 @@ class LinkHelper {
         }
     }
     
+    func getContactUsLink(completion: @escaping (String) -> Void) {
+        FirebaseService.shared.getLink(linkName: "contactUs") { link in
+            let linkString = link
+            completion(linkString)  // Call the completion handler with the link
+        }
+    }
+    
 }

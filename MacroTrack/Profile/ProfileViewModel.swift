@@ -23,6 +23,7 @@ class ProfileViewModel: ObservableObject {
     ]
     @Published var termsLink: String = ""
     @Published var privacyLink: String = ""
+    @Published var contactUsLink: String = ""
     @Published var errorMessage: String = ""
     @Published var error: Bool = false
     var fetchUserDataHelper = FetchUserDataHelper()
@@ -217,6 +218,12 @@ class ProfileViewModel: ObservableObject {
     func getPrivacyPolicyLink() {
         linkHelper.getTermsLink { link in
             self.privacyLink = link
+        }
+    }
+    
+    func getContactUsLink() {
+        linkHelper.getContactUsLink { link in
+            self.contactUsLink = link
         }
     }
 

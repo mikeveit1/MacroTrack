@@ -13,6 +13,8 @@ struct ProfileView: View {
         ScrollView {
             VStack(spacing: 8) {
                 // First Card: Daily Goals
+                LogoGreen
+                    .padding(.bottom)
                 VStack(spacing: 4) {  // Reduced spacing between cards
                     Text("Your Daily Goals")
                         .font(.title3)
@@ -188,13 +190,19 @@ struct ProfileView: View {
                     
                     // Submit Inquiry (mailto)
                     HStack {
-                        Image(systemName: "envelope") // Eye icon for show/hide
+                        Image(systemName: "link") // Eye icon for show/hide
                             .foregroundColor(.blue)
                             .font(.headline)
-                        Link("Submit an Inquiry", destination: URL(string: "mailto:buckeyesoftware@gmail.com?subject=MacroTrack Inquiry&body=Hello, I have a question regarding...")!)
-                        // .padding()
-                            .font(.headline)
-                            .foregroundColor(.blue)
+                        if let url = URL(string: viewModel.contactUsLink), UIApplication.shared.canOpenURL(url) {
+                            // Safely unwrap the URL
+                            Link("Contact Us", destination: url)
+                                .font(.headline)
+                                .foregroundColor(.blue)
+                        } else {
+                            Text("Contact Us")
+                                .font(.headline)
+                                .foregroundColor(.gray) // Show a fallback text if the URL is invalid
+                        }
                     }
                 }
                 .padding()  // Proper padding around the entire progress chart
@@ -263,10 +271,9 @@ struct ProfileView: View {
                     }
                     Text("App Version: \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown")")
                         .foregroundColor(Colors.primary)
-                        .padding()
+                        //.padding()
                     
                 }
-                .padding()
             }
             .padding()
         }
@@ -278,6 +285,7 @@ struct ProfileView: View {
             viewModel.calculateConsecutiveDaysLogged()
             viewModel.getTermsLink()
             viewModel.getPrivacyPolicyLink()
+            viewModel.getContactUsLink()
         }
     }
 }

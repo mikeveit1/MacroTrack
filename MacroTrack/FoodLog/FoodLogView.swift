@@ -22,6 +22,8 @@ struct FoodLogView: View {
     var body: some View {
         ScrollView {
             VStack {
+                LogoGreen
+                    .padding(.bottom)
                 // Header View (Date Navigation)
                 headerView
                 
