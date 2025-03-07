@@ -216,7 +216,7 @@ class ProfileViewModel: ObservableObject {
     }
     
     func getPrivacyPolicyLink() {
-        linkHelper.getTermsLink { link in
+        linkHelper.getPrivacyPolicyLink { link in
             self.privacyLink = link
         }
     }
