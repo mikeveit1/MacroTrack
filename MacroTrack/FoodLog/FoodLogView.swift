@@ -586,17 +586,7 @@ struct FoodLogView: View {
                     Spacer()
                     LogoGreen
                         .padding(.bottom, 8)
-                    // Header View (Date Navigation)
                     Spacer()
-                    Button(action: {
-                        showOptionsModal = true
-                    }) {
-                        Image(systemName: "square.and.arrow.up")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 19, height: 19)
-                            .foregroundColor(Colors.primary)
-                    }
                 }
                 headerView
                 
@@ -619,14 +609,13 @@ struct FoodLogView: View {
                 foodModalView
             }
             .sheet(isPresented: $showOptionsModal) {
-                       // Modal content with meal options
-                ShareOptionsView
+                shareOptionsView
             }
             .sheet(isPresented: $isSettingsPresented) {
                 VStack {
                     Text("Edit Your Daily Macronutrient Goals")
                         .font(.title3)
-                        .foregroundColor(Colors.secondary)
+                        .foregroundColor(Colors.primary)
                         .bold()
                         .padding()
                     
@@ -684,12 +673,10 @@ struct FoodLogView: View {
                 }
                 .padding()
                 .frame(maxHeight: .infinity) // Make the VStack take up the full height
-                .background(Colors.primary.edgesIgnoringSafeArea(.all)) // Semi-transparent background behind the modal
+                .background(Colors.secondary.edgesIgnoringSafeArea(.all)) // Semi-transparent background behind the modal
             }
-            
             .background(Colors.secondary)
         }
-        
         .background(Colors.secondary)
         .onTapGesture {
             UIApplication.shared.endEditing() // This will dismiss the keyboard
@@ -718,99 +705,117 @@ struct FoodLogView: View {
         )
     }
     
-    var ShareOptionsView: some View {
-        VStack(spacing: 20) {
-            Text("Select Log Data to Share:")
-                .font(.headline)
-            
-            // Option buttons
-            Button("Daily Goals") {
-                selectedOption = "Daily Goals"
-                captureSnapshot(view: screenshotDailyGoalsView)
-            }
-            .fontWeight(.bold)
-            .frame(maxWidth: 200)
-            .padding()
-            .background(Colors.primary)
-            .foregroundColor(Colors.secondary)
-            .cornerRadius(10)
-            
-            Button(action: {
-                selectedOption = "Breakfast"
-                viewModel.selectedMeal = .breakfast
-                captureSnapshot(view: screenshotIndividualMealView)
-            }) {
-                Image(systemName: Meal.breakfast.iconName)
+    var shareOptionsView: some View {
+        VStack {
+            Text("Select Log Data to Share")
+                .font(.title3)
+                .foregroundColor(Colors.primary)
+                .bold()
+                .padding()
+            VStack(spacing: 8) {
+                // Option buttons
+                HStack {
+                    Spacer()
+                    Button("Daily Goals") {
+                        selectedOption = "Daily Goals"
+                        captureSnapshot(view: screenshotDailyGoalsView)
+                    }
+                    .fontWeight(.bold)
+                    .frame(maxWidth: 200)
+                    .padding()
+                    .background(Colors.primary)
                     .foregroundColor(Colors.secondary)
-                Text("Breakfast")
+                    .cornerRadius(10)
+                    Spacer()
+                }
+                
+                Button(action: {
+                    selectedOption = "Breakfast"
+                    viewModel.selectedMeal = .breakfast
+                    captureSnapshot(view: screenshotIndividualMealView)
+                }) {
+                    Image(systemName: Meal.breakfast.iconName)
+                        .foregroundColor(Colors.secondary)
+                    Text("Breakfast")
+                }
+                .fontWeight(.bold)
+                .frame(maxWidth: 200)
+                .padding()
+                .background(Colors.primary)
+                .foregroundColor(Colors.secondary)
+                .cornerRadius(10)
+                
+                Button(action: {
+                    selectedOption = "Lunch"
+                    viewModel.selectedMeal = .lunch
+                    captureSnapshot(view: screenshotIndividualMealView)
+                }) {
+                    Image(systemName: Meal.lunch.iconName)
+                        .foregroundColor(Colors.secondary)
+                    Text("Lunch")
+                }
+                .fontWeight(.bold)
+                .frame(maxWidth: 200)
+                .padding()
+                .background(Colors.primary)
+                .foregroundColor(Colors.secondary)
+                .cornerRadius(10)
+                
+                Button(action: {
+                    selectedOption = "Dinner"
+                    viewModel.selectedMeal = .dinner
+                    captureSnapshot(view: screenshotIndividualMealView)
+                }) {
+                    Image(systemName: Meal.dinner.iconName)
+                        .foregroundColor(Colors.secondary)
+                    Text("Dinner")
+                }
+                .fontWeight(.bold)
+                .frame(maxWidth: 200)
+                .padding()
+                .background(Colors.primary)
+                .foregroundColor(Colors.secondary)
+                .cornerRadius(10)
+                
+                Button(action: {
+                    selectedOption = "Snacks"
+                    viewModel.selectedMeal = .snacks
+                    captureSnapshot(view: screenshotIndividualMealView)
+                }) {
+                    Image(systemName: Meal.snacks.iconName)
+                        .foregroundColor(Colors.secondary)
+                    Text("Snacks")
+                }
+                .fontWeight(.bold)
+                .frame(maxWidth: 200)
+                .padding()
+                .background(Colors.primary)
+                .foregroundColor(Colors.secondary)
+                .cornerRadius(10)
+                
+                Button("All Meals") {
+                    selectedOption = "All Meals"
+                    captureSnapshot(view: screenshotAllMealsView)
+                }
+                .fontWeight(.bold)
+                .frame(maxWidth: 200)
+                .padding()
+                .background(Colors.primary)
+                .foregroundColor(Colors.secondary)
+                .cornerRadius(10)
             }
-            .fontWeight(.bold)
-            .frame(maxWidth: 200)
             .padding()
-            .background(Colors.primary)
-            .foregroundColor(Colors.secondary)
-            .cornerRadius(10)
-            
-            Button(action: {
-                selectedOption = "Lunch"
-                viewModel.selectedMeal = .lunch
-                captureSnapshot(view: screenshotIndividualMealView)
-            }) {
-                Image(systemName: Meal.lunch.iconName)
-                    .foregroundColor(Colors.secondary)
-                Text("Lunch")
-            }
-            .fontWeight(.bold)
-            .frame(maxWidth: 200)
-            .padding()
-            .background(Colors.primary)
-            .foregroundColor(Colors.secondary)
-            .cornerRadius(10)
-            
-            Button(action: {
-                selectedOption = "Dinner"
-                viewModel.selectedMeal = .dinner
-                captureSnapshot(view: screenshotIndividualMealView)
-            }) {
-                Image(systemName: Meal.dinner.iconName)
-                    .foregroundColor(Colors.secondary)
-                Text("Dinner")
-            }
-            .fontWeight(.bold)
-            .frame(maxWidth: 200)
-            .padding()
-            .background(Colors.primary)
-            .foregroundColor(Colors.secondary)
-            .cornerRadius(10)
-            
-            Button(action: {
-                selectedOption = "Snacks"
-                viewModel.selectedMeal = .snacks
-                captureSnapshot(view: screenshotIndividualMealView)
-            }) {
-                Image(systemName: Meal.snacks.iconName)
-                    .foregroundColor(Colors.secondary)
-                Text("Snacks")
-            }
-            .fontWeight(.bold)
-            .frame(maxWidth: 200)
-            .padding()
-            .background(Colors.primary)
-            .foregroundColor(Colors.secondary)
-            .cornerRadius(10)
-
-            Button("All Meals") {
-                selectedOption = "All Meals"
-                captureSnapshot(view: screenshotAllMealsView)
-            }
-            .fontWeight(.bold)
-            .frame(maxWidth: 200)
-            .padding()
-            .background(Colors.primary)
-            .foregroundColor(Colors.secondary)
-            .cornerRadius(10)
+            .background(Colors.secondary) // Gray background for the whole sheet
+            .cornerRadius(10) // Optional: Corner radius if you want rounded corners
+            .shadow(radius: 8) // Optional: Shadow for the modal itself
+            Spacer()
         }
-        .padding()
+        .padding() // Padding around the content
+        .frame(maxWidth: .infinity, maxHeight: .infinity) // Make the VStack take up the full height
+        .background(Colors.secondary) // Gray background for the whole sheet
+        .cornerRadius(10) // Optional: Corner radius if you want rounded corners
+        .shadow(radius: 8) // Optional: Shadow for the modal itself
+        .edgesIgnoringSafeArea(.all) // Ensures the gray background covers the entire screen
     }
     
     // Progress Bars for Daily Goals
@@ -824,6 +829,13 @@ struct FoodLogView: View {
                     .foregroundColor(Colors.primary)
                 
                 Spacer()
+                Button(action: {
+                    showOptionsModal = true
+                }) {
+                    Image(systemName: "square.and.arrow.up")
+                        .font(.headline)
+                        .foregroundColor(Colors.primary)
+                }
                 // Filter Button
                 Button(action: {
                     showFilterModal.toggle()
@@ -977,7 +989,7 @@ struct FoodLogView: View {
                 .font(.title3)
                 .bold()
                 .padding(.vertical)
-                .foregroundColor(Colors.secondary)
+                .foregroundColor(Colors.primary)
             VStack {
                 // Checkbox-like UI
                 Toggle(isOn: $viewModel.showCalories) {
@@ -1038,7 +1050,7 @@ struct FoodLogView: View {
         }
         .padding() // Padding around the content
         .frame(maxHeight: .infinity) // Make the VStack take up the full height
-        .background(Colors.primary) // Gray background for the whole sheet
+        .background(Colors.secondary) // Gray background for the whole sheet
         .cornerRadius(10) // Optional: Corner radius if you want rounded corners
         .shadow(radius: 8) // Optional: Shadow for the modal itself
         .edgesIgnoringSafeArea(.all) // Ensures the gray background covers the entire screen
