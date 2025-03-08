@@ -175,14 +175,14 @@ class FoodLogViewModel: ObservableObject {
         }
     }
     
-    func updateFoodMacrosForServings(meal: Meal, food: MacroFood, servings: Double) -> MacroFood {
+    func updateFoodMacrosForServings(meal: Meal, food: MacroFood, servings: Double) {
         // If servings are reset to 1, return the original food
         let originalMacros = food.originalMacros
         
         if servings == 1 {
             let updatedFood = MacroFood(id: food.id, name: food.name, macronutrients: originalMacros, originalMacros: originalMacros, servingDescription: food.servingDescription, servings: 1, addDate: food.addDate)
             saveFoodToFirebase(meal: meal, food: updatedFood)
-            return updatedFood
+            getTotalMacros()
         }
         
         // Get the original macronutrients for multiplication
@@ -204,7 +204,7 @@ class FoodLogViewModel: ObservableObject {
         
         saveFoodToFirebase(meal: meal, food: updatedFood)
         
-        return updatedFood
+        getTotalMacros()
     }
 
     

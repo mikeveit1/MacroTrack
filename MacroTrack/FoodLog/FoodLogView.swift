@@ -683,7 +683,7 @@ struct FoodLogView: View {
         }
         .onChange(of: viewModel.mealLogs) { _ in
             // Recalculate macros whenever mealLogs changes
-            _ = viewModel.getTotalMacros()
+            viewModel.getTotalMacros()
         }
         .onAppear {
             viewModel.fetchFoodLog()
@@ -1248,8 +1248,7 @@ struct FoodLogView: View {
                                         // Handle empty string (backspace)
                                         servingsToUpdate = 1.0
                                     }
-                                    
-                                    let updatedFood = viewModel.updateFoodMacrosForServings(meal: meal, food: food, servings: servingsToUpdate)
+                                    viewModel.updateFoodMacrosForServings(meal: meal, food: food, servings: servingsToUpdate)
                                 }
                             ))
                             .accentColor(Colors.primary)
