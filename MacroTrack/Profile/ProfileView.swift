@@ -104,6 +104,27 @@ struct ProfileView: View {
                     Spacer()
                 }
                 
+                VStack(spacing: 4) {  // Reduced spacing between cards
+                    Text("Your Fitness Goal")
+                        .font(.title3)
+                        .bold()
+                        .foregroundColor(Colors.primary)
+                    HStack {
+                        Spacer()
+                            .foregroundColor(Colors.primary)
+                        Text(viewModel.fitnessGoal)
+                            .bold()
+                            .foregroundColor(Colors.primary)
+                            .multilineTextAlignment(.center)
+                        Spacer()
+                    }
+                }
+                .padding()  // Proper padding around the entire progress chart
+                .background(Colors.secondary)
+                .cornerRadius(10)
+                .shadow(radius: 5)
+                .frame(width: 350) // Fixed width for consistency across all cards Ensures the card has the same width
+                
                 // Third Card: Logging Streak
                 VStack(spacing: 4) {  // Reduced spacing between cards
                     HStack {
@@ -281,6 +302,7 @@ struct ProfileView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onAppear {
             viewModel.fetchMacroGoals()
+            viewModel.fetchFitnessGoal()
             viewModel.calculateAverageMacros()
             viewModel.calculateConsecutiveDaysLogged()
             viewModel.getTermsLink()

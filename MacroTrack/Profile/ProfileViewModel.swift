@@ -19,8 +19,9 @@ class ProfileViewModel: ObservableObject {
         "calories": 2000,  // Example: 2000 calories
         "protein": 150,    // Example: 150g protein
         "carbs": 250,      // Example: 250g carbs
-        "fat": 70          // Example: 70g fat
+        "fat": 70,          // Example: 70g fat
     ]
+    @Published var fitnessGoal: String = "Use the macro calculator to set your fitness goal!"
     @Published var termsLink: String = ""
     @Published var privacyLink: String = ""
     @Published var contactUsLink: String = ""
@@ -34,6 +35,16 @@ class ProfileViewModel: ObservableObject {
         isLoading = true
         fetchUserDataHelper.fetchMacroGoals { goals in
             self.dailyGoals = goals
+            self.isLoading = false
+        }
+    }
+    
+    func fetchFitnessGoal() {
+        isLoading = true
+        fetchUserDataHelper.fetchFitnessGoal { goal in
+            if goal != "" {
+                self.fitnessGoal = goal
+            }
             self.isLoading = false
         }
     }
@@ -121,7 +132,7 @@ class ProfileViewModel: ObservableObject {
             }
         }
     }
-
+    
     func calculateConsecutiveDaysLogged() {
         // Fetch all food logs asynchronously
         FirebaseService.shared.getAllFoodLogs() { foodLogs, error in
@@ -226,5 +237,5 @@ class ProfileViewModel: ObservableObject {
             self.contactUsLink = link
         }
     }
-
+    
 }

@@ -25,13 +25,7 @@ class FoodLogViewModel: ObservableObject {
     
     func saveDailyGoals(newGoals: [String: Int]) {
         dailyGoals = newGoals
-        FirebaseService.shared.saveDailyGoals(goals: newGoals) { success, error in
-            if let error = error {
-                print("Error saving daily goals: \(error.localizedDescription)")
-            } else {
-                print("Daily goals saved successfully.")
-            }
-        }
+        FirebaseService.shared.updateDailyGoals(dailyGoals: newGoals)
     }
     
     func saveProgressBarData() {

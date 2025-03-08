@@ -29,26 +29,6 @@ class FirebaseService {
         })
     }
     
-    // Save daily goals to Firebase Realtime Database
-    func saveDailyGoals(goals: [String: Int], completion: @escaping (Bool, Error?) -> Void) {
-        guard let userID = getCurrentUserID() else { return }
-        db.child("users").child(userID).child("dailyGoals").setValue(goals) { error, _ in
-            self.handleFirebaseError(error, completion: completion)
-        }
-    }
-    
-    // Get daily goals from Firebase Realtime Database
-    func getDailyGoals(completion: @escaping ([String: Double]?, Error?) -> Void) {
-        guard let userID = getCurrentUserID() else { return }
-        db.child("users").child(userID).child("dailyGoals").observe(.value, with: { snapshot in
-            if let data = snapshot.value as? [String: Double] {
-                completion(data, nil)
-            } else {
-                completion(nil, nil)
-            }
-        })
-    }
-    
     // Save food log to Firebase Realtime Database
     func saveFoodLog(date: String, foodLogData: [String: Any], completion: @escaping (Bool, Error?) -> Void) {
         guard let userID = getCurrentUserID() else { return }
@@ -167,6 +147,24 @@ class FirebaseService {
         }
     }
     
+    func updateDailyGoals(dailyGoals: [String: Int]) {
+        guard let userID = getCurrentUserID() else { return }
+        let userMacroDataRef = db.child("users").child(userID).child("macroData")
+        
+        userMacroDataRef.updateChildValues([
+            "totalCalories": dailyGoals["calories"] ?? 0,
+            "protein": dailyGoals["protein"] ?? 0,
+            "carbs": dailyGoals["carbs"] ?? 0,
+            "fat": dailyGoals["fat"] ?? 0,
+        ]) { error, _ in
+            if let error = error {
+                print("Error updating user macro data: \(error.localizedDescription)")
+            } else {
+                print("User macro data updated successfully!")
+            }
+        }
+    }
+    
     func saveUserMeal(mealName: String, meal: Meal, foodsList: [[String: Any]]) {
         guard let userID = FirebaseService.shared.getCurrentUserID() else {
             print("No user is logged in")
@@ -193,6 +191,7 @@ class FirebaseService {
             }
         }
     }
+    
     func fetchSavedMealsFromFirebase(completion: @escaping ([UserMeal]) -> Void) {
         guard let userID = FirebaseService.shared.getCurrentUserID() else {
             print("No user is logged in")

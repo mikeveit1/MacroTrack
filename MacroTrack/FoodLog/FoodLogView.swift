@@ -19,6 +19,187 @@ struct FoodLogView: View {
         modalVisible = true
     }
     
+    func captureSnapshot() {
+        // Create a UIHostingController for the custom SwiftUI view
+            let hostingController = UIHostingController(rootView: screenshotView)
+            
+            // Calculate the intrinsic content size of the view
+            let targetSize = hostingController.view.intrinsicContentSize
+            if targetSize.width <= 0 || targetSize.height <= 0 {
+                return
+            }
+            
+            // Add padding around the content to make sure nothing gets clipped
+            let padding: CGFloat = 150
+            let adjustedSize = CGSize(width: targetSize.width + padding, height: targetSize.height + padding)
+            
+            // Set the hosting controller's view frame
+            hostingController.view.frame = CGRect(origin: .zero, size: adjustedSize)
+            
+            // Add the hosting controller's view to the root view so it can layout
+            UIApplication.shared.windows.first?.rootViewController?.view.addSubview(hostingController.view)
+            
+            // Ensure the layout is updated before rendering the snapshot
+            hostingController.view.setNeedsLayout()
+            hostingController.view.layoutIfNeeded()
+            
+            // Create an image renderer with the adjusted size (including padding)
+            let renderer = UIGraphicsImageRenderer(size: adjustedSize)
+            
+            // Render the view into an image
+            let image = renderer.image { context in
+                hostingController.view.layer.render(in: context.cgContext)
+            }
+            
+            // Remove the hosting controller's view after capturing
+            hostingController.view.removeFromSuperview()
+            
+            // Set the rendered image as the snapshot
+            showShareSheet(image: image)
+    }
+    
+    func showShareSheet(image: UIImage) {
+        let activityViewController = UIActivityViewController(activityItems: [image], applicationActivities: nil)
+        
+        // Find the current view controller to present the share sheet
+        if let currentVC = UIApplication.shared.windows.first?.rootViewController {
+            currentVC.present(activityViewController, animated: true, completion: nil)
+        }
+    }
+    
+    var screenshotView: some View {
+        let totalMacros = viewModel.getTotalMacros()
+        let maxWidth: CGFloat = 300
+        return VStack(alignment: .center, spacing: 20) {
+            
+            Text(viewModel.formatDate(viewModel.currentDate))
+                .font(.title3)
+                .bold()
+                .foregroundColor(Colors.primary)
+            
+            if viewModel.showCalories {
+                HStack {
+                    Text("Calories")
+                        .frame(width: 80, alignment: .leading)
+                        .foregroundColor(Colors.primary)
+                        .bold()
+                    
+                    GeometryReader { geometry in
+                        ZStack(alignment: .leading) {
+                            Colors.gray  // Background color (empty space)
+                                .frame(height: 30)
+                            Colors.primaryLight
+                                .opacity(0.2)
+                                .frame(width: min(CGFloat(totalMacros.calories / Double((viewModel.dailyGoals["calories"] ?? 0))) * geometry.size.width, geometry.size.width), height: 30)
+                            Text("\(Int(totalMacros.calories)) / \(Int(viewModel.dailyGoals["calories"] ?? 0)) kcal")
+                                .foregroundColor(Colors.primary)
+                                .padding(.leading, 10)
+                                .bold()
+                                .lineLimit(1)
+                        }
+                        .cornerRadius(8)
+                    }
+                    .frame(height: 30) // Set height of progress bar here
+                    .frame(maxWidth: maxWidth) // Apply maxWidth constraint here
+                }
+            }
+            
+            // Protein Progress
+            if viewModel.showProtein {
+                HStack {
+                    Text("Protein")
+                        .frame(width: 80, alignment: .leading)
+                        .foregroundColor(Colors.primary)
+                        .bold()
+                    
+                    GeometryReader { geometry in
+                        ZStack(alignment: .leading) {
+                            Colors.gray  // Background color (empty space)
+                                .frame(height: 30)
+                            Colors.primaryLight
+                                .opacity(0.2)
+                                .frame(width: min(CGFloat(totalMacros.protein / Double((viewModel.dailyGoals["protein"] ?? 0))) * geometry.size.width, geometry.size.width), height: 30)
+                            Text("\(String(format: "%.2f", totalMacros.protein)) / \(Int(viewModel.dailyGoals["protein"] ?? 0)) g")
+                                .foregroundColor(Colors.primary)
+                                .padding(.leading, 10)
+                                .bold()
+                                .lineLimit(1)
+                        }
+                        .cornerRadius(8)
+                    }
+                    .frame(height: 30) // Set height of progress bar here
+                    .frame(maxWidth: maxWidth) // Apply maxWidth constraint here
+                }
+            }
+            
+            // Carbs Progress
+            if viewModel.showCarbs {
+                HStack {
+                    Text("Carbs")
+                        .frame(width: 80, alignment: .leading)
+                        .foregroundColor(Colors.primary)
+                        .bold()
+                    
+                    GeometryReader { geometry in
+                        ZStack(alignment: .leading) {
+                            Colors.gray  // Background color (empty space)
+                                .frame(height: 30)
+                            Colors.primaryLight
+                                .opacity(0.2)
+                                .frame(width: min(CGFloat(totalMacros.carbs / Double((viewModel.dailyGoals["carbs"] ?? 0))) * geometry.size.width, geometry.size.width), height: 30)
+                            Text("\(String(format: "%.2f", totalMacros.carbs)) / \(Int(viewModel.dailyGoals["carbs"] ?? 0)) g")
+                                .foregroundColor(Colors.primary)
+                                .padding(.leading, 10)
+                                .bold()
+                                .lineLimit(1)
+                        }
+                        .cornerRadius(8)
+                    }
+                    .frame(height: 30) // Set height of progress bar here
+                    .frame(maxWidth: maxWidth) // Apply maxWidth constraint here
+                }
+            }
+            
+            // Fat Progress
+            if viewModel.showFat {
+                HStack {
+                    Text("Fat")
+                        .frame(width: 80, alignment: .leading)
+                        .foregroundColor(Colors.primary)
+                        .bold()
+                    
+                    GeometryReader { geometry in
+                        ZStack(alignment: .leading) {
+                            Colors.gray  // Background color (empty space)
+                                .frame(height: 30)
+                            Colors.primaryLight
+                                .opacity(0.2)
+                                .frame(width: min(CGFloat(totalMacros.fat / Double((viewModel.dailyGoals["fat"] ?? 0))) * geometry.size.width, geometry.size.width), height: 30)
+                            Text("\(String(format: "%.2f", totalMacros.fat)) / \(Int(viewModel.dailyGoals["fat"] ?? 0)) g")
+                                .foregroundColor(Colors.primary)
+                                .padding(.leading, 10)
+                                .bold()
+                                .lineLimit(1)
+                        }
+                        .cornerRadius(8)
+                    }
+                    .frame(height: 30) // Set height of progress bar here
+                    .frame(maxWidth: maxWidth) // Apply maxWidth constraint here
+                }
+            }
+           // LogoGreen
+            Image("FullLogoGreen")
+                .resizable()
+                .frame(width: 100, height: 10)
+                .padding()
+            
+        }
+        .padding()
+        .background(Color.white)
+        .cornerRadius(10)
+        .shadow(radius: 5)
+    }
+    
     var body: some View {
         ScrollView {
             VStack {
@@ -155,6 +336,15 @@ struct FoodLogView: View {
                 
                 Spacer()
                 
+                Button(action: {
+                    captureSnapshot()
+                }) {
+                    Image(systemName: "square.and.arrow.up")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 19, height: 19)
+                        .foregroundColor(Colors.primary)
+                }
                 // Filter Button
                 Button(action: {
                     showFilterModal.toggle()
