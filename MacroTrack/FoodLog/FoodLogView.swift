@@ -19,9 +19,9 @@ struct FoodLogView: View {
         modalVisible = true
     }
     
-    func captureSnapshot() {
+    func captureSnapshot(view: some View) {
         // Create a UIHostingController for the custom SwiftUI view
-            let hostingController = UIHostingController(rootView: screenshotView)
+            let hostingController = UIHostingController(rootView: view)
             
             // Calculate the intrinsic content size of the view
             let targetSize = hostingController.view.intrinsicContentSize
@@ -67,7 +67,128 @@ struct FoodLogView: View {
         }
     }
     
-    var screenshotView: some View {
+    var screenshotIndividualMealView: some View {
+        return VStack(alignment: .center) {
+            let totalMacronutrients = viewModel.getTotalMacronutrients(for: viewModel.selectedMeal)
+            HStack {
+                Image(systemName: viewModel.selectedMeal.iconName)
+                    .foregroundColor(Colors.primary)
+                Text(viewModel.selectedMeal.rawValue.capitalized)
+                    .font(.title3)
+                    .bold()
+                    .foregroundColor(Colors.primary)
+                Spacer()
+                Text(viewModel.formatDate(viewModel.currentDate))
+                    .font(.title3)
+                    .bold()
+                    .foregroundColor(Colors.primary)
+                    .padding(.horizontal, 8)
+            }
+            .frame(maxWidth: .infinity)  // Ensures the button takes up the full width
+            VStack(alignment: .leading) {
+                Text("Total")
+                    .foregroundColor(Colors.primary)
+                    .bold()
+                Text("\(Int(totalMacronutrients.calories)) kcal")
+                    .foregroundColor(Colors.primary)
+                    .bold()
+                    .lineLimit(1)
+                HStack {
+                    HStack {
+                        Text("P:")
+                            .foregroundColor(Colors.primary)
+                        Text(String(format: "%.2f", totalMacronutrients.protein) + " g")
+                            .foregroundColor(Colors.primary)
+                            .bold()
+                            .lineLimit(1)
+                    }
+                    HStack {
+                        Text("C:")
+                            .foregroundColor(Colors.primary)
+                        Text(String(format: "%.2f", totalMacronutrients.carbs) + " g")
+                            .foregroundColor(Colors.primary)
+                            .bold()
+                            .lineLimit(1)
+                    }
+                    HStack {
+                        Text("F:")
+                            .foregroundColor(Colors.primary)
+                        Text(String(format: "%.2f", totalMacronutrients.fat) + " g")
+                            .foregroundColor(Colors.primary)
+                            .bold()
+                            .lineLimit(1)
+                        
+                    }
+                    Spacer()
+                }
+            }
+            .padding()
+            .frame(maxWidth: .infinity)  // Ensures the food item takes up the full width
+            .background(RoundedRectangle(cornerRadius: 8).fill(Colors.gray))
+            ForEach(viewModel.mealLogs[viewModel.selectedMeal]?.sorted(by: {$0.addDate < $1.addDate}) ?? [], id: \.id) { food in
+                HStack {
+                    VStack(alignment: .leading) {
+                        HStack {
+                            Text("\(food.name) (serving size: \(food.servingDescription))")
+                                .foregroundColor(Colors.secondary)
+                                .bold()
+                        }
+                        VStack(alignment: .leading) {
+                            Text("\(Int(food.macronutrients.calories)) kcal")
+                                .lineLimit(1)
+                                .bold()
+                                .foregroundColor(Colors.secondary)
+                            HStack {
+                                HStack {
+                                    Text("P:")
+                                        .foregroundColor(Colors.secondary)
+                                    Text(String(format: "%.2f", food.macronutrients.protein) + " g")
+                                        .foregroundColor(Colors.secondary)
+                                        .bold()
+                                        .lineLimit(1)
+                                }
+                                HStack {
+                                    Text("C:")
+                                        .foregroundColor(Colors.secondary)
+                                    Text(String(format: "%.2f", food.macronutrients.carbs) + " g")
+                                        .foregroundColor(Colors.secondary)
+                                        .bold()
+                                        .lineLimit(1)
+                                }
+                                HStack {
+                                    Text("F:")
+                                        .foregroundColor(Colors.secondary)
+                                    Text(String(format: "%.2f", food.macronutrients.fat) + " g")
+                                        .foregroundColor(Colors.secondary)
+                                        .bold()
+                                        .lineLimit(1)
+                                }
+                            }
+                        }
+                        HStack {
+                            Text("Servings: " + String(format: "%.1f", food.servings))
+                            .foregroundColor(Colors.secondary)
+                            Spacer()
+                        }
+                        
+                    }
+                }
+                .padding()
+                .frame(maxWidth: .infinity)  // Ensures the food item takes up the full width
+                .background(RoundedRectangle(cornerRadius: 8).fill(Colors.primary))
+            }
+            Image("FullLogoGreen")
+                .resizable()
+                .frame(width: 100, height: 10)
+                .padding(.top)
+        }
+        .padding()
+        .background(Colors.secondary)
+        .cornerRadius(10)
+        .shadow(radius: 5)
+    }
+    
+    var screenshotDailyGoalsView: some View {
         let totalMacros = viewModel.getTotalMacros()
         let maxWidth: CGFloat = 300
         return VStack(alignment: .center, spacing: 20) {
@@ -191,7 +312,7 @@ struct FoodLogView: View {
             Image("FullLogoGreen")
                 .resizable()
                 .frame(width: 100, height: 10)
-                .padding()
+                .padding(.top)
             
         }
         .padding()
@@ -337,7 +458,7 @@ struct FoodLogView: View {
                 Spacer()
                 
                 Button(action: {
-                    captureSnapshot()
+                    captureSnapshot(view: screenshotDailyGoalsView)
                 }) {
                     Image(systemName: "square.and.arrow.up")
                         .resizable()
@@ -641,6 +762,16 @@ struct FoodLogView: View {
                     .bold()
                     .foregroundColor(Colors.primary)
                 Spacer()
+                Button(action: {
+                    viewModel.selectedMeal = meal
+                    captureSnapshot(view: screenshotIndividualMealView)
+                }) {
+                    Image(systemName: "square.and.arrow.up")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 19, height: 19)
+                        .foregroundColor(Colors.primary)
+                }
                 Button(action: {
                     viewModel.selectedMeal = meal
                     showingMealNameAlert = true
