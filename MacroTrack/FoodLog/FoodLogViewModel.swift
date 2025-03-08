@@ -11,6 +11,7 @@ class FoodLogViewModel: ObservableObject {
     @Published var showProtein = true
     @Published var showCarbs = true
     @Published var showFat = true
+    @Published var totalMacros: MacronutrientInfo = MacronutrientInfo(calories: 0, protein: 0, carbs: 0, fat: 0)
     @Published var userMeals: [UserMeal] = []
     @Published var dailyGoals: [String: Int] = [
         "calories": 2000,  // Example: 2000 calories
@@ -72,7 +73,7 @@ class FoodLogViewModel: ObservableObject {
     }
     
     // Function to get the total macros across all meals
-    func getTotalMacros() -> MacronutrientInfo {
+    func getTotalMacros() {
         var totalCalories: Double = 0
         var totalProtein: Double = 0
         var totalCarbs: Double = 0
@@ -90,7 +91,7 @@ class FoodLogViewModel: ObservableObject {
             }
         }
         
-        return MacronutrientInfo(
+        self.totalMacros = MacronutrientInfo(
             calories: totalCalories,
             protein: totalProtein,
             carbs: totalCarbs,

@@ -13,6 +13,9 @@ struct FoodLogView: View {
     @State private var editedGoals: [String: Int] = [:]
     @State private var isSettingsPresented = false
     @State private var showingMealNameAlert = false
+    @State private var showOptionsModal = false
+    @State private var selectedOption: String? = nil
+    private var maxWidth: CGFloat = 300
     
     func selectMeal(meal: Meal) {
         viewModel.selectedMeal = meal
@@ -21,44 +24,52 @@ struct FoodLogView: View {
     
     func captureSnapshot(view: some View) {
         // Create a UIHostingController for the custom SwiftUI view
-            let hostingController = UIHostingController(rootView: view)
-            
-            // Calculate the intrinsic content size of the view
-            let targetSize = hostingController.view.intrinsicContentSize
-            if targetSize.width <= 0 || targetSize.height <= 0 {
-                return
-            }
-            
-            // Add padding around the content to make sure nothing gets clipped
-            let padding: CGFloat = 150
-            let adjustedSize = CGSize(width: targetSize.width + padding, height: targetSize.height + padding)
-            
-            // Set the hosting controller's view frame
-            hostingController.view.frame = CGRect(origin: .zero, size: adjustedSize)
-            
-            // Add the hosting controller's view to the root view so it can layout
-            UIApplication.shared.windows.first?.rootViewController?.view.addSubview(hostingController.view)
-            
-            // Ensure the layout is updated before rendering the snapshot
-            hostingController.view.setNeedsLayout()
-            hostingController.view.layoutIfNeeded()
-            
-            // Create an image renderer with the adjusted size (including padding)
-            let renderer = UIGraphicsImageRenderer(size: adjustedSize)
-            
-            // Render the view into an image
-            let image = renderer.image { context in
-                hostingController.view.layer.render(in: context.cgContext)
-            }
-            
-            // Remove the hosting controller's view after capturing
-            hostingController.view.removeFromSuperview()
-            
-            // Set the rendered image as the snapshot
-            showShareSheet(image: image)
+        let hostingController = UIHostingController(rootView: view)
+        
+        // Calculate the intrinsic content size of the view
+        let targetSize = hostingController.view.intrinsicContentSize
+        if targetSize.width <= 0 || targetSize.height <= 0 {
+            return
+        }
+        
+        // Add padding around the content to make sure nothing gets clipped
+        let padding: CGFloat = 150
+        let adjustedSize = CGSize(width: targetSize.width + padding, height: targetSize.height + padding)
+        
+        // Set the hosting controller's view frame
+        hostingController.view.frame = CGRect(origin: .zero, size: adjustedSize)
+        
+        // Add the hosting controller's view to the root view so it can layout
+        UIApplication.shared.windows.first?.rootViewController?.view.addSubview(hostingController.view)
+        
+        // Ensure the layout is updated before rendering the snapshot
+        hostingController.view.setNeedsLayout()
+        hostingController.view.layoutIfNeeded()
+        
+        // Create an image renderer with the adjusted size (including padding)
+        let renderer = UIGraphicsImageRenderer(size: adjustedSize)
+        
+        // Render the view into an image
+        let image = renderer.image { context in
+            hostingController.view.layer.render(in: context.cgContext)
+        }
+        
+        // Remove the hosting controller's view after capturing
+        hostingController.view.removeFromSuperview()
+        
+        // Set the rendered image as the snapshot
+        showShareSheet(image: image)
     }
     
     func showShareSheet(image: UIImage) {
+        
+        if let rootViewController = UIApplication.shared.windows.first?.rootViewController {
+            // Check if a modal is being presented
+            if rootViewController.presentedViewController != nil {
+                rootViewController.dismiss(animated: true, completion: nil)
+            }
+        }
+        
         let activityViewController = UIActivityViewController(activityItems: [image], applicationActivities: nil)
         
         // Find the current view controller to present the share sheet
@@ -167,7 +178,7 @@ struct FoodLogView: View {
                         }
                         HStack {
                             Text("Servings: " + String(format: "%.1f", food.servings))
-                            .foregroundColor(Colors.secondary)
+                                .foregroundColor(Colors.secondary)
                             Spacer()
                         }
                         
@@ -188,11 +199,258 @@ struct FoodLogView: View {
         .shadow(radius: 5)
     }
     
-    var screenshotDailyGoalsView: some View {
-        let totalMacros = viewModel.getTotalMacros()
-        let maxWidth: CGFloat = 300
-        return VStack(alignment: .center, spacing: 20) {
+    var screenshotAllMealsView: some View {
+        return VStack(alignment: .center) {
+            Text(viewModel.formatDate(viewModel.currentDate))
+                .font(.title3)
+                .bold()
+                .foregroundColor(Colors.primary)
+                .padding(.horizontal, 8)
+            HStack {
+                VStack(alignment: .leading, spacing: 20) {
+                    if viewModel.showCalories {
+                        HStack {
+                            Text("Calories")
+                                .frame(width: 80, alignment: .leading)
+                                .foregroundColor(Colors.primary)
+                                .bold()
+                            
+                            GeometryReader { geometry in
+                                ZStack(alignment: .leading) {
+                                    Colors.gray  // Background color (empty space)
+                                        .frame(height: 30)
+                                    Colors.primaryLight
+                                        .opacity(0.2)
+                                        .frame(width: min(CGFloat(viewModel.totalMacros.calories / Double((viewModel.dailyGoals["calories"] ?? 0))) * geometry.size.width, geometry.size.width), height: 30)
+                                    Text("\(Int(viewModel.totalMacros.calories)) / \(Int(viewModel.dailyGoals["calories"] ?? 0)) kcal")
+                                        .foregroundColor(Colors.primary)
+                                        .padding(.leading, 10)
+                                        .bold()
+                                        .lineLimit(1)
+                                }
+                                .cornerRadius(8)
+                            }
+                            .frame(height: 30) // Set height of progress bar here
+                            .frame(maxWidth: maxWidth) // Apply maxWidth constraint here
+                        }
+                    }
+                    
+                    // Protein Progress
+                    if viewModel.showProtein {
+                        HStack {
+                            Text("Protein")
+                                .frame(width: 80, alignment: .leading)
+                                .foregroundColor(Colors.primary)
+                                .bold()
+                            
+                            GeometryReader { geometry in
+                                ZStack(alignment: .leading) {
+                                    Colors.gray  // Background color (empty space)
+                                        .frame(height: 30)
+                                    Colors.primaryLight
+                                        .opacity(0.2)
+                                        .frame(width: min(CGFloat(viewModel.totalMacros.protein / Double((viewModel.dailyGoals["protein"] ?? 0))) * geometry.size.width, geometry.size.width), height: 30)
+                                    Text("\(String(format: "%.2f", viewModel.totalMacros.protein)) / \(Int(viewModel.dailyGoals["protein"] ?? 0)) g")
+                                        .foregroundColor(Colors.primary)
+                                        .padding(.leading, 10)
+                                        .bold()
+                                        .lineLimit(1)
+                                }
+                                .cornerRadius(8)
+                            }
+                            .frame(height: 30) // Set height of progress bar here
+                            .frame(maxWidth: maxWidth) // Apply maxWidth constraint here
+                        }
+                    }
+                    
+                    // Carbs Progress
+                    if viewModel.showCarbs {
+                        HStack {
+                            Text("Carbs")
+                                .frame(width: 80, alignment: .leading)
+                                .foregroundColor(Colors.primary)
+                                .bold()
+                            
+                            GeometryReader { geometry in
+                                ZStack(alignment: .leading) {
+                                    Colors.gray  // Background color (empty space)
+                                        .frame(height: 30)
+                                    Colors.primaryLight
+                                        .opacity(0.2)
+                                        .frame(width: min(CGFloat(viewModel.totalMacros.carbs / Double((viewModel.dailyGoals["carbs"] ?? 0))) * geometry.size.width, geometry.size.width), height: 30)
+                                    Text("\(String(format: "%.2f", viewModel.totalMacros.carbs)) / \(Int(viewModel.dailyGoals["carbs"] ?? 0)) g")
+                                        .foregroundColor(Colors.primary)
+                                        .padding(.leading, 10)
+                                        .bold()
+                                        .lineLimit(1)
+                                }
+                                .cornerRadius(8)
+                            }
+                            .frame(height: 30) // Set height of progress bar here
+                            .frame(maxWidth: maxWidth) // Apply maxWidth constraint here
+                        }
+                    }
+                    
+                    // Fat Progress
+                    if viewModel.showFat {
+                        HStack {
+                            Text("Fat")
+                                .frame(width: 80, alignment: .leading)
+                                .foregroundColor(Colors.primary)
+                                .bold()
+                            
+                            GeometryReader { geometry in
+                                ZStack(alignment: .leading) {
+                                    Colors.gray  // Background color (empty space)
+                                        .frame(height: 30)
+                                    Colors.primaryLight
+                                        .opacity(0.2)
+                                        .frame(width: min(CGFloat(viewModel.totalMacros.fat / Double((viewModel.dailyGoals["fat"] ?? 0))) * geometry.size.width, geometry.size.width), height: 30)
+                                    Text("\(String(format: "%.2f", viewModel.totalMacros.fat)) / \(Int(viewModel.dailyGoals["fat"] ?? 0)) g")
+                                        .foregroundColor(Colors.primary)
+                                        .padding(.leading, 10)
+                                        .bold()
+                                        .lineLimit(1)
+                                }
+                                .cornerRadius(8)
+                            }
+                            .frame(height: 30) // Set height of progress bar here
+                            .frame(maxWidth: maxWidth) // Apply maxWidth constraint here
+                        }
+                    }
+                }
+                Spacer()
+            }
+            .padding()
+            .background(Colors.secondary)
+            .cornerRadius(10)
+            .shadow(radius: 5)
+            .frame(maxWidth: .infinity)
             
+            ForEach(Meal.allCases, id: \.self) { meal in
+                VStack (alignment: .leading) {
+                    let totalMacronutrients = viewModel.getTotalMacronutrients(for: meal)
+                    HStack {
+                        Image(systemName: meal.iconName)
+                            .foregroundColor(Colors.primary)
+                        Text(meal.rawValue.capitalized)
+                            .font(.title3)
+                            .bold()
+                            .foregroundColor(Colors.primary)
+                        Spacer()
+                    }
+                    .frame(maxWidth: .infinity)  // Ensures the button takes up the full width
+                    VStack(alignment: .leading) {
+                        Text("Total")
+                            .foregroundColor(Colors.primary)
+                            .bold()
+                        Text("\(Int(totalMacronutrients.calories)) kcal")
+                            .foregroundColor(Colors.primary)
+                            .bold()
+                            .lineLimit(1)
+                        HStack {
+                            HStack {
+                                Text("P:")
+                                    .foregroundColor(Colors.primary)
+                                Text(String(format: "%.2f", totalMacronutrients.protein) + " g")
+                                    .foregroundColor(Colors.primary)
+                                    .bold()
+                                    .lineLimit(1)
+                            }
+                            HStack {
+                                Text("C:")
+                                    .foregroundColor(Colors.primary)
+                                Text(String(format: "%.2f", totalMacronutrients.carbs) + " g")
+                                    .foregroundColor(Colors.primary)
+                                    .bold()
+                                    .lineLimit(1)
+                            }
+                            HStack {
+                                Text("F:")
+                                    .foregroundColor(Colors.primary)
+                                Text(String(format: "%.2f", totalMacronutrients.fat) + " g")
+                                    .foregroundColor(Colors.primary)
+                                    .bold()
+                                    .lineLimit(1)
+                                
+                            }
+                            Spacer()
+                        }
+                    }
+                    .padding()
+                    .frame(maxWidth: .infinity)  // Ensures the food item takes up the full width
+                    .background(RoundedRectangle(cornerRadius: 8).fill(Colors.gray))
+                    ForEach(viewModel.mealLogs[meal]?.sorted(by: {$0.addDate < $1.addDate}) ?? [], id: \.id) { food in
+                        HStack {
+                            VStack(alignment: .leading) {
+                                HStack {
+                                    Text("\(food.name) (serving size: \(food.servingDescription))")
+                                        .foregroundColor(Colors.secondary)
+                                        .bold()
+                                }
+                                VStack(alignment: .leading) {
+                                    Text("\(Int(food.macronutrients.calories)) kcal")
+                                        .lineLimit(1)
+                                        .bold()
+                                        .foregroundColor(Colors.secondary)
+                                    HStack {
+                                        HStack {
+                                            Text("P:")
+                                                .foregroundColor(Colors.secondary)
+                                            Text(String(format: "%.2f", food.macronutrients.protein) + " g")
+                                                .foregroundColor(Colors.secondary)
+                                                .bold()
+                                                .lineLimit(1)
+                                        }
+                                        HStack {
+                                            Text("C:")
+                                                .foregroundColor(Colors.secondary)
+                                            Text(String(format: "%.2f", food.macronutrients.carbs) + " g")
+                                                .foregroundColor(Colors.secondary)
+                                                .bold()
+                                                .lineLimit(1)
+                                        }
+                                        HStack {
+                                            Text("F:")
+                                                .foregroundColor(Colors.secondary)
+                                            Text(String(format: "%.2f", food.macronutrients.fat) + " g")
+                                                .foregroundColor(Colors.secondary)
+                                                .bold()
+                                                .lineLimit(1)
+                                        }
+                                    }
+                                }
+                                HStack {
+                                    Text("Servings: " + String(format: "%.1f", food.servings))
+                                        .foregroundColor(Colors.secondary)
+                                    Spacer()
+                                }
+                                
+                            }
+                        }
+                        .padding()
+                        .frame(maxWidth: .infinity)  // Ensures the food item takes up the full width
+                        .background(RoundedRectangle(cornerRadius: 8).fill(Colors.primary))
+                    }
+                }
+                .padding()
+                .background(Colors.secondary)
+                .cornerRadius(10)
+                .shadow(radius: 5)
+            }
+            Image("FullLogoGreen")
+                .resizable()
+                .frame(width: 100, height: 10)
+                .padding(.top)
+        }
+        .padding()
+        .background(Colors.secondary)
+        .cornerRadius(10)
+        .shadow(radius: 5)
+    }
+    
+    var screenshotDailyGoalsView: some View {
+        return VStack(alignment: .center, spacing: 20) {
             Text(viewModel.formatDate(viewModel.currentDate))
                 .font(.title3)
                 .bold()
@@ -211,8 +469,8 @@ struct FoodLogView: View {
                                 .frame(height: 30)
                             Colors.primaryLight
                                 .opacity(0.2)
-                                .frame(width: min(CGFloat(totalMacros.calories / Double((viewModel.dailyGoals["calories"] ?? 0))) * geometry.size.width, geometry.size.width), height: 30)
-                            Text("\(Int(totalMacros.calories)) / \(Int(viewModel.dailyGoals["calories"] ?? 0)) kcal")
+                                .frame(width: min(CGFloat(viewModel.totalMacros.calories / Double((viewModel.dailyGoals["calories"] ?? 0))) * geometry.size.width, geometry.size.width), height: 30)
+                            Text("\(Int(viewModel.totalMacros.calories)) / \(Int(viewModel.dailyGoals["calories"] ?? 0)) kcal")
                                 .foregroundColor(Colors.primary)
                                 .padding(.leading, 10)
                                 .bold()
@@ -239,8 +497,8 @@ struct FoodLogView: View {
                                 .frame(height: 30)
                             Colors.primaryLight
                                 .opacity(0.2)
-                                .frame(width: min(CGFloat(totalMacros.protein / Double((viewModel.dailyGoals["protein"] ?? 0))) * geometry.size.width, geometry.size.width), height: 30)
-                            Text("\(String(format: "%.2f", totalMacros.protein)) / \(Int(viewModel.dailyGoals["protein"] ?? 0)) g")
+                                .frame(width: min(CGFloat(viewModel.totalMacros.protein / Double((viewModel.dailyGoals["protein"] ?? 0))) * geometry.size.width, geometry.size.width), height: 30)
+                            Text("\(String(format: "%.2f", viewModel.totalMacros.protein)) / \(Int(viewModel.dailyGoals["protein"] ?? 0)) g")
                                 .foregroundColor(Colors.primary)
                                 .padding(.leading, 10)
                                 .bold()
@@ -267,8 +525,8 @@ struct FoodLogView: View {
                                 .frame(height: 30)
                             Colors.primaryLight
                                 .opacity(0.2)
-                                .frame(width: min(CGFloat(totalMacros.carbs / Double((viewModel.dailyGoals["carbs"] ?? 0))) * geometry.size.width, geometry.size.width), height: 30)
-                            Text("\(String(format: "%.2f", totalMacros.carbs)) / \(Int(viewModel.dailyGoals["carbs"] ?? 0)) g")
+                                .frame(width: min(CGFloat(viewModel.totalMacros.carbs / Double((viewModel.dailyGoals["carbs"] ?? 0))) * geometry.size.width, geometry.size.width), height: 30)
+                            Text("\(String(format: "%.2f", viewModel.totalMacros.carbs)) / \(Int(viewModel.dailyGoals["carbs"] ?? 0)) g")
                                 .foregroundColor(Colors.primary)
                                 .padding(.leading, 10)
                                 .bold()
@@ -295,8 +553,8 @@ struct FoodLogView: View {
                                 .frame(height: 30)
                             Colors.primaryLight
                                 .opacity(0.2)
-                                .frame(width: min(CGFloat(totalMacros.fat / Double((viewModel.dailyGoals["fat"] ?? 0))) * geometry.size.width, geometry.size.width), height: 30)
-                            Text("\(String(format: "%.2f", totalMacros.fat)) / \(Int(viewModel.dailyGoals["fat"] ?? 0)) g")
+                                .frame(width: min(CGFloat(viewModel.totalMacros.fat / Double((viewModel.dailyGoals["fat"] ?? 0))) * geometry.size.width, geometry.size.width), height: 30)
+                            Text("\(String(format: "%.2f", viewModel.totalMacros.fat)) / \(Int(viewModel.dailyGoals["fat"] ?? 0)) g")
                                 .foregroundColor(Colors.primary)
                                 .padding(.leading, 10)
                                 .bold()
@@ -308,7 +566,7 @@ struct FoodLogView: View {
                     .frame(maxWidth: maxWidth) // Apply maxWidth constraint here
                 }
             }
-           // LogoGreen
+            // LogoGreen
             Image("FullLogoGreen")
                 .resizable()
                 .frame(width: 100, height: 10)
@@ -316,7 +574,7 @@ struct FoodLogView: View {
             
         }
         .padding()
-        .background(Color.white)
+        .background(Colors.secondary)
         .cornerRadius(10)
         .shadow(radius: 5)
     }
@@ -324,9 +582,22 @@ struct FoodLogView: View {
     var body: some View {
         ScrollView {
             VStack {
-                LogoGreen
-                    .padding(.bottom, 8)
-                // Header View (Date Navigation)
+                HStack {
+                    Spacer()
+                    LogoGreen
+                        .padding(.bottom, 8)
+                    // Header View (Date Navigation)
+                    Spacer()
+                    Button(action: {
+                        showOptionsModal = true
+                    }) {
+                        Image(systemName: "square.and.arrow.up")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 19, height: 19)
+                            .foregroundColor(Colors.primary)
+                    }
+                }
                 headerView
                 
                 // Progress Bars for Daily Goals
@@ -346,6 +617,10 @@ struct FoodLogView: View {
             .background(Colors.secondary)
             .sheet(isPresented: $modalVisible) {
                 foodModalView
+            }
+            .sheet(isPresented: $showOptionsModal) {
+                       // Modal content with meal options
+                ShareOptionsView
             }
             .sheet(isPresented: $isSettingsPresented) {
                 VStack {
@@ -428,6 +703,7 @@ struct FoodLogView: View {
             viewModel.fetchMacroGoals()
             viewModel.fetchProgressBarData()
             viewModel.fetchUserMeals()
+            viewModel.getTotalMacros()
         }
         .gesture(DragGesture(minimumDistance: 20, coordinateSpace: .global).onEnded { value in
             // Detect swipe direction
@@ -442,11 +718,103 @@ struct FoodLogView: View {
         )
     }
     
+    var ShareOptionsView: some View {
+        VStack(spacing: 20) {
+            Text("Select Log Data to Share:")
+                .font(.headline)
+            
+            // Option buttons
+            Button("Daily Goals") {
+                selectedOption = "Daily Goals"
+                captureSnapshot(view: screenshotDailyGoalsView)
+            }
+            .fontWeight(.bold)
+            .frame(maxWidth: 200)
+            .padding()
+            .background(Colors.primary)
+            .foregroundColor(Colors.secondary)
+            .cornerRadius(10)
+            
+            Button(action: {
+                selectedOption = "Breakfast"
+                viewModel.selectedMeal = .breakfast
+                captureSnapshot(view: screenshotIndividualMealView)
+            }) {
+                Image(systemName: Meal.breakfast.iconName)
+                    .foregroundColor(Colors.secondary)
+                Text("Breakfast")
+            }
+            .fontWeight(.bold)
+            .frame(maxWidth: 200)
+            .padding()
+            .background(Colors.primary)
+            .foregroundColor(Colors.secondary)
+            .cornerRadius(10)
+            
+            Button(action: {
+                selectedOption = "Lunch"
+                viewModel.selectedMeal = .lunch
+                captureSnapshot(view: screenshotIndividualMealView)
+            }) {
+                Image(systemName: Meal.lunch.iconName)
+                    .foregroundColor(Colors.secondary)
+                Text("Lunch")
+            }
+            .fontWeight(.bold)
+            .frame(maxWidth: 200)
+            .padding()
+            .background(Colors.primary)
+            .foregroundColor(Colors.secondary)
+            .cornerRadius(10)
+            
+            Button(action: {
+                selectedOption = "Dinner"
+                viewModel.selectedMeal = .dinner
+                captureSnapshot(view: screenshotIndividualMealView)
+            }) {
+                Image(systemName: Meal.dinner.iconName)
+                    .foregroundColor(Colors.secondary)
+                Text("Dinner")
+            }
+            .fontWeight(.bold)
+            .frame(maxWidth: 200)
+            .padding()
+            .background(Colors.primary)
+            .foregroundColor(Colors.secondary)
+            .cornerRadius(10)
+            
+            Button(action: {
+                selectedOption = "Snacks"
+                viewModel.selectedMeal = .snacks
+                captureSnapshot(view: screenshotIndividualMealView)
+            }) {
+                Image(systemName: Meal.snacks.iconName)
+                    .foregroundColor(Colors.secondary)
+                Text("Snacks")
+            }
+            .fontWeight(.bold)
+            .frame(maxWidth: 200)
+            .padding()
+            .background(Colors.primary)
+            .foregroundColor(Colors.secondary)
+            .cornerRadius(10)
+
+            Button("All Meals") {
+                selectedOption = "All Meals"
+                captureSnapshot(view: screenshotAllMealsView)
+            }
+            .fontWeight(.bold)
+            .frame(maxWidth: 200)
+            .padding()
+            .background(Colors.primary)
+            .foregroundColor(Colors.secondary)
+            .cornerRadius(10)
+        }
+        .padding()
+    }
+    
     // Progress Bars for Daily Goals
     var progressChart: some View {
-        let totalMacros = viewModel.getTotalMacros()
-        let maxWidth: CGFloat = 300 // Maximum width for progress bars (adjust as needed)
-        
         return VStack(alignment: .leading, spacing: 20) {
             // Header with "Daily Total" and Filter Button
             HStack {
@@ -456,16 +824,6 @@ struct FoodLogView: View {
                     .foregroundColor(Colors.primary)
                 
                 Spacer()
-                
-                Button(action: {
-                    captureSnapshot(view: screenshotDailyGoalsView)
-                }) {
-                    Image(systemName: "square.and.arrow.up")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 19, height: 19)
-                        .foregroundColor(Colors.primary)
-                }
                 // Filter Button
                 Button(action: {
                     showFilterModal.toggle()
@@ -504,8 +862,8 @@ struct FoodLogView: View {
                                 .frame(height: 30)
                             Colors.primaryLight
                                 .opacity(0.2)
-                                .frame(width: min(CGFloat(totalMacros.calories / Double((viewModel.dailyGoals["calories"] ?? 0))) * geometry.size.width, geometry.size.width), height: 30)
-                            Text("\(Int(totalMacros.calories)) / \(Int(viewModel.dailyGoals["calories"] ?? 0)) kcal")
+                                .frame(width: min(CGFloat(viewModel.totalMacros.calories / Double((viewModel.dailyGoals["calories"] ?? 0))) * geometry.size.width, geometry.size.width), height: 30)
+                            Text("\(Int(viewModel.totalMacros.calories)) / \(Int(viewModel.dailyGoals["calories"] ?? 0)) kcal")
                                 .foregroundColor(Colors.primary)
                                 .padding(.leading, 10)
                                 .bold()
@@ -532,8 +890,8 @@ struct FoodLogView: View {
                                 .frame(height: 30)
                             Colors.primaryLight
                                 .opacity(0.2)
-                                .frame(width: min(CGFloat(totalMacros.protein / Double((viewModel.dailyGoals["protein"] ?? 0))) * geometry.size.width, geometry.size.width), height: 30)
-                            Text("\(String(format: "%.2f", totalMacros.protein)) / \(Int(viewModel.dailyGoals["protein"] ?? 0)) g")
+                                .frame(width: min(CGFloat(viewModel.totalMacros.protein / Double((viewModel.dailyGoals["protein"] ?? 0))) * geometry.size.width, geometry.size.width), height: 30)
+                            Text("\(String(format: "%.2f", viewModel.totalMacros.protein)) / \(Int(viewModel.dailyGoals["protein"] ?? 0)) g")
                                 .foregroundColor(Colors.primary)
                                 .padding(.leading, 10)
                                 .bold()
@@ -560,8 +918,8 @@ struct FoodLogView: View {
                                 .frame(height: 30)
                             Colors.primaryLight
                                 .opacity(0.2)
-                                .frame(width: min(CGFloat(totalMacros.carbs / Double((viewModel.dailyGoals["carbs"] ?? 0))) * geometry.size.width, geometry.size.width), height: 30)
-                            Text("\(String(format: "%.2f", totalMacros.carbs)) / \(Int(viewModel.dailyGoals["carbs"] ?? 0)) g")
+                                .frame(width: min(CGFloat(viewModel.totalMacros.carbs / Double((viewModel.dailyGoals["carbs"] ?? 0))) * geometry.size.width, geometry.size.width), height: 30)
+                            Text("\(String(format: "%.2f", viewModel.totalMacros.carbs)) / \(Int(viewModel.dailyGoals["carbs"] ?? 0)) g")
                                 .foregroundColor(Colors.primary)
                                 .padding(.leading, 10)
                                 .bold()
@@ -588,8 +946,8 @@ struct FoodLogView: View {
                                 .frame(height: 30)
                             Colors.primaryLight
                                 .opacity(0.2)
-                                .frame(width: min(CGFloat(totalMacros.fat / Double((viewModel.dailyGoals["fat"] ?? 0))) * geometry.size.width, geometry.size.width), height: 30)
-                            Text("\(String(format: "%.2f", totalMacros.fat)) / \(Int(viewModel.dailyGoals["fat"] ?? 0)) g")
+                                .frame(width: min(CGFloat(viewModel.totalMacros.fat / Double((viewModel.dailyGoals["fat"] ?? 0))) * geometry.size.width, geometry.size.width), height: 30)
+                            Text("\(String(format: "%.2f", viewModel.totalMacros.fat)) / \(Int(viewModel.dailyGoals["fat"] ?? 0)) g")
                                 .foregroundColor(Colors.primary)
                                 .padding(.leading, 10)
                                 .bold()
@@ -762,16 +1120,6 @@ struct FoodLogView: View {
                     .bold()
                     .foregroundColor(Colors.primary)
                 Spacer()
-                Button(action: {
-                    viewModel.selectedMeal = meal
-                    captureSnapshot(view: screenshotIndividualMealView)
-                }) {
-                    Image(systemName: "square.and.arrow.up")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 19, height: 19)
-                        .foregroundColor(Colors.primary)
-                }
                 Button(action: {
                     viewModel.selectedMeal = meal
                     showingMealNameAlert = true
@@ -986,7 +1334,7 @@ struct FoodLogView: View {
                     }
                 }
                 Spacer()
-                .padding()
+                    .padding()
             }
             .frame(maxHeight: .infinity)
             .background(Colors.secondary)
