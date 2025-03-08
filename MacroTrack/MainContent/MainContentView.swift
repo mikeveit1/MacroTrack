@@ -1,12 +1,6 @@
-//
-//  MainContentView.swift
-//  MacroTrack
-//
-//  Created by Mike Veit on 3/4/25.
-//
-
-import Foundation
 import SwiftUI
+import RevenueCat
+import RevenueCatUI
 
 struct MainContentView: View {
     init() {
@@ -17,20 +11,19 @@ struct MainContentView: View {
         UITabBar.appearance().standardAppearance = appearance
         UITabBar.appearance().scrollEdgeAppearance = appearance
     }
+    
     var body: some View {
         TabView {
-            // Food Log Tab
             FoodLogView()
                 .tabItem {
-                    Image(systemName: "pencil.and.list.clipboard") // Icon for Food Log
-                    Text("Food Log")               // Label for Food Log
+                    Image(systemName: "pencil.and.list.clipboard")
+                    Text("Food Log")
                 }
             
-            // Macro Calculator Tab
             MacroCalculatorView()
                 .tabItem {
-                    Image(systemName: "figure.run") // Icon for Macro Calculator
-                    Text("Macro Calculator")      // Label for Macro Calculator
+                    Image(systemName: "figure.run")
+                    Text("Macro Calculator")
                 }
             
             ProfileView()
@@ -38,11 +31,19 @@ struct MainContentView: View {
                     Image(systemName: "person")
                     Text("Profile")
                 }
-            
         }
+        .presentPaywallIfNeeded(
+            requiredEntitlementIdentifier: "pro",
+            presentationMode: .fullScreen, purchaseCompleted: { customerInfo in
+                print("Purchase completed: \(customerInfo.entitlements)")
+            },
+            restoreCompleted: { customerInfo in
+                // Paywall will be dismissed automatically if "pro" is now active.
+                print("Purchases restored: \(customerInfo.entitlements)")
+            }
+        )
         .accentColor(Colors.secondary) // Customize the tab bar accent color (optional)
         .background(Colors.gray)
-      
     }
 }
 
