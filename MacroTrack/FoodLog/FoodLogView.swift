@@ -26,6 +26,8 @@ struct FoodLogView: View {
         // Create a UIHostingController for the custom SwiftUI view
         let hostingController = UIHostingController(rootView: view)
         
+        hostingController.view.backgroundColor = .white
+        
         // Calculate the intrinsic content size of the view
         let targetSize = hostingController.view.intrinsicContentSize
         if targetSize.width <= 0 || targetSize.height <= 0 {
@@ -33,11 +35,11 @@ struct FoodLogView: View {
         }
         
         // Add padding around the content to make sure nothing gets clipped
-        let padding: CGFloat = 150
-        let adjustedSize = CGSize(width: targetSize.width + padding, height: targetSize.height + padding)
+        let adjustedSize = CGSize(width: targetSize.width + 250, height: targetSize.height)
         
         // Set the hosting controller's view frame
-        hostingController.view.frame = CGRect(origin: .zero, size: adjustedSize)
+        hostingController.view.frame = CGRect(x: 0, y: 0, width: adjustedSize.width, height: adjustedSize.height)
+       // hostingController.view.frame = CGRect(origin: .zero, size: adjustedSize)
         
         // Add the hosting controller's view to the root view so it can layout
         UIApplication.shared.windows.first?.rootViewController?.view.addSubview(hostingController.view)
@@ -70,11 +72,20 @@ struct FoodLogView: View {
             }
         }
         
-        let activityViewController = UIActivityViewController(activityItems: [image], applicationActivities: nil)
-        
-        // Find the current view controller to present the share sheet
-        if let currentVC = UIApplication.shared.windows.first?.rootViewController {
-            currentVC.present(activityViewController, animated: true, completion: nil)
+        if let data = image.jpegData(compressionQuality: 1) {
+            let imageURL = FileManager.default.temporaryDirectory.appendingPathComponent("MacroTrack_\(viewModel.selectedMeal)_\(Date().timeIntervalSince1970).jpg")
+            do {
+                try data.write(to: imageURL)
+                // Share imageURL
+                let activityViewController = UIActivityViewController(activityItems: [imageURL], applicationActivities: nil)
+                
+                // Find the current view controller to present the share sheet
+                if let currentVC = UIApplication.shared.windows.first?.rootViewController {
+                    currentVC.present(activityViewController, animated: true, completion: nil)
+                }
+            } catch {
+                print("error")
+            }
         }
     }
     
@@ -194,9 +205,7 @@ struct FoodLogView: View {
                 .padding(.top)
         }
         .padding()
-        .background(Colors.secondary)
-        .cornerRadius(10)
-        .shadow(radius: 5)
+        .edgesIgnoringSafeArea(.all)
     }
     
     var screenshotAllMealsView: some View {
@@ -444,9 +453,7 @@ struct FoodLogView: View {
                 .padding(.top)
         }
         .padding()
-        .background(Colors.secondary)
-        .cornerRadius(10)
-        .shadow(radius: 5)
+        .edgesIgnoringSafeArea(.all)
     }
     
     var screenshotDailyGoalsView: some View {
@@ -574,9 +581,7 @@ struct FoodLogView: View {
             
         }
         .padding()
-        .background(Colors.secondary)
-        .cornerRadius(10)
-        .shadow(radius: 5)
+        .edgesIgnoringSafeArea(.all)
     }
     
     var body: some View {
