@@ -202,7 +202,7 @@ struct FoodLogView: View {
             Image("FullLogoGreen")
                 .resizable()
                 .frame(width: 100, height: 10)
-                .padding(.top)
+                .padding(.top, 6)
         }
         .padding()
         .edgesIgnoringSafeArea(.all)
@@ -450,7 +450,7 @@ struct FoodLogView: View {
             Image("FullLogoGreen")
                 .resizable()
                 .frame(width: 100, height: 10)
-                .padding(.top)
+                .padding(.top, 6)
         }
         .padding()
         .edgesIgnoringSafeArea(.all)
@@ -577,7 +577,7 @@ struct FoodLogView: View {
             Image("FullLogoGreen")
                 .resizable()
                 .frame(width: 100, height: 10)
-                .padding(.top)
+                .padding(.top, 6)
             
         }
         .padding()
