@@ -73,7 +73,7 @@ struct FoodLogView: View {
         }
         
         if let data = image.jpegData(compressionQuality: 1) {
-            let imageURL = FileManager.default.temporaryDirectory.appendingPathComponent("MacroTrack_\(viewModel.selectedMeal)_\(Date().timeIntervalSince1970).jpg")
+            let imageURL = FileManager.default.temporaryDirectory.appendingPathComponent("MacroTrack_\(Date().timeIntervalSince1970).jpg")
             do {
                 try data.write(to: imageURL)
                 // Share imageURL
