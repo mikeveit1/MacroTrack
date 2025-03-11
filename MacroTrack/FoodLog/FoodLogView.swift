@@ -1238,6 +1238,7 @@ struct FoodLogView: View {
                         }
                         HStack {
                             Text("Servings:")
+                                .foregroundColor(Colors.secondary)
                             TextField("", text: Binding(
                                 get: {
                                     // Return the current servings value for this food, or default to "1.0" if not found
