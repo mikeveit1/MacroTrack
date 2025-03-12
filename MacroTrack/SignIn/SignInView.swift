@@ -85,6 +85,7 @@ struct SignInView: View {
                         .font(.caption)
                 }
                 Spacer()
+                fatSecretBadge
             }
             .padding(.horizontal)
             .background(Colors.secondary)

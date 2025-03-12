@@ -1421,6 +1421,7 @@ struct FoodLogView: View {
             }
             
             Spacer()
+            fatSecretBadge
         }
         .background(Colors.secondary)
     }

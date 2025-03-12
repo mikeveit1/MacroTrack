@@ -46,6 +46,7 @@
 		E4A058C02D7BA67300CB75B2 /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = E4A058BF2D7BA67300CB75B2 /* RevenueCat */; };
 		E4A058C22D7BA67300CB75B2 /* RevenueCatUI in Frameworks */ = {isa = PBXBuildFile; productRef = E4A058C12D7BA67300CB75B2 /* RevenueCatUI */; };
 		E4A058C92D7CBF0500CB75B2 /* ImageHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A058C82D7CBF0500CB75B2 /* ImageHelper.swift */; };
+		E4A058CD2D81C97300CB75B2 /* FatSecretBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A058CC2D81C97300CB75B2 /* FatSecretBadge.swift */; };
 		E4DE44FC2D77570D00E681A9 /* UserFoodLogData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4DE44FB2D77570D00E681A9 /* UserFoodLogData.swift */; };
 		E4DE45002D775AA400E681A9 /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4DE44FF2D775AA400E681A9 /* SignInView.swift */; };
 		E4DE45022D775AAA00E681A9 /* SignInViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4DE45012D775AAA00E681A9 /* SignInViewModel.swift */; };
@@ -88,6 +89,7 @@
 		E48DF3532D774C9000F92063 /* FirebaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseService.swift; sourceTree = "<group>"; };
 		E48DF3552D77541500F92063 /* UserMacroData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserMacroData.swift; sourceTree = "<group>"; };
 		E4A058C82D7CBF0500CB75B2 /* ImageHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageHelper.swift; sourceTree = "<group>"; };
+		E4A058CC2D81C97300CB75B2 /* FatSecretBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FatSecretBadge.swift; sourceTree = "<group>"; };
 		E4DE44FB2D77570D00E681A9 /* UserFoodLogData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserFoodLogData.swift; sourceTree = "<group>"; };
 		E4DE44FF2D775AA400E681A9 /* SignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
 		E4DE45012D775AAA00E681A9 /* SignInViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInViewModel.swift; sourceTree = "<group>"; };
@@ -237,6 +239,7 @@
 				E4DE45232D7A411300E681A9 /* ReauthenticationSheet.swift */,
 				E4DE45252D7B4C7200E681A9 /* LogoGreen.swift */,
 				E4DE45272D7B625A00E681A9 /* SplashView.swift */,
+				E4A058CC2D81C97300CB75B2 /* FatSecretBadge.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -429,6 +432,7 @@
 				E48DF3432D73797E00F92063 /* RoundingHelper.swift in Sources */,
 				E48DF3332D7252D600F92063 /* FoodLogViewModel.swift in Sources */,
 				E4DE45062D775AB900E681A9 /* SignUpViewModel.swift in Sources */,
+				E4A058CD2D81C97300CB75B2 /* FatSecretBadge.swift in Sources */,
 				E4DE451C2D7905D200E681A9 /* FetchUserDataHelper.swift in Sources */,
 				E4DE45242D7A411300E681A9 /* ReauthenticationSheet.swift in Sources */,
 				E4DE44FC2D77570D00E681A9 /* UserFoodLogData.swift in Sources */,
@@ -560,7 +564,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = MacroTrack/MacroTrack.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"MacroTrack/Preview Content\"";
 				DEVELOPMENT_TEAM = HRR73Q9W36;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -582,7 +586,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.3;
-				MARKETING_VERSION = 1.01;
+				MARKETING_VERSION = 1.02;
 				PRODUCT_BUNDLE_IDENTIFIER = com.buckeyesoftware.MacroTrack;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
@@ -601,7 +605,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = MacroTrack/MacroTrack.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"MacroTrack/Preview Content\"";
 				DEVELOPMENT_TEAM = HRR73Q9W36;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -623,7 +627,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.3;
-				MARKETING_VERSION = 1.01;
+				MARKETING_VERSION = 1.02;
 				PRODUCT_BUNDLE_IDENTIFIER = com.buckeyesoftware.MacroTrack;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
