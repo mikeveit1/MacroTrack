@@ -11,13 +11,16 @@ class FoodLogViewModel: ObservableObject {
     @Published var showProtein = true
     @Published var showCarbs = true
     @Published var showFat = true
+    @Published var showWater = true
+    @Published var water: Double = 0
     @Published var totalMacros: MacronutrientInfo = MacronutrientInfo(calories: 0, protein: 0, carbs: 0, fat: 0)
     @Published var userMeals: [UserMeal] = []
     @Published var dailyGoals: [String: Int] = [
         "calories": 2000,  // Example: 2000 calories
         "protein": 150,    // Example: 150g protein
         "carbs": 250,      // Example: 250g carbs
-        "fat": 70          // Example: 70g fat
+        "fat": 70,          // Example: 70g fat
+        "water": 128,
     ]
     
     var selectedMeal: Meal = .breakfast
@@ -132,12 +135,16 @@ class FoodLogViewModel: ObservableObject {
     func deleteFoodFromMeal(meal: Meal, food: MacroFood) {
         DispatchQueue.main.async {
             self.mealLogs[meal]?.removeAll { $0.id == food.id }
+            if meal == .water {
+                self.water = 0
+            }
         }
         deleteFoodFromFirebase(meal: meal, food: food) // Delete food from Firebase
     }
     
     // Go to today's date
     func goToToday() {
+        water = 0
         DispatchQueue.main.async {
             self.currentDate = Date()
             self.fetchFoodLog()
@@ -146,6 +153,7 @@ class FoodLogViewModel: ObservableObject {
     
     // Go to the previous day
     func goToPreviousDay() {
+        water = 0
         DispatchQueue.main.async {
             self.currentDate = Calendar.current.date(byAdding: .day, value: -1, to: self.currentDate) ?? Date()
             self.fetchFoodLog()
@@ -154,6 +162,7 @@ class FoodLogViewModel: ObservableObject {
     
     // Go to the next day
     func goToNextDay() {
+        water = 0
         DispatchQueue.main.async {
             self.currentDate = Calendar.current.date(byAdding: .day, value: 1, to: self.currentDate) ?? Date()
             self.fetchFoodLog()
@@ -189,6 +198,9 @@ class FoodLogViewModel: ObservableObject {
         var updatedFood = food
         
         updatedFood.servings = servings
+        if meal == .water {
+            water = servings
+        }
         
         // Multiply original values by servings
         updatedFood.macronutrients.calories = originalMacros.calories * servings
@@ -253,7 +265,7 @@ class FoodLogViewModel: ObservableObject {
             if let error = error {
                 print("Error fetching food log: \(error.localizedDescription)")
             } else if let foodLogData = foodLogData {
-                DispatchQueue.main.async {
+                DispatchQueue.main.async { [self] in
                     print("Food log fetched successfully")
                         // Reset mealLogs to avoid stale data
                     // Parse the fetched data
@@ -274,6 +286,7 @@ class FoodLogViewModel: ObservableObject {
                                 }
                             }
                             self?.mealLogs[meal] = foods.sorted(by: {$0.addDate < $1.addDate})
+                            self?.water = (self?.mealLogs[.water]?.first?.servings ?? 0)
                         }
                     }
                 }

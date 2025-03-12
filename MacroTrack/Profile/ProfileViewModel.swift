@@ -14,12 +14,14 @@ class ProfileViewModel: ObservableObject {
     @Published var averageProtein: Double = 0
     @Published var averageCarbs: Double = 0
     @Published var averageFat: Double = 0
+    @Published var averageWater: Double = 0
     @Published var consecutiveDaysLogged: Int = 0
     @Published var dailyGoals: [String: Int] = [
         "calories": 2000,  // Example: 2000 calories
         "protein": 150,    // Example: 150g protein
         "carbs": 250,      // Example: 250g carbs
         "fat": 70,          // Example: 70g fat
+        "water": 128,
     ]
     @Published var fitnessGoal: String = "Use the macro calculator to set your fitness goal!"
     @Published var termsLink: String = ""
@@ -61,6 +63,7 @@ class ProfileViewModel: ObservableObject {
                 var totalProtein: Double = 0
                 var totalCarbs: Double = 0
                 var totalFat: Double = 0
+                var totalWater: Double = 0
                 var totalDays: Int = 0
                 
                 // Iterate over each date in the foodLogs dictionary
@@ -72,6 +75,7 @@ class ProfileViewModel: ObservableObject {
                         var dailyProtein: Double = 0
                         var dailyCarbs: Double = 0
                         var dailyFat: Double = 0
+                        var dailyWater: Double = 0
                         
                         // Iterate over each meal in dailyLog (e.g., breakfast, lunch)
                         for (_, foods) in dailyLog {
@@ -85,6 +89,11 @@ class ProfileViewModel: ObservableObject {
                                     // Ensure 'food' is a dictionary that contains macronutrients
                                     if let food = food as? [String: Any],
                                        let macronutrients = food["macronutrients"] as? [String: Any] {
+                                        if food["id"] as? String == "-1" {
+                                            if let water = food["servings"] as? Double {
+                                                dailyWater += water
+                                            }
+                                        }
                                         // Safely unwrap calories, protein, carbs, and fat
                                         if let calories = macronutrients["calories"] as? Int {
                                             dailyCalories += calories
@@ -114,6 +123,7 @@ class ProfileViewModel: ObservableObject {
                         totalProtein += dailyProtein
                         totalCarbs += dailyCarbs
                         totalFat += dailyFat
+                        totalWater += dailyWater
                         totalDays += 1
                     }
                 }
@@ -124,6 +134,7 @@ class ProfileViewModel: ObservableObject {
                     self.averageProtein = totalProtein / Double(totalDays)
                     self.averageCarbs = totalCarbs / Double(totalDays)
                     self.averageFat = totalFat / Double(totalDays)
+                    self.averageWater = totalWater / Double(totalDays)
                 } else {
                     print("No data found to calculate averages")
                 }

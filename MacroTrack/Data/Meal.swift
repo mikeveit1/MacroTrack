@@ -9,7 +9,7 @@ import Foundation
 
 
 enum Meal: String, CaseIterable {
-    case breakfast, lunch, dinner, snacks
+    case breakfast, lunch, dinner, snacks, water
     
     var iconName: String {
         switch self {
@@ -21,6 +21,8 @@ enum Meal: String, CaseIterable {
             return "fork.knife"
         case .snacks:
             return "carrot"
+        case .water:
+            return "waterbottle"
         }
     }
 }

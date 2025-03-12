@@ -50,6 +50,13 @@ struct ProfileView: View {
                             .bold()
                             .foregroundColor(Colors.primary)
                     }
+                    HStack {
+                        Text("Water:")
+                            .foregroundColor(Colors.primary)
+                        Text("\(viewModel.dailyGoals["water"] ?? 0) oz")
+                            .bold()
+                            .foregroundColor(Colors.primary)
+                    }
                 }
                 .padding()  // Proper padding around the entire progress chart
                 .background(Colors.secondary)
@@ -92,6 +99,13 @@ struct ProfileView: View {
                             Text("Fat:")
                                 .foregroundColor(Colors.primary)
                             Text("\(String(format: "%.2f", viewModel.averageFat)) g")
+                                .bold()
+                                .foregroundColor(Colors.primary)
+                        }
+                        HStack {
+                            Text("Water:")
+                                .foregroundColor(Colors.primary)
+                            Text("\(String(format: "%.2f", viewModel.averageWater)) oz")
                                 .bold()
                                 .foregroundColor(Colors.primary)
                         }

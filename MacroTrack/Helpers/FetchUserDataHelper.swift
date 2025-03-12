@@ -15,6 +15,7 @@ class FetchUserDataHelper {
                 "protein": data?.protein ?? 150,    // Example: 150g protein
                 "carbs": data?.carbs ?? 250,      // Example: 250g carbs
                 "fat": data?.fat ?? 70,        // Example: 70g fat
+                "water": data?.water ?? 128,
             ]
             completion(dailyGoals)
         }

@@ -128,7 +128,8 @@ class FirebaseService {
         guard let userID = getCurrentUserID() else { return }
         let userMacroDataRef = db.child("users").child(userID).child("macroData")
         
-        userMacroDataRef.setValue([
+        // Prepare the data you want to update
+        let updatedValues: [String: Any] = [
             "weight": userMacroData.weight,
             "height": userMacroData.height,
             "age": userMacroData.age,
@@ -138,7 +139,10 @@ class FirebaseService {
             "protein": userMacroData.protein,
             "carbs": userMacroData.carbs,
             "fat": userMacroData.fat
-        ]) { error, _ in
+        ]
+        
+        // Update only the specific fields
+        userMacroDataRef.updateChildValues(updatedValues) { error, _ in
             if let error = error {
                 print("Error updating user macro data: \(error.localizedDescription)")
             } else {
@@ -146,6 +150,7 @@ class FirebaseService {
             }
         }
     }
+
     
     func updateDailyGoals(dailyGoals: [String: Int]) {
         guard let userID = getCurrentUserID() else { return }
@@ -156,6 +161,7 @@ class FirebaseService {
             "protein": dailyGoals["protein"] ?? 0,
             "carbs": dailyGoals["carbs"] ?? 0,
             "fat": dailyGoals["fat"] ?? 0,
+            "water": dailyGoals["water"] ?? 0 
         ]) { error, _ in
             if let error = error {
                 print("Error updating user macro data: \(error.localizedDescription)")
@@ -292,7 +298,8 @@ class FirebaseService {
                         totalCalories: data["totalCalories"] as? Int ?? 0,
                         protein: data["protein"] as? Int ?? 0,
                         carbs: data["carbs"] as? Int ?? 0,
-                        fat: data["fat"] as? Int ?? 0
+                        fat: data["fat"] as? Int ?? 0,
+                        water: data["water"] as? Int ?? 0
                     )
                     completion(userMacroData)
                 } else {

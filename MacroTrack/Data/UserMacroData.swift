@@ -17,8 +17,9 @@ struct UserMacroData {
     var protein: Int
     var carbs: Int
     var fat: Int
+    var water: Int? = 128
     
-    init(weight: Double, height: Double, age: Int, activityLevel: String, fitnessGoal: String, totalCalories: Int, protein: Int, carbs: Int, fat: Int) {
+    init(weight: Double, height: Double, age: Int, activityLevel: String, fitnessGoal: String, totalCalories: Int, protein: Int, carbs: Int, fat: Int, water: Int? = 128) {
         self.weight = weight
         self.height = height
         self.age = age
@@ -28,6 +29,9 @@ struct UserMacroData {
         self.protein = protein
         self.carbs = carbs
         self.fat = fat
+        if water != nil {
+            self.water = water
+        }
     }
     
     // Convert UserMacroData to dictionary for Firestore
@@ -41,7 +45,8 @@ struct UserMacroData {
             "totalCalories": totalCalories,
             "protein": protein,
             "carbs": carbs,
-            "fat": fat
+            "fat": fat,
+            "water": water ?? 128
         ]
     }
     
@@ -58,5 +63,6 @@ struct UserMacroData {
         self.protein = data["protein"] as? Int ?? 0
         self.carbs = data["carbs"] as? Int ?? 0
         self.fat = data["fat"] as? Int ?? 0
+        self.water = data["water"] as? Int ?? 0
     }
 }

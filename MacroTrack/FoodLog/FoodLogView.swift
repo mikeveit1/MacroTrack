@@ -111,38 +111,49 @@ struct FoodLogView: View {
                 Text("Total")
                     .foregroundColor(Colors.primary)
                     .bold()
-                Text("\(Int(totalMacronutrients.calories)) kcal")
-                    .foregroundColor(Colors.primary)
-                    .bold()
-                    .lineLimit(1)
-                HStack {
+                if viewModel.selectedMeal != .water {
+                    Text("\(Int(totalMacronutrients.calories)) kcal")
+                        .foregroundColor(Colors.primary)
+                        .bold()
+                        .lineLimit(1)
                     HStack {
-                        Text("P:")
-                            .foregroundColor(Colors.primary)
-                        Text(String(format: "%.2f", totalMacronutrients.protein) + " g")
+                        HStack {
+                            Text("P:")
+                                .foregroundColor(Colors.primary)
+                            Text(String(format: "%.2f", totalMacronutrients.protein) + " g")
+                                .foregroundColor(Colors.primary)
+                                .bold()
+                                .lineLimit(1)
+                        }
+                        HStack {
+                            Text("C:")
+                                .foregroundColor(Colors.primary)
+                            Text(String(format: "%.2f", totalMacronutrients.carbs) + " g")
+                                .foregroundColor(Colors.primary)
+                                .bold()
+                                .lineLimit(1)
+                        }
+                        HStack {
+                            Text("F:")
+                                .foregroundColor(Colors.primary)
+                            Text(String(format: "%.2f", totalMacronutrients.fat) + " g")
+                                .foregroundColor(Colors.primary)
+                                .bold()
+                                .lineLimit(1)
+                            
+                        }
+                        Spacer()
+                    }
+                } else {
+                    HStack {
+                        Text(String(format: "%.2f", viewModel.water) + " oz")
                             .foregroundColor(Colors.primary)
                             .bold()
                             .lineLimit(1)
+                        Spacer()
                     }
-                    HStack {
-                        Text("C:")
-                            .foregroundColor(Colors.primary)
-                        Text(String(format: "%.2f", totalMacronutrients.carbs) + " g")
-                            .foregroundColor(Colors.primary)
-                            .bold()
-                            .lineLimit(1)
-                    }
-                    HStack {
-                        Text("F:")
-                            .foregroundColor(Colors.primary)
-                        Text(String(format: "%.2f", totalMacronutrients.fat) + " g")
-                            .foregroundColor(Colors.primary)
-                            .bold()
-                            .lineLimit(1)
-                        
-                    }
-                    Spacer()
                 }
+                Spacer()
             }
             .padding()
             .frame(maxWidth: .infinity)  // Ensures the food item takes up the full width
@@ -156,34 +167,36 @@ struct FoodLogView: View {
                                 .bold()
                         }
                         VStack(alignment: .leading) {
-                            Text("\(Int(food.macronutrients.calories)) kcal")
-                                .lineLimit(1)
-                                .bold()
-                                .foregroundColor(Colors.secondary)
-                            HStack {
+                            if viewModel.selectedMeal != .water {
+                                Text("\(Int(food.macronutrients.calories)) kcal")
+                                    .lineLimit(1)
+                                    .bold()
+                                    .foregroundColor(Colors.secondary)
                                 HStack {
-                                    Text("P:")
-                                        .foregroundColor(Colors.secondary)
-                                    Text(String(format: "%.2f", food.macronutrients.protein) + " g")
-                                        .foregroundColor(Colors.secondary)
-                                        .bold()
-                                        .lineLimit(1)
-                                }
-                                HStack {
-                                    Text("C:")
-                                        .foregroundColor(Colors.secondary)
-                                    Text(String(format: "%.2f", food.macronutrients.carbs) + " g")
-                                        .foregroundColor(Colors.secondary)
-                                        .bold()
-                                        .lineLimit(1)
-                                }
-                                HStack {
-                                    Text("F:")
-                                        .foregroundColor(Colors.secondary)
-                                    Text(String(format: "%.2f", food.macronutrients.fat) + " g")
-                                        .foregroundColor(Colors.secondary)
-                                        .bold()
-                                        .lineLimit(1)
+                                    HStack {
+                                        Text("P:")
+                                            .foregroundColor(Colors.secondary)
+                                        Text(String(format: "%.2f", food.macronutrients.protein) + " g")
+                                            .foregroundColor(Colors.secondary)
+                                            .bold()
+                                            .lineLimit(1)
+                                    }
+                                    HStack {
+                                        Text("C:")
+                                            .foregroundColor(Colors.secondary)
+                                        Text(String(format: "%.2f", food.macronutrients.carbs) + " g")
+                                            .foregroundColor(Colors.secondary)
+                                            .bold()
+                                            .lineLimit(1)
+                                    }
+                                    HStack {
+                                        Text("F:")
+                                            .foregroundColor(Colors.secondary)
+                                        Text(String(format: "%.2f", food.macronutrients.fat) + " g")
+                                            .foregroundColor(Colors.secondary)
+                                            .bold()
+                                            .lineLimit(1)
+                                    }
                                 }
                             }
                         }
@@ -207,7 +220,7 @@ struct FoodLogView: View {
         .padding()
         .edgesIgnoringSafeArea(.all)
     }
-    
+
     var screenshotAllMealsView: some View {
         return VStack(alignment: .center) {
             Text(viewModel.formatDate(viewModel.currentDate))
@@ -327,6 +340,33 @@ struct FoodLogView: View {
                             .frame(maxWidth: maxWidth) // Apply maxWidth constraint here
                         }
                     }
+                    
+                    if viewModel.showWater {
+                        HStack {
+                            Text("Water")
+                                .frame(width: 80, alignment: .leading)
+                                .foregroundColor(Colors.primary)
+                                .bold()
+                            
+                            GeometryReader { geometry in
+                                ZStack(alignment: .leading) {
+                                    Colors.gray  // Background color (empty space)
+                                        .frame(height: 30)
+                                    Colors.primaryLight
+                                        .opacity(0.2)
+                                        .frame(width: min(CGFloat(viewModel.water / Double((viewModel.dailyGoals["water"] ?? 0))) * geometry.size.width, geometry.size.width), height: 30)
+                                    Text("\(String(format: "%.2f", viewModel.water)) / \(Int(viewModel.dailyGoals["water"] ?? 0)) oz")
+                                        .foregroundColor(Colors.primary)
+                                        .padding(.leading, 10)
+                                        .bold()
+                                        .lineLimit(1)
+                                }
+                                .cornerRadius(8)
+                            }
+                            .frame(height: 30) // Set height of progress bar here
+                            .frame(maxWidth: maxWidth) // Apply maxWidth constraint here
+                        }
+                    }
                 }
                 Spacer()
             }
@@ -353,38 +393,49 @@ struct FoodLogView: View {
                         Text("Total")
                             .foregroundColor(Colors.primary)
                             .bold()
-                        Text("\(Int(totalMacronutrients.calories)) kcal")
-                            .foregroundColor(Colors.primary)
-                            .bold()
-                            .lineLimit(1)
-                        HStack {
+                        if meal != .water {
+                            Text("\(Int(totalMacronutrients.calories)) kcal")
+                                .foregroundColor(Colors.primary)
+                                .bold()
+                                .lineLimit(1)
                             HStack {
-                                Text("P:")
-                                    .foregroundColor(Colors.primary)
-                                Text(String(format: "%.2f", totalMacronutrients.protein) + " g")
+                                HStack {
+                                    Text("P:")
+                                        .foregroundColor(Colors.primary)
+                                    Text(String(format: "%.2f", totalMacronutrients.protein) + " g")
+                                        .foregroundColor(Colors.primary)
+                                        .bold()
+                                        .lineLimit(1)
+                                }
+                                HStack {
+                                    Text("C:")
+                                        .foregroundColor(Colors.primary)
+                                    Text(String(format: "%.2f", totalMacronutrients.carbs) + " g")
+                                        .foregroundColor(Colors.primary)
+                                        .bold()
+                                        .lineLimit(1)
+                                }
+                                HStack {
+                                    Text("F:")
+                                        .foregroundColor(Colors.primary)
+                                    Text(String(format: "%.2f", totalMacronutrients.fat) + " g")
+                                        .foregroundColor(Colors.primary)
+                                        .bold()
+                                        .lineLimit(1)
+                                    
+                                }
+                                Spacer()
+                            }
+                        } else {
+                            HStack {
+                                Text(String(format: "%.2f", viewModel.water) + " oz")
                                     .foregroundColor(Colors.primary)
                                     .bold()
                                     .lineLimit(1)
+                                Spacer()
                             }
-                            HStack {
-                                Text("C:")
-                                    .foregroundColor(Colors.primary)
-                                Text(String(format: "%.2f", totalMacronutrients.carbs) + " g")
-                                    .foregroundColor(Colors.primary)
-                                    .bold()
-                                    .lineLimit(1)
-                            }
-                            HStack {
-                                Text("F:")
-                                    .foregroundColor(Colors.primary)
-                                Text(String(format: "%.2f", totalMacronutrients.fat) + " g")
-                                    .foregroundColor(Colors.primary)
-                                    .bold()
-                                    .lineLimit(1)
-                                
-                            }
-                            Spacer()
                         }
+                        Spacer()
                     }
                     .padding()
                     .frame(maxWidth: .infinity)  // Ensures the food item takes up the full width
@@ -397,35 +448,37 @@ struct FoodLogView: View {
                                         .foregroundColor(Colors.secondary)
                                         .bold()
                                 }
-                                VStack(alignment: .leading) {
-                                    Text("\(Int(food.macronutrients.calories)) kcal")
-                                        .lineLimit(1)
-                                        .bold()
-                                        .foregroundColor(Colors.secondary)
-                                    HStack {
+                                if meal != .water {
+                                    VStack(alignment: .leading) {
+                                        Text("\(Int(food.macronutrients.calories)) kcal")
+                                            .lineLimit(1)
+                                            .bold()
+                                            .foregroundColor(Colors.secondary)
                                         HStack {
-                                            Text("P:")
-                                                .foregroundColor(Colors.secondary)
-                                            Text(String(format: "%.2f", food.macronutrients.protein) + " g")
-                                                .foregroundColor(Colors.secondary)
-                                                .bold()
-                                                .lineLimit(1)
-                                        }
-                                        HStack {
-                                            Text("C:")
-                                                .foregroundColor(Colors.secondary)
-                                            Text(String(format: "%.2f", food.macronutrients.carbs) + " g")
-                                                .foregroundColor(Colors.secondary)
-                                                .bold()
-                                                .lineLimit(1)
-                                        }
-                                        HStack {
-                                            Text("F:")
-                                                .foregroundColor(Colors.secondary)
-                                            Text(String(format: "%.2f", food.macronutrients.fat) + " g")
-                                                .foregroundColor(Colors.secondary)
-                                                .bold()
-                                                .lineLimit(1)
+                                            HStack {
+                                                Text("P:")
+                                                    .foregroundColor(Colors.secondary)
+                                                Text(String(format: "%.2f", food.macronutrients.protein) + " g")
+                                                    .foregroundColor(Colors.secondary)
+                                                    .bold()
+                                                    .lineLimit(1)
+                                            }
+                                            HStack {
+                                                Text("C:")
+                                                    .foregroundColor(Colors.secondary)
+                                                Text(String(format: "%.2f", food.macronutrients.carbs) + " g")
+                                                    .foregroundColor(Colors.secondary)
+                                                    .bold()
+                                                    .lineLimit(1)
+                                            }
+                                            HStack {
+                                                Text("F:")
+                                                    .foregroundColor(Colors.secondary)
+                                                Text(String(format: "%.2f", food.macronutrients.fat) + " g")
+                                                    .foregroundColor(Colors.secondary)
+                                                    .bold()
+                                                    .lineLimit(1)
+                                            }
                                         }
                                     }
                                 }
@@ -573,6 +626,32 @@ struct FoodLogView: View {
                     .frame(maxWidth: maxWidth) // Apply maxWidth constraint here
                 }
             }
+            if viewModel.showWater {
+                HStack {
+                    Text("Water")
+                        .frame(width: 80, alignment: .leading)
+                        .foregroundColor(Colors.primary)
+                        .bold()
+                    
+                    GeometryReader { geometry in
+                        ZStack(alignment: .leading) {
+                            Colors.gray  // Background color (empty space)
+                                .frame(height: 30)
+                            Colors.primaryLight
+                                .opacity(0.2)
+                                .frame(width: min(CGFloat(viewModel.water / Double((viewModel.dailyGoals["water"] ?? 0))) * geometry.size.width, geometry.size.width), height: 30)
+                            Text("\(String(format: "%.2f", viewModel.water)) / \(Int(viewModel.dailyGoals["water"] ?? 0)) oz")
+                                .foregroundColor(Colors.primary)
+                                .padding(.leading, 10)
+                                .bold()
+                                .lineLimit(1)
+                        }
+                        .cornerRadius(8)
+                    }
+                    .frame(height: 30) // Set height of progress bar here
+                    .frame(maxWidth: maxWidth) // Apply maxWidth constraint here
+                }
+            }
             // LogoGreen
             Image("FullLogoGreen")
                 .resizable()
@@ -618,7 +697,7 @@ struct FoodLogView: View {
             }
             .sheet(isPresented: $isSettingsPresented) {
                 VStack {
-                    Text("Edit Your Daily Macronutrient Goals")
+                    Text("Edit Your Daily Goals")
                         .font(.title3)
                         .foregroundColor(Colors.primary)
                         .bold()
@@ -633,6 +712,8 @@ struct FoodLogView: View {
                         GoalEditorField(goalType: "Carbs", value: $editedGoals["carbs"])
                         
                         GoalEditorField(goalType: "Fat", value: $editedGoals["fat"])
+                        
+                        GoalEditorField(goalType: "Water", value: $editedGoals["water"])
                         
                         HStack {
                             Spacer()
@@ -679,6 +760,9 @@ struct FoodLogView: View {
                 .padding()
                 .frame(maxHeight: .infinity) // Make the VStack take up the full height
                 .background(Colors.secondary.edgesIgnoringSafeArea(.all)) // Semi-transparent background behind the modal
+                .onTapGesture {
+                    UIApplication.shared.endEditing() // This will dismiss the keyboard
+                }
             }
             .background(Colors.secondary)
         }
@@ -790,6 +874,22 @@ struct FoodLogView: View {
                     Image(systemName: Meal.snacks.iconName)
                         .foregroundColor(Colors.secondary)
                     Text("Snacks")
+                }
+                .fontWeight(.bold)
+                .frame(maxWidth: 200)
+                .padding()
+                .background(Colors.primary)
+                .foregroundColor(Colors.secondary)
+                .cornerRadius(10)
+                
+                Button(action: {
+                    selectedOption = "Water"
+                    viewModel.selectedMeal = .water
+                    captureSnapshot(view: screenshotIndividualMealView)
+                }) {
+                    Image(systemName: Meal.water.iconName)
+                        .foregroundColor(Colors.secondary)
+                    Text("Water")
                 }
                 .fontWeight(.bold)
                 .frame(maxWidth: 200)
@@ -976,6 +1076,33 @@ struct FoodLogView: View {
                     .frame(maxWidth: maxWidth) // Apply maxWidth constraint here
                 }
             }
+            
+            if viewModel.showWater {
+                HStack {
+                    Text("Water")
+                        .frame(width: 80, alignment: .leading)
+                        .foregroundColor(Colors.primary)
+                        .bold()
+                    
+                    GeometryReader { geometry in
+                        ZStack(alignment: .leading) {
+                            Colors.gray  // Background color (empty space)
+                                .frame(height: 30)
+                            Colors.primaryLight
+                                .opacity(0.2)
+                                .frame(width: min(CGFloat(viewModel.water / Double((viewModel.dailyGoals["water"] ?? 0))) * geometry.size.width, geometry.size.width), height: 30)
+                            Text("\(String(format: "%.2f", viewModel.water)) / \(Int(viewModel.dailyGoals["water"] ?? 0)) oz")
+                                .foregroundColor(Colors.primary)
+                                .padding(.leading, 10)
+                                .bold()
+                                .lineLimit(1)
+                        }
+                        .cornerRadius(8)
+                    }
+                    .frame(height: 30) // Set height of progress bar here
+                    .frame(maxWidth: maxWidth) // Apply maxWidth constraint here
+                }
+            }
         }
         .padding()  // Proper padding around the entire progress chart
         .background(Colors.secondary)
@@ -990,7 +1117,7 @@ struct FoodLogView: View {
     
     var filterModal: some View {
         VStack {
-            Text("Filter Your Daily Macronutrient Goals")
+            Text("Filter Your Daily Goals")
                 .font(.title3)
                 .bold()
                 .padding(.vertical)
@@ -1023,6 +1150,14 @@ struct FoodLogView: View {
                 
                 Toggle(isOn: $viewModel.showFat) {
                     Text("Fat")
+                        .foregroundColor(Colors.primary)
+                        .bold()
+                }
+                .tint(Colors.primary)
+                .padding()
+                
+                Toggle(isOn: $viewModel.showWater) {
+                    Text("Water")
                         .foregroundColor(Colors.primary)
                         .bold()
                 }
@@ -1137,60 +1272,97 @@ struct FoodLogView: View {
                     .bold()
                     .foregroundColor(Colors.primary)
                 Spacer()
-                Button(action: {
-                    viewModel.selectedMeal = meal
-                    showingMealNameAlert = true
-                }) {
-                    Text("Save")
-                        .foregroundColor(Colors.secondary)
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 5)
-                        .background(Colors.primary)
-                        .cornerRadius(8)
+                if meal != .water {
+                    Button(action: {
+                        viewModel.selectedMeal = meal
+                        showingMealNameAlert = true
+                    }) {
+                        Text("Save")
+                            .foregroundColor(Colors.secondary)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 5)
+                            .background(Colors.primary)
+                            .cornerRadius(8)
+                    }
+                    Button(action: { selectMeal(meal: meal )}) {
+                        Image(systemName: "plus.circle")
+                            .foregroundColor(Colors.primary)
+                    }
+                    .tint(Colors.primary)
+                    .font(.title3)
+                } else {
+                    Button(action: {
+                        viewModel.selectedMeal = meal
+                        if viewModel.water >= 8 {
+                            viewModel.water -= 8
+                        } else {
+                            viewModel.water = 0
+                        }
+                        viewModel.updateFoodMacrosForServings(meal: meal, food: MacroFood(id: "-1", name: "Water", macronutrients: MacronutrientInfo(calories: 0, protein: 0, carbs: 0, fat: 0), originalMacros: MacronutrientInfo(calories: 0, protein: 0, carbs: 0, fat: 0), servingDescription: "1 oz", servings: Double(viewModel.water), addDate: Date()), servings: Double(viewModel.water))
+                    }) {
+                        Image(systemName: "minus.circle")
+                            .foregroundColor(Colors.primary)
+                    }
+                    .tint(Colors.primary)
+                    .font(.title3)
+                    Button(action: {
+                        viewModel.selectedMeal = meal
+                        viewModel.water += 8
+                        viewModel.updateFoodMacrosForServings(meal: meal, food: MacroFood(id: "-1", name: "Water", macronutrients: MacronutrientInfo(calories: 0, protein: 0, carbs: 0, fat: 0), originalMacros: MacronutrientInfo(calories: 0, protein: 0, carbs: 0, fat: 0), servingDescription: "1 oz", servings: Double(viewModel.water), addDate: Date()), servings: Double(viewModel.water))
+                    }) {
+                        Image(systemName: "plus.circle")
+                            .foregroundColor(Colors.primary)
+                    }
+                    .tint(Colors.primary)
+                    .font(.title3)
                 }
-                Button(action: { selectMeal(meal: meal )}) {
-                    Image(systemName: "plus.circle")
-                        .foregroundColor(Colors.primary)
-                }
-                .tint(Colors.primary)
-                .font(.title3)
             }
             .frame(maxWidth: .infinity)  // Ensures the button takes up the full width
             VStack(alignment: .leading) {
                 Text("Total")
                     .foregroundColor(Colors.primary)
                     .bold()
-                Text("\(Int(totalMacronutrients.calories)) kcal")
-                    .foregroundColor(Colors.primary)
-                    .bold()
-                    .lineLimit(1)
-                HStack {
+                if meal != .water {
+                    Text("\(Int(totalMacronutrients.calories)) kcal")
+                        .foregroundColor(Colors.primary)
+                        .bold()
+                        .lineLimit(1)
                     HStack {
-                        Text("P:")
-                            .foregroundColor(Colors.primary)
-                        Text(String(format: "%.2f", totalMacronutrients.protein) + " g")
+                        HStack {
+                            Text("P:")
+                                .foregroundColor(Colors.primary)
+                            Text(String(format: "%.2f", totalMacronutrients.protein) + " g")
+                                .foregroundColor(Colors.primary)
+                                .bold()
+                                .lineLimit(1)
+                        }
+                        HStack {
+                            Text("C:")
+                                .foregroundColor(Colors.primary)
+                            Text(String(format: "%.2f", totalMacronutrients.carbs) + " g")
+                                .foregroundColor(Colors.primary)
+                                .bold()
+                                .lineLimit(1)
+                        }
+                        HStack {
+                            Text("F:")
+                                .foregroundColor(Colors.primary)
+                            Text(String(format: "%.2f", totalMacronutrients.fat) + " g")
+                                .foregroundColor(Colors.primary)
+                                .bold()
+                                .lineLimit(1)
+                            
+                        }
+                        Spacer()
+                    }
+                } else {
+                    HStack {
+                        Text(String(format: "%.2f", viewModel.water) + " oz")
                             .foregroundColor(Colors.primary)
                             .bold()
                             .lineLimit(1)
+                        Spacer()
                     }
-                    HStack {
-                        Text("C:")
-                            .foregroundColor(Colors.primary)
-                        Text(String(format: "%.2f", totalMacronutrients.carbs) + " g")
-                            .foregroundColor(Colors.primary)
-                            .bold()
-                            .lineLimit(1)
-                    }
-                    HStack {
-                        Text("F:")
-                            .foregroundColor(Colors.primary)
-                        Text(String(format: "%.2f", totalMacronutrients.fat) + " g")
-                            .foregroundColor(Colors.primary)
-                            .bold()
-                            .lineLimit(1)
-                        
-                    }
-                    Spacer()
                 }
             }
             .padding()
@@ -1204,35 +1376,37 @@ struct FoodLogView: View {
                                 .foregroundColor(Colors.secondary)
                                 .bold()
                         }
-                        VStack(alignment: .leading) {
-                            Text("\(Int(food.macronutrients.calories)) kcal")
-                                .lineLimit(1)
-                                .bold()
-                                .foregroundColor(Colors.secondary)
-                            HStack {
+                        if meal != .water {
+                            VStack(alignment: .leading) {
+                                Text("\(Int(food.macronutrients.calories)) kcal")
+                                    .lineLimit(1)
+                                    .bold()
+                                    .foregroundColor(Colors.secondary)
                                 HStack {
-                                    Text("P:")
-                                        .foregroundColor(Colors.secondary)
-                                    Text(String(format: "%.2f", food.macronutrients.protein) + " g")
-                                        .foregroundColor(Colors.secondary)
-                                        .bold()
-                                        .lineLimit(1)
-                                }
-                                HStack {
-                                    Text("C:")
-                                        .foregroundColor(Colors.secondary)
-                                    Text(String(format: "%.2f", food.macronutrients.carbs) + " g")
-                                        .foregroundColor(Colors.secondary)
-                                        .bold()
-                                        .lineLimit(1)
-                                }
-                                HStack {
-                                    Text("F:")
-                                        .foregroundColor(Colors.secondary)
-                                    Text(String(format: "%.2f", food.macronutrients.fat) + " g")
-                                        .foregroundColor(Colors.secondary)
-                                        .bold()
-                                        .lineLimit(1)
+                                    HStack {
+                                        Text("P:")
+                                            .foregroundColor(Colors.secondary)
+                                        Text(String(format: "%.2f", food.macronutrients.protein) + " g")
+                                            .foregroundColor(Colors.secondary)
+                                            .bold()
+                                            .lineLimit(1)
+                                    }
+                                    HStack {
+                                        Text("C:")
+                                            .foregroundColor(Colors.secondary)
+                                        Text(String(format: "%.2f", food.macronutrients.carbs) + " g")
+                                            .foregroundColor(Colors.secondary)
+                                            .bold()
+                                            .lineLimit(1)
+                                    }
+                                    HStack {
+                                        Text("F:")
+                                            .foregroundColor(Colors.secondary)
+                                        Text(String(format: "%.2f", food.macronutrients.fat) + " g")
+                                            .foregroundColor(Colors.secondary)
+                                            .bold()
+                                            .lineLimit(1)
+                                    }
                                 }
                             }
                         }
@@ -1257,10 +1431,10 @@ struct FoodLogView: View {
                                     viewModel.updateFoodMacrosForServings(meal: meal, food: food, servings: servingsToUpdate)
                                 }
                             ))
+                            .fixedSize()
                             .accentColor(Colors.primary)
                             .keyboardType(.decimalPad)
-                            .padding()
-                            .frame(width: 60, height: 40)
+                            .padding(8)
                             .background(Colors.secondary)
                             .cornerRadius(8)
                             .foregroundColor(Colors.primary)

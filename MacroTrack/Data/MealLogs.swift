@@ -13,7 +13,8 @@ struct MealLogs: Equatable {
     var lunch: [MacroFood] = []
     var dinner: [MacroFood] = []
     var snacks: [MacroFood] = []
-
+    var water: [MacroFood] = []
+    
     subscript(meal: Meal) -> [MacroFood]? {
         get {
             switch meal {
@@ -21,6 +22,7 @@ struct MealLogs: Equatable {
             case .lunch: return lunch
             case .dinner: return dinner
             case .snacks: return snacks
+            case .water: return water
             }
         }
         set {
@@ -29,16 +31,18 @@ struct MealLogs: Equatable {
             case .lunch: lunch = newValue ?? []
             case .dinner: dinner = newValue ?? []
             case .snacks: snacks = newValue ?? []
+            case .water: water = newValue ?? []
             }
         }
     }
-
+    
     // Conformance to Equatable protocol
     static func ==(lhs: MealLogs, rhs: MealLogs) -> Bool {
         return lhs.breakfast == rhs.breakfast &&
-               lhs.lunch == rhs.lunch &&
-               lhs.dinner == rhs.dinner &&
-               lhs.snacks == rhs.snacks
+        lhs.lunch == rhs.lunch &&
+        lhs.dinner == rhs.dinner &&
+        lhs.snacks == rhs.snacks &&
+        lhs.water == rhs.water
     }
 }
 
