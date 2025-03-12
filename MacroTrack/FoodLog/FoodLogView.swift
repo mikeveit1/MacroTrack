@@ -355,7 +355,7 @@ struct FoodLogView: View {
                                     Colors.primaryLight
                                         .opacity(0.2)
                                         .frame(width: min(CGFloat(viewModel.water / Double((viewModel.dailyGoals["water"] ?? 0))) * geometry.size.width, geometry.size.width), height: 30)
-                                    Text("\(String(format: "%.2f", viewModel.water)) / \(Int(viewModel.dailyGoals["water"] ?? 0)) oz")
+                                    Text("\(String(format: "%.2f", viewModel.water)) / \(Int(viewModel.dailyGoals["water"] ?? 128)) oz")
                                         .foregroundColor(Colors.primary)
                                         .padding(.leading, 10)
                                         .bold()
@@ -640,7 +640,7 @@ struct FoodLogView: View {
                             Colors.primaryLight
                                 .opacity(0.2)
                                 .frame(width: min(CGFloat(viewModel.water / Double((viewModel.dailyGoals["water"] ?? 0))) * geometry.size.width, geometry.size.width), height: 30)
-                            Text("\(String(format: "%.2f", viewModel.water)) / \(Int(viewModel.dailyGoals["water"] ?? 0)) oz")
+                            Text("\(String(format: "%.2f", viewModel.water)) / \(Int(viewModel.dailyGoals["water"] ?? 128)) oz")
                                 .foregroundColor(Colors.primary)
                                 .padding(.leading, 10)
                                 .bold()
@@ -1091,7 +1091,7 @@ struct FoodLogView: View {
                             Colors.primaryLight
                                 .opacity(0.2)
                                 .frame(width: min(CGFloat(viewModel.water / Double((viewModel.dailyGoals["water"] ?? 0))) * geometry.size.width, geometry.size.width), height: 30)
-                            Text("\(String(format: "%.2f", viewModel.water)) / \(Int(viewModel.dailyGoals["water"] ?? 0)) oz")
+                            Text("\(String(format: "%.2f", viewModel.water)) / \(Int(viewModel.dailyGoals["water"] ?? 128)) oz")
                                 .foregroundColor(Colors.primary)
                                 .padding(.leading, 10)
                                 .bold()

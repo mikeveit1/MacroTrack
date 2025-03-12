@@ -161,7 +161,7 @@ class FirebaseService {
             "protein": dailyGoals["protein"] ?? 0,
             "carbs": dailyGoals["carbs"] ?? 0,
             "fat": dailyGoals["fat"] ?? 0,
-            "water": dailyGoals["water"] ?? 0 
+            "water": dailyGoals["water"] ?? 128
         ]) { error, _ in
             if let error = error {
                 print("Error updating user macro data: \(error.localizedDescription)")
@@ -299,7 +299,7 @@ class FirebaseService {
                         protein: data["protein"] as? Int ?? 0,
                         carbs: data["carbs"] as? Int ?? 0,
                         fat: data["fat"] as? Int ?? 0,
-                        water: data["water"] as? Int ?? 0
+                        water: data["water"] as? Int ?? 128
                     )
                     completion(userMacroData)
                 } else {
