@@ -133,6 +133,7 @@ class FirebaseService {
             "weight": userMacroData.weight,
             "height": userMacroData.height,
             "age": userMacroData.age,
+            "gender": userMacroData.gender,
             "activityLevel": userMacroData.activityLevel,
             "fitnessGoal": userMacroData.fitnessGoal,
             "totalCalories": userMacroData.totalCalories,
@@ -292,7 +293,8 @@ class FirebaseService {
                     let userMacroData = UserMacroData(
                         weight: data["weight"] as? Double ?? 0,
                         height: data["height"] as? Double ?? 0,
-                        age: data["age"] as? Int ?? 0,
+                        age: data["age"] as? Int ?? 0, 
+                        gender: data["gender"] as? String ?? "",
                         activityLevel: data["activityLevel"] as? String ?? "",
                         fitnessGoal: data["fitnessGoal"] as? String ?? "",
                         totalCalories: data["totalCalories"] as? Int ?? 0,

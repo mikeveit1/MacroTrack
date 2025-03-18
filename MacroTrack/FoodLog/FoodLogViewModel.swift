@@ -37,7 +37,8 @@ class FoodLogViewModel: ObservableObject {
             "showCalories": showCalories,
             "showProtein": showProtein,
             "showCarbs": showCarbs,
-            "showFat": showFat
+            "showFat": showFat,
+            "showWater": showWater,
         ]
         FirebaseService.shared.saveProgressBarData(progressBarData: progressBarData) { success, error in
             if let error = error {
@@ -62,6 +63,7 @@ class FoodLogViewModel: ObservableObject {
                 self.showProtein = data?["showProtein"] ?? true
                 self.showCarbs = data?["showCarbs"] ?? true
                 self.showFat = data?["showFat"] ?? true
+                self.showWater = data?["showWater"] ?? true
             }
             self.isLoading = false
         }

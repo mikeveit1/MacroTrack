@@ -65,6 +65,30 @@ struct MacroCalculatorView: View {
                             .cornerRadius(8)
                             .accentColor(Colors.primary)
                     }
+                    
+                    HStack {
+                        Spacer()
+                        VStack {
+                            Text("Gender")
+                                .foregroundColor(Colors.primary) // Change this to your desired color
+                                .font(.title3)
+                                .bold()
+                            Picker("", selection: $viewModel.gender) {
+                                ForEach(viewModel.genders, id: \.self) { gender in
+                                    Text(gender)
+                                }
+                            }
+                            .foregroundColor(Colors.primary)
+                            .pickerStyle(MenuPickerStyle())
+                            .tint(Colors.primary)
+                            .padding(8)
+                            .frame(maxWidth: 200)
+                            .background(Colors.gray)
+                            .cornerRadius(10)
+                        }
+                        .padding(8)
+                        Spacer()
+                    }
                 
                     HStack {
                         Spacer()
@@ -151,6 +175,24 @@ struct MacroCalculatorView: View {
                     Text("Fat: \(Int(viewModel.fat)) grams")
                         .bold()
                         .foregroundColor(Colors.primary)
+                    HStack {
+                        if let url = URL(string: viewModel.macroLink), UIApplication.shared.canOpenURL(url) {
+                            let termsText = "We calculate your daily macronutrient goals using the Mifflin St. Jeor equation with a 45/25/30 carbohydrates/protein/fats ratio. For more information, go to [bodybuilding.com](\(url))."
+                            Text(.init(termsText))
+                                .tint(.blue)
+                                .foregroundColor(Colors.primary)
+                                .font(.caption)
+                                .bold()
+                                .multilineTextAlignment(.center)
+                        } else {
+                            let termsText = "We calculate your daily macronutrient goals using the Mifflin St. Jeor equation with a 45/25/30 carbohydrates/protein/fats ratio. For more information, go to [bodybuilding.com]()."
+                            Text(.init(termsText))
+                                .foregroundColor(Colors.primary)
+                                .font(.caption)
+                                .bold()
+                                .multilineTextAlignment(.center)
+                        }
+                    }
                 }
                 .padding()  // Proper padding around the entire progress chart
                 .background(Colors.secondary)
