@@ -1,3 +1,10 @@
+//
+//  MacroFood.swift
+//  MacroTrack
+//
+//  Created by Mike Veit on 3/4/25.
+//
+
 import Foundation
 
 struct MacroFood: Identifiable, Hashable, Equatable, Codable {
@@ -9,12 +16,10 @@ struct MacroFood: Identifiable, Hashable, Equatable, Codable {
     var servings: Double
     var addDate: Date
     
-    // Conforming to Equatable by comparing id
     static func == (lhs: MacroFood, rhs: MacroFood) -> Bool {
         return lhs.id == rhs.id
     }
 
-    // Conforming to Hashable
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }

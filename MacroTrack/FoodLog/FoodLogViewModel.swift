@@ -1,3 +1,10 @@
+//
+//  FoodLogViewModel.swift
+//  MacroTrack
+//
+//  Created by Mike Veit on 3/4/25.
+//
+
 import SwiftUI
 import FatSecretSwift
 
@@ -6,7 +13,7 @@ class FoodLogViewModel: ObservableObject {
     @Published var mealLogs: MealLogs = MealLogs()
     @Published var currentDate: Date = Date()
     @Published var searchResults: [SearchedFood] = []
-    @Published var servings: [String: Double] = [:] // Dictionary of servings for each food by food.id
+    @Published var servings: [String: Double] = [:]
     @Published var showCalories = true
     @Published var showProtein = true
     @Published var showCarbs = true
@@ -16,16 +23,17 @@ class FoodLogViewModel: ObservableObject {
     @Published var totalMacros: MacronutrientInfo = MacronutrientInfo(calories: 0, protein: 0, carbs: 0, fat: 0)
     @Published var userMeals: [UserMeal] = []
     @Published var dailyGoals: [String: Int] = [
-        "calories": 2000,  // Example: 2000 calories
-        "protein": 150,    // Example: 150g protein
-        "carbs": 250,      // Example: 250g carbs
-        "fat": 70,          // Example: 70g fat
+        "calories": 2000,
+        "protein": 150,
+        "carbs": 250,
+        "fat": 70,
         "water": 128,
     ]
     
     var selectedMeal: Meal = .breakfast
     var foodHelper = FoodHelper()
     var fetchUserDataHelper = FetchUserDataHelper()
+    var totalMacroHelper = TotalMacroHelper()
     
     func saveDailyGoals(newGoals: [String: Int]) {
         dailyGoals = newGoals
@@ -76,15 +84,13 @@ class FoodLogViewModel: ObservableObject {
             self.isLoading = false
         }
     }
-    
-    // Function to get the total macros across all meals
-    func getTotalMacros() {
+
+    func getTotalMacrosForAllMeals() {
         var totalCalories: Double = 0
         var totalProtein: Double = 0
         var totalCarbs: Double = 0
         var totalFat: Double = 0
         
-        // Sum across each meal type
         for meal in Meal.allCases {
             if let mealItems = mealLogs[meal] {
                 for food in mealItems {
@@ -116,24 +122,18 @@ class FoodLogViewModel: ObservableObject {
         }
     }
     
-    // Save food to the selected meal
     func saveFood(meal: Meal, food: MacroFood) {
         addFoodToMeal(meal: selectedMeal, food: food)
-        saveFoodToFirebase(meal: meal, food: food) // Save the food to Firebase
+        saveFoodToFirebase(meal: meal, food: food)
     }
-    
-    // Add food to selected meal
+
     func addFoodToMeal(meal: Meal, food: MacroFood) {
-      //  saveOriginalMacros(for: food)
-        _ = getTotalMacros()
-        
-        // Ensuring mealLogs is updated on the main thread
+        _ = getTotalMacrosForAllMeals()
         DispatchQueue.main.async {
             self.mealLogs[meal]?.append(food)
         }
     }
     
-    // Delete food from selected meal
     func deleteFoodFromMeal(meal: Meal, food: MacroFood) {
         DispatchQueue.main.async {
             self.mealLogs[meal]?.removeAll { $0.id == food.id }
@@ -141,10 +141,9 @@ class FoodLogViewModel: ObservableObject {
                 self.water = 0
             }
         }
-        deleteFoodFromFirebase(meal: meal, food: food) // Delete food from Firebase
+        deleteFoodFromFirebase(meal: meal, food: food)
     }
     
-    // Go to today's date
     func goToToday() {
         water = 0
         DispatchQueue.main.async {
@@ -153,7 +152,6 @@ class FoodLogViewModel: ObservableObject {
         }
     }
     
-    // Go to the previous day
     func goToPreviousDay() {
         water = 0
         DispatchQueue.main.async {
@@ -162,7 +160,6 @@ class FoodLogViewModel: ObservableObject {
         }
     }
     
-    // Go to the next day
     func goToNextDay() {
         water = 0
         DispatchQueue.main.async {
@@ -171,10 +168,9 @@ class FoodLogViewModel: ObservableObject {
         }
     }
 
-    // Format date into a readable string
     func formatDate(_ date: Date) -> String {
         let formatter = DateFormatter()
-        formatter.dateFormat = "MMM d, yyyy"  // Use a simpler format, e.g., "2025-03-05"
+        formatter.dateFormat = "MMM d, yyyy"
         return formatter.string(from: date)
     }
     
@@ -187,30 +183,26 @@ class FoodLogViewModel: ObservableObject {
     }
     
     func updateFoodMacrosForServings(meal: Meal, food: MacroFood, servings: Double) {
-        // If servings are reset to 1, return the original food
         let originalMacros = food.originalMacros
         
         if servings == 1 {
             let updatedFood = MacroFood(id: food.id, name: food.name, macronutrients: originalMacros, originalMacros: originalMacros, servingDescription: food.servingDescription, servings: 1, addDate: food.addDate)
             saveFoodToFirebase(meal: meal, food: updatedFood)
-            getTotalMacros()
+            getTotalMacrosForAllMeals()
         }
-        
-        // Get the original macronutrients for multiplication
+
         var updatedFood = food
         
         updatedFood.servings = servings
         if meal == .water {
             water = servings
         }
-        
-        // Multiply original values by servings
+
         updatedFood.macronutrients.calories = originalMacros.calories * servings
         updatedFood.macronutrients.protein = originalMacros.protein * servings
         updatedFood.macronutrients.carbs = originalMacros.carbs * servings
         updatedFood.macronutrients.fat = originalMacros.fat * servings
         
-        // Round values to 2 decimal places
         updatedFood.macronutrients.protein = updatedFood.macronutrients.protein.rounded(toPlaces: 2)
         updatedFood.macronutrients.carbs = updatedFood.macronutrients.carbs.rounded(toPlaces: 2)
         updatedFood.macronutrients.fat = updatedFood.macronutrients.fat.rounded(toPlaces: 2)
@@ -218,38 +210,21 @@ class FoodLogViewModel: ObservableObject {
         
         saveFoodToFirebase(meal: meal, food: updatedFood)
         
-        getTotalMacros()
+        getTotalMacrosForAllMeals()
     }
 
-    
-    // Update the meal log with the updated food
     func updateMealLogWithUpdatedFood(updatedFood: MacroFood, meal: Meal) {
         DispatchQueue.main.async {
-            // Find the index of the food with the same ID in the selected meal's list
             if let index = self.mealLogs[meal]?.firstIndex(where: { $0.id == updatedFood.id }) {
-                // Update the existing food in the meal, while keeping the order intact
                 self.mealLogs[meal]?[index] = updatedFood
             }
         }
     }
 
     func getTotalMacronutrients(for meal: Meal) -> MacronutrientInfo {
-        var totalMacronutrients = MacronutrientInfo(calories: 0, protein: 0, carbs: 0, fat: 0)
-        
-        // Sum the macronutrients of all foods in the meal
-        if let foods = mealLogs[meal] {
-            for food in foods {
-                totalMacronutrients.calories += food.macronutrients.calories
-                totalMacronutrients.protein += food.macronutrients.protein
-                totalMacronutrients.carbs += food.macronutrients.carbs
-                totalMacronutrients.fat += food.macronutrients.fat
-            }
-        }
-        
-        return totalMacronutrients
+        return totalMacroHelper.getTotalMacronutrients(for: meal, mealLogs: mealLogs)
     }
     
-    // MARK: - Firebase Integration Methods
     func fetchFoodLog() {
         isLoading = true
         guard let userID = FirebaseService.shared.getCurrentUserID() else {
@@ -260,17 +235,14 @@ class FoodLogViewModel: ObservableObject {
         
         self.mealLogs = MealLogs()
         
-        let date = formatDate(currentDate)  // Make sure the format is correct (e.g., "Mar 5, 2025")
-        print("Fetching food log for date: \(date)")  // Debugging log
+        let date = formatDate(currentDate)
+        print("Fetching food log for date: \(date)")
 
         FirebaseService.shared.getFoodLog(date: date) { [weak self] foodLogData, error in
             if let error = error {
                 print("Error fetching food log: \(error.localizedDescription)")
             } else if let foodLogData = foodLogData {
                 DispatchQueue.main.async { [self] in
-                    print("Food log fetched successfully")
-                        // Reset mealLogs to avoid stale data
-                    // Parse the fetched data
                     for (mealKey, mealData) in foodLogData {
                         if let meal = Meal(rawValue: mealKey) {
                             var foods: [MacroFood] = []
@@ -306,7 +278,6 @@ class FoodLogViewModel: ObservableObject {
     }
     
     func saveMealToFirebase(mealName: String, meal: Meal) {
-        // Prepare the foods list (the selected foods from the meal)
         let foodsList = mealLogs[meal]?.map { food in
             return [
                 "id":food.id,
@@ -332,8 +303,6 @@ class FoodLogViewModel: ObservableObject {
         FirebaseService.shared.saveUserMeal(mealName: mealName, meal: meal, foodsList: foodsList)
     }
 
-    
-    // Save food to Firebase
     func saveFoodToFirebase(meal: Meal, food: MacroFood) {
         let date = formatDate(currentDate)
         FirebaseService.shared.saveFoodToMeal(date: date, meal: meal.rawValue, food: food) { success, error in
@@ -345,7 +314,6 @@ class FoodLogViewModel: ObservableObject {
         }
     }
     
-    // Delete food from Firebase
     func deleteFoodFromFirebase(meal: Meal, food: MacroFood) {
         let date = formatDate(currentDate)
         FirebaseService.shared.deleteFoodFromFirebase(date: date, meal: meal.rawValue, food: food) { success, error in
@@ -358,7 +326,6 @@ class FoodLogViewModel: ObservableObject {
     }
 
     func populateFoodsFromMeal(meal: Meal, userMeal: UserMeal) {
-        // Add the foods from the selected meal into the current meal log
         for food in userMeal.foods {
             saveFood(meal: meal, food: food)
         }

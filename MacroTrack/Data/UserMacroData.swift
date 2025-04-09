@@ -36,7 +36,6 @@ struct UserMacroData {
         }
     }
     
-    // Convert UserMacroData to dictionary for Firestore
     func toDict() -> [String: Any] {
         return [
             "weight": weight,
@@ -53,7 +52,6 @@ struct UserMacroData {
         ]
     }
     
-    // Initialize from Firestore data
     init?(data: [String: Any]?) {
         guard let data = data else { return nil }
         

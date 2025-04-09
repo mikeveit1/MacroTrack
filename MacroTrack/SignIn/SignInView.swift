@@ -1,3 +1,11 @@
+//
+//  SignInView.swift
+//  MacroTrack
+//
+//  Created by Mike Veit on 3/4/25.
+//
+
+
 import SwiftUI
 
 struct SignInView: View {
@@ -15,43 +23,43 @@ struct SignInView: View {
                     .padding(8)
                 TextField("", text: $viewModel.email, prompt: Text("Email").foregroundColor(Colors.primary.opacity(0.5)))
                     .padding()
-                    .background(Colors.secondary)  // Set background of the entire TextField to white
-                    .cornerRadius(8)          // Optional: round the corners for a nicer appearance
-                    .foregroundColor(Colors.primary)  // Text color
-                    .textFieldStyle(PlainTextFieldStyle()) // Use PlainTextFieldStyle to remove default styling
+                    .background(Colors.secondary)
+                    .cornerRadius(8)
+                    .foregroundColor(Colors.primary)
+                    .textFieldStyle(PlainTextFieldStyle())
                     .overlay(
                         RoundedRectangle(cornerRadius: 8)
-                            .stroke(Colors.primary, lineWidth: 1) // Optional: add a border to the TextField
+                            .stroke(Colors.primary, lineWidth: 1)
                     )
                 
                 HStack {
                     if isPasswordHidden {
                         SecureField("Password", text: $viewModel.password, prompt: Text("Password").foregroundColor(Colors.primary.opacity(0.5)))
                             .padding()
-                            .background(Colors.secondary)  // Set background of the entire TextField to white
-                            .cornerRadius(8)          // Optional: round the corners for a nicer appearance
-                            .foregroundColor(Colors.primary)  // Text color
-                            .textFieldStyle(PlainTextFieldStyle()) // Use PlainTextFieldStyle to remove default styling
+                            .background(Colors.secondary)
+                            .cornerRadius(8)
+                            .foregroundColor(Colors.primary)
+                            .textFieldStyle(PlainTextFieldStyle())
                     } else {
                         TextField("Password", text: $viewModel.password, prompt: Text("Password").foregroundColor(Colors.primary.opacity(0.5)))
                             .padding()
-                            .background(Colors.secondary)  // Set background of the entire TextField to white
-                            .cornerRadius(8)          // Optional: round the corners for a nicer appearance
-                            .foregroundColor(Colors.primary)  // Text color
-                            .textFieldStyle(PlainTextFieldStyle()) // Use PlainTextFieldStyle to remove default styling
+                            .background(Colors.secondary)
+                            .cornerRadius(8)
+                            .foregroundColor(Colors.primary)
+                            .textFieldStyle(PlainTextFieldStyle())
                            
                     }
                     Button(action: {
-                        isPasswordHidden.toggle() // Toggle password visibility
+                        isPasswordHidden.toggle()
                     }) {
-                        Image(systemName: isPasswordHidden ? "eye.slash" : "eye") // Eye icon for show/hide
+                        Image(systemName: isPasswordHidden ? "eye.slash" : "eye")
                             .foregroundColor(Colors.primary)
                             .padding(.trailing, 8)
                     }
                 }
                 .overlay(
                     RoundedRectangle(cornerRadius: 8)
-                        .stroke(Colors.primary, lineWidth: 1) // Optional: add a border to the TextField
+                        .stroke(Colors.primary, lineWidth: 1)
                 )
                 
                 if let errorMessage = viewModel.errorMessage {
@@ -61,11 +69,7 @@ struct SignInView: View {
                 }
             
                 Button(action: {
-                    viewModel.signIn { success in
-                        if success {
-                            // After successful sign-in, the view model handles login status
-                        }
-                    }
+                    viewModel.signIn()
                 }) {
                     Text("Sign In")
                         .fontWeight(.bold)
@@ -77,7 +81,6 @@ struct SignInView: View {
                 }
                 .padding()
                 
-                // Navigation to Sign Up View
                 NavigationLink(destination: SignUpView()) {
                     Text("Don't have an account? Sign Up")
                         .foregroundColor(Colors.primaryLight)

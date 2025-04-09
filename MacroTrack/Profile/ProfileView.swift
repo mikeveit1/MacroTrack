@@ -1,3 +1,10 @@
+//
+//  ProfileView.swift
+//  MacroTrack
+//
+//  Created by Mike Veit on 3/4/25.
+//
+
 import SwiftUI
 import StoreKit
 
@@ -5,17 +12,16 @@ struct ProfileView: View {
     @StateObject private var viewModel = ProfileViewModel()
     @State private var showDeleteAlert = false
     @State private var showReauthDialog = false
-    @State private var email: String = ""  // Ensure this is initialized
-    @State private var password: String = ""  // Ensure this is initialized
+    @State private var email: String = ""
+    @State private var password: String = ""
     
     
     var body: some View {
         ScrollView {
             VStack(spacing: 8) {
-                // First Card: Daily Goals
                 LogoGreen
                     .padding(.bottom, 8)
-                VStack(spacing: 4) {  // Reduced spacing between cards
+                VStack(spacing: 4) {
                     Text("Your Daily Goals")
                         .font(.title3)
                         .bold()
@@ -58,16 +64,15 @@ struct ProfileView: View {
                             .foregroundColor(Colors.primary)
                     }
                 }
-                .padding()  // Proper padding around the entire progress chart
+                .padding()
                 .background(Colors.secondary)
                 .cornerRadius(10)
                 .shadow(radius: 5)
-                .frame(width: 350) // Fixed width for consistency across all cards
+                .frame(width: 350)
                 
-                // Second Card: Stats (per day)
                 HStack {
                     Spacer()
-                    VStack(spacing: 4) {  // Reduced spacing between cards
+                    VStack(spacing: 4) {
                         Text("Your Daily Averages")
                             .font(.title3)
                             .bold()
@@ -110,15 +115,15 @@ struct ProfileView: View {
                                 .foregroundColor(Colors.primary)
                         }
                     }
-                    .padding()  // Proper padding around the entire progress chart
+                    .padding()
                     .background(Colors.secondary)
                     .cornerRadius(10)
                     .shadow(radius: 5)
-                    .frame(width: 350) // Fixed width for consistency across all cards Ensures the card has the same width
+                    .frame(width: 350)
                     Spacer()
                 }
                 
-                VStack(spacing: 4) {  // Reduced spacing between cards
+                VStack(spacing: 4) {
                     Text("Your Fitness Goal")
                         .font(.title3)
                         .bold()
@@ -133,14 +138,13 @@ struct ProfileView: View {
                         Spacer()
                     }
                 }
-                .padding()  // Proper padding around the entire progress chart
+                .padding()
                 .background(Colors.secondary)
                 .cornerRadius(10)
                 .shadow(radius: 5)
-                .frame(width: 350) // Fixed width for consistency across all cards Ensures the card has the same width
-                
-                // Third Card: Logging Streak
-                VStack(spacing: 4) {  // Reduced spacing between cards
+                .frame(width: 350)
+              
+                VStack(spacing: 4) {
                     HStack {
                         Spacer()
                         Text("Your Logging Streak")
@@ -153,12 +157,11 @@ struct ProfileView: View {
                         .bold()
                         .foregroundColor(Colors.primary)
                 }
-                .padding()  // Proper padding around the entire progress chart
+                .padding()
                 .background(Colors.secondary)
                 .cornerRadius(10)
                 .shadow(radius: 5)
-                .frame(width: 350) // Fixed
-                //.frame(maxWidth: .infinity) // Fixed width for consistency across all cards
+                .frame(width: 350)
                 VStack(spacing: 8) {
                     HStack {
                         Spacer()
@@ -170,81 +173,74 @@ struct ProfileView: View {
                     }
                     if let url = URL(string: "https://apps.apple.com/account/subscriptions") {
                         HStack {
-                            Image(systemName: "link") // Eye icon for show/hide
+                            Image(systemName: "link")
                                 .foregroundColor(.blue)
                                 .font(.headline)
                             Link("Manage Subscription", destination: url)
-                            //  .padding()
                                 .font(.headline)
                                 .foregroundColor(.blue)
                         }
                     } else {
                         HStack {
-                            Image(systemName: "link") // Eye icon for show/hide
+                            Image(systemName: "link")
                                 .foregroundColor(.blue)
                                 .font(.headline)
                             Link("Manage Subscription", destination: URL(string: "https://google.com")!)
-                            //  .padding()
                                 .font(.headline)
                                 .foregroundColor(.blue)
                         }
                     }
-                    // Terms and Conditions
+                    
                     HStack {
-                        Image(systemName: "link") // Eye icon for show/hide
+                        Image(systemName: "link")
                             .foregroundColor(.blue)
                             .font(.headline)
                         if let url = URL(string: viewModel.termsLink), UIApplication.shared.canOpenURL(url) {
-                            // Safely unwrap the URL
                             Link("Terms and Conditions", destination: url)
                                 .font(.headline)
                                 .foregroundColor(.blue)
                         } else {
                             Text("Terms and Conditions")
                                 .font(.headline)
-                                .foregroundColor(.gray) // Show a fallback text if the URL is invalid
+                                .foregroundColor(.gray)
                         }
                     }
                     
-                    // Privacy Policy
                     HStack {
-                        Image(systemName: "link") // Eye icon for show/hide
+                        Image(systemName: "link")
                             .foregroundColor(.blue)
                             .font(.headline)
                         if let url = URL(string: viewModel.privacyLink), UIApplication.shared.canOpenURL(url) {
-                            // Safely unwrap the URL
                             Link("Privacy Policy", destination: url)
                                 .font(.headline)
                                 .foregroundColor(.blue)
                         } else {
                             Text("Privacy Policy")
                                 .font(.headline)
-                                .foregroundColor(.gray) // Show a fallback text if the URL is invalid
+                                .foregroundColor(.gray)
                         }
                     }
                     
-                    // Submit Inquiry (mailto)
                     HStack {
-                        Image(systemName: "link") // Eye icon for show/hide
+                        Image(systemName: "link")
                             .foregroundColor(.blue)
                             .font(.headline)
                         if let url = URL(string: viewModel.contactUsLink), UIApplication.shared.canOpenURL(url) {
-                            // Safely unwrap the URL
                             Link("Contact Us", destination: url)
                                 .font(.headline)
                                 .foregroundColor(.blue)
                         } else {
                             Text("Contact Us")
                                 .font(.headline)
-                                .foregroundColor(.gray) // Show a fallback text if the URL is invalid
+                                .foregroundColor(.gray)
                         }
                     }
                 }
-                .padding()  // Proper padding around the entire progress chart
+                .padding()
                 .background(Colors.secondary)
                 .cornerRadius(10)
                 .shadow(radius: 5)
-                .frame(width: 350) // Fixed
+                .frame(width: 350)
                 VStack {
                     Button(action: {
                         viewModel.signOut()
@@ -282,24 +278,20 @@ struct ProfileView: View {
                             title: Text("Are you sure?"),
                             message: Text("This action cannot be undone. Do you want to delete your account?"),
                             primaryButton: .destructive(Text("Delete")) {
-                                // Show re-authentication dialog when trying to delete the account
                                 showReauthDialog = true
                             },
-                            secondaryButton: .cancel() // User taps "Cancel"
+                            secondaryButton: .cancel()
                         )
                     }
                     .sheet(isPresented: $showReauthDialog) {
-                        // Presenting the re-authentication sheet
                         ReauthenticationSheet(
                             email: $email,
                             password: $password,
                             onDelete: {
-                                // Call the delete function with re-authentication
                                 viewModel.deleteAccount(email: email, password: password)
-                                showReauthDialog = false // Dismiss the sheet after deletion
+                                showReauthDialog = false
                             },
                             onCancel: {
-                                // Dismiss the sheet without action
                                 showReauthDialog = false
                             }
                         )

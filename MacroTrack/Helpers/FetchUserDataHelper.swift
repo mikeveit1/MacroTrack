@@ -11,10 +11,10 @@ class FetchUserDataHelper {
     func fetchMacroGoals(completion: @escaping([String: Int]) -> Void) {
         FirebaseService.shared.fetchUserMacroData() { data in
             let dailyGoals = [
-                "calories": data?.totalCalories ?? 2000,  // Example: 2000 calories
-                "protein": data?.protein ?? 150,    // Example: 150g protein
-                "carbs": data?.carbs ?? 250,      // Example: 250g carbs
-                "fat": data?.fat ?? 70,        // Example: 70g fat
+                "calories": data?.totalCalories ?? 2000,
+                "protein": data?.protein ?? 150,
+                "carbs": data?.carbs ?? 250,
+                "fat": data?.fat ?? 70,
                 "water": data?.water ?? 128,
             ]
             completion(dailyGoals)
@@ -23,7 +23,7 @@ class FetchUserDataHelper {
     
     func fetchFitnessGoal(completion: @escaping(String) -> Void) {
         FirebaseService.shared.fetchUserMacroData() { data in
-            let fitnessGoal = data?.fitnessGoal ?? ""  // Example: 2000 calories
+            let fitnessGoal = data?.fitnessGoal ?? ""
             completion(fitnessGoal)
         }
     }

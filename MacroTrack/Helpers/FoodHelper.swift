@@ -9,10 +9,8 @@ import Foundation
 import FatSecretSwift
 
 class FoodHelper: ObservableObject {
-    // Create a FatSecret client
     let fatSecretClient = FatSecretClient()
-    
-    // No need for override init, initialization is done here
+
     init() {
         FirebaseService.shared.getFatSecretKey { key in
             FatSecretCredentials.setConsumerKey(key)
@@ -22,7 +20,6 @@ class FoodHelper: ObservableObject {
         }
     }
     
-    // Search for foods by name
     func searchFood(query: String, completion: @escaping ([SearchedFood]) -> Void) {
         fatSecretClient.searchFood(name: query) { search in
             completion(search.foods)

@@ -13,12 +13,10 @@ struct UserMeal: Identifiable, Hashable, Equatable, Codable {
     var name: String
     var foods: [MacroFood]
     
-    // Conforming to Equatable by comparing id
     static func == (lhs: UserMeal, rhs: UserMeal) -> Bool {
         return lhs.id == rhs.id
     }
 
-    // Conforming to Hashable
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }

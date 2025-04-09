@@ -36,7 +36,6 @@ struct MealLogs: Equatable {
         }
     }
     
-    // Conformance to Equatable protocol
     static func ==(lhs: MealLogs, rhs: MealLogs) -> Bool {
         return lhs.breakfast == rhs.breakfast &&
         lhs.lunch == rhs.lunch &&

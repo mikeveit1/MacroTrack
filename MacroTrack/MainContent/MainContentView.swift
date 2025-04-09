@@ -1,3 +1,10 @@
+//
+//  MainContentView.swift
+//  MacroTrack
+//
+//  Created by Mike Veit on 3/4/25.
+//
+
 import SwiftUI
 import RevenueCat
 import RevenueCatUI
@@ -32,17 +39,16 @@ struct MainContentView: View {
                     Text("Profile")
                 }
         }
-        .presentPaywallIfNeeded(
-            requiredEntitlementIdentifier: "pro",
-            presentationMode: .fullScreen, purchaseCompleted: { customerInfo in
-                print("Purchase completed: \(customerInfo.entitlements)")
-            },
-            restoreCompleted: { customerInfo in
-                // Paywall will be dismissed automatically if "pro" is now active.
-                print("Purchases restored: \(customerInfo.entitlements)")
-            }
-        )
-        .accentColor(Colors.secondary) // Customize the tab bar accent color (optional)
+//        .presentPaywallIfNeeded(
+//            requiredEntitlementIdentifier: "pro",
+//            presentationMode: .fullScreen, purchaseCompleted: { customerInfo in
+//                print("Purchase completed: \(customerInfo.entitlements)")
+//            },
+//            restoreCompleted: { customerInfo in
+//                print("Purchases restored: \(customerInfo.entitlements)")
+//            }
+//        )
+        .accentColor(Colors.secondary)
         .background(Colors.gray)
     }
 }

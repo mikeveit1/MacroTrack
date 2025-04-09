@@ -1,13 +1,17 @@
+//
+//  Constants.swift
+//  MacroTrack
+//
+//  Created by Mike Veit on 3/4/25.
+//
+
+
 import SwiftUI
 
-// A struct to define color constants
 struct Colors {
-    // Primary color
-    static let primary = Color(hex: "#2f7d70")  // Example hex color
-    // Secondary color (you had a string, now it's a Color)
-    static let secondary = Color(hex: "#ffffff")  // White
-    // Primary light color (you had a string, now it's a Color)
-    static let primaryLight = Color(hex: "#3f9c91")  // Example hex color
+    static let primary = Color(hex: "#2f7d70")
+    static let secondary = Color(hex: "#ffffff")
+    static let primaryLight = Color(hex: "#3f9c91")
     static let gray = (Color(UIColor(white: 0.9, alpha: 1.0)))
 }
 

@@ -1,3 +1,11 @@
+//
+//  MacroCalculatorView.swift
+//  MacroTrack
+//
+//  Created by Mike Veit on 3/4/25.
+//
+
+
 import SwiftUI
 
 struct MacroCalculatorView: View {
@@ -14,7 +22,6 @@ struct MacroCalculatorView: View {
                         .bold()
                         .foregroundColor(Colors.primary)
                         .padding()
-                    // Weight input
                     ZStack(alignment: .leading) {
                         if viewModel.weight.isEmpty {
                             Text("Enter Weight (lbs)")
@@ -31,8 +38,6 @@ struct MacroCalculatorView: View {
                             .accentColor(Colors.primary)
                     }
                     
-                    
-                    // Height input
                     ZStack(alignment: .leading) {
                         if viewModel.height.isEmpty {
                             Text("Enter Height (inches)")
@@ -49,7 +54,6 @@ struct MacroCalculatorView: View {
                             .accentColor(Colors.primary)
                     }
                     
-                    // Age input
                     ZStack(alignment: .leading) {
                         if viewModel.age.isEmpty {
                             Text("Enter Age")
@@ -70,7 +74,7 @@ struct MacroCalculatorView: View {
                         Spacer()
                         VStack {
                             Text("Gender")
-                                .foregroundColor(Colors.primary) // Change this to your desired color
+                                .foregroundColor(Colors.primary)
                                 .font(.title3)
                                 .bold()
                             Picker("", selection: $viewModel.gender) {
@@ -94,7 +98,7 @@ struct MacroCalculatorView: View {
                         Spacer()
                         VStack {
                             Text("Activity Level")
-                                .foregroundColor(Colors.primary) // Change this to your desired color
+                                .foregroundColor(Colors.primary)
                                 .font(.title3)
                                 .bold()
                             Picker("", selection: $viewModel.activityLevel) {
@@ -116,7 +120,7 @@ struct MacroCalculatorView: View {
                     
                     VStack {
                         Text("Fitness Goal")
-                            .foregroundColor(Colors.primary) // Change this to your desired color
+                            .foregroundColor(Colors.primary)
                             .font(.title3)
                             .bold()
                         Picker("", selection: $viewModel.fitnessGoal) {
@@ -147,12 +151,12 @@ struct MacroCalculatorView: View {
                     }
                     .padding()
                 }
-                .padding()  // Proper padding around the entire progress chart
+                .padding()
                 .background(Colors.secondary)
                 .cornerRadius(10)
                 .shadow(radius: 5)
-                .frame(maxWidth: .infinity) // Fixed
-                // Display results if calculations are done
+                .frame(maxWidth: .infinity)
+                
                 VStack(spacing: 8) {
                     HStack {
                         Spacer()
@@ -160,7 +164,6 @@ struct MacroCalculatorView: View {
                             .font(.title3)
                             .bold()
                             .foregroundColor(Colors.primary)
-                            //.padding(.horizontal)
                         Spacer()
                     }
                     Text("Calories: \(Int(viewModel.totalCalories)) kcal")
@@ -194,11 +197,11 @@ struct MacroCalculatorView: View {
                         }
                     }
                 }
-                .padding()  // Proper padding around the entire progress chart
+                .padding()
                 .background(Colors.secondary)
                 .cornerRadius(10)
                 .shadow(radius: 5)
-                .frame(maxWidth: .infinity) // Fixed
+                .frame(maxWidth: .infinity)
             }
             .padding(.horizontal)
             .padding(.bottom)
@@ -206,7 +209,7 @@ struct MacroCalculatorView: View {
         .background(Colors.secondary)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onTapGesture {
-            UIApplication.shared.endEditing() // This will dismiss the keyboard
+            UIApplication.shared.endEditing()
         }
     }
 }

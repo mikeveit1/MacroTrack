@@ -14,36 +14,31 @@ class SignUpViewModel: ObservableObject {
     @Published var confirmPassword: String = ""
     @Published var isLoading: Bool = false
     @Published var errorMessage: String?
-    @AppStorage("isLoggedIn") private var isLoggedIn: Bool = false // Persist login state
+    @AppStorage("isLoggedIn") private var isLoggedIn: Bool = false
     @Published var termsLink: String = ""
     private var linkHelper = LinkHelper()
     
-    // Sign-up function with a completion handler
-    func signUp(completion: @escaping (Bool) -> Void) {
+    func signUp() {
         isLoading = true
         errorMessage = nil
-        
-        // Check if passwords match
+
         guard password == confirmPassword else {
             errorMessage = "Passwords do not match"
             isLoading = false
-            completion(false)
             return
         }
         
         FirebaseService.shared.signUp(email: email, password: password) { success, error in
+            self.isLoading = false
             if success {
                 self.isLoggedIn = true
-                self.isLoading = false
-                completion(true)
             } else {
                 self.errorMessage = error
-                self.isLoading = false
-                completion(false)
+                self.isLoggedIn = false
             }
         }
     }
-    
+
     func getTermsLink() {
         linkHelper.getTermsLink { link in
             self.termsLink = link
