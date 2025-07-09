@@ -381,16 +381,8 @@ class FirebaseService {
         })
     }
     
-    func getRevenueCatKey(completion: @escaping (String) -> Void) {
-        db.child("secret").child("revenueCatKey").observe(.value, with: { snapshot in
-            let revenueCatKey = snapshot.value as? String ?? ""
-            completion(revenueCatKey)
-        })
-    }
-    
     private func handleFirebaseError(_ error: Error?, completion: @escaping (Bool, Error?) -> Void) {
         if let error = error {
-            print("Firebase Error: \(error.localizedDescription)")
             completion(false, error)
         } else {
             completion(true, nil)

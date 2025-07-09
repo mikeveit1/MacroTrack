@@ -351,8 +351,7 @@
 				E48DF36C2D77548F00F92063 /* FirebaseDynamicLinks */,
 				E48DF36E2D77548F00F92063 /* FirebaseStorage */,
 				E48DF3702D77554B00F92063 /* FirebaseFirestore */,
-				E4A058BF2D7BA67300CB75B2 /* RevenueCat */,
-				E4A058C12D7BA67300CB75B2 /* RevenueCatUI */,
+
 			);
 			productName = MacroTrack;
 			productReference = E48DF2FA2D72129300F92063 /* MacroTrack.app */;
@@ -385,7 +384,7 @@
 			packageReferences = (
 				E48DF33C2D7270B000F92063 /* XCLocalSwiftPackageReference "../FatSecretSwift" */,
 				E48DF3572D77548F00F92063 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
-				E4A058BE2D7BA67300CB75B2 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */,
+
 			);
 			productRefGroup = E48DF2FB2D72129300F92063 /* Products */;
 			projectDirPath = "";
@@ -698,14 +697,7 @@
 				minimumVersion = 11.9.0;
 			};
 		};
-		E4A058BE2D7BA67300CB75B2 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/RevenueCat/purchases-ios-spm.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 5.19.0;
-			};
-		};
+
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -790,16 +782,7 @@
 			package = E48DF3572D77548F00F92063 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseFirestore;
 		};
-		E4A058BF2D7BA67300CB75B2 /* RevenueCat */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E4A058BE2D7BA67300CB75B2 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */;
-			productName = RevenueCat;
-		};
-		E4A058C12D7BA67300CB75B2 /* RevenueCatUI */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E4A058BE2D7BA67300CB75B2 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */;
-			productName = RevenueCatUI;
-		};
+
 /* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = E48DF2F22D72129300F92063 /* Project object */;
