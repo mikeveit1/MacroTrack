@@ -99,7 +99,6 @@ import AVKit (for animated splash screen)
 5. **Build and run**: Deploy to iOS Simulator or device
 
 ## App Store Information
-- **Bundle ID**: com.buckeyesoftware.MacroTrack
 - **Version**: 1.05
 - **Target**: iPhone users focused on nutrition and fitness
 - **Category**: Health & Fitness
