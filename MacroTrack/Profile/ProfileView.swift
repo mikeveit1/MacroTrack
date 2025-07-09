@@ -171,25 +171,6 @@ struct ProfileView: View {
                             .font(.title3)
                         Spacer()
                     }
-                    if let url = URL(string: "https://apps.apple.com/account/subscriptions") {
-                        HStack {
-                            Image(systemName: "link")
-                                .foregroundColor(.blue)
-                                .font(.headline)
-                            Link("Manage Subscription", destination: url)
-                                .font(.headline)
-                                .foregroundColor(.blue)
-                        }
-                    } else {
-                        HStack {
-                            Image(systemName: "link")
-                                .foregroundColor(.blue)
-                                .font(.headline)
-                            Link("Manage Subscription", destination: URL(string: "https://google.com")!)
-                                .font(.headline)
-                                .foregroundColor(.blue)
-                        }
-                    }
                     
                     HStack {
                         Image(systemName: "link")
