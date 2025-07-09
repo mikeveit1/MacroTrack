@@ -74,20 +74,6 @@ import AVKit (for animated splash screen)
 - **UserMacroData**: User's calculated macro targets and personal info
 - **MealLogs**: Daily food log organization by meal type
 
-## Project Structure
-MacroTrack/
-├── App/ # App lifecycle and configuration
-├── MainContent/ # Tab-based navigation
-├── FoodLog/ # Food logging interface and logic
-├── MacroCalculator/ # Macro calculation features
-├── Profile/ # User profile and settings
-├── SignIn/SignUp/ # Authentication flows
-├── Services/ # Firebase and external API services
-├── Data/ # Core data models
-├── Views/ # Reusable UI components
-├── Helpers/ # Utility functions and helpers
-└── Constants/ # App-wide constants (colors, etc.)
-
 ## Key Features Demonstrated
 
 ### iOS Development Skills
