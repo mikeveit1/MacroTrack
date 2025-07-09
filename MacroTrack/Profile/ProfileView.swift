@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import StoreKit
 
 struct ProfileView: View {
     @StateObject private var viewModel = ProfileViewModel()
@@ -58,111 +59,137 @@ struct ProfileView: View {
                     HStack {
                         Text("Water:")
                             .foregroundColor(Colors.primary)
-                        Text("\(viewModel.dailyGoals["water"] ?? 0) fl oz")
+                        Text("\(viewModel.dailyGoals["water"] ?? 0) oz")
                             .bold()
                             .foregroundColor(Colors.primary)
                     }
                 }
-                .padding(8)
-                .background(
-                    RoundedRectangle(cornerRadius: 8)
-                        .fill(Colors.secondary)
-                        .stroke(Colors.primary, lineWidth: 2)
-                )
+                .padding()
+                .background(Colors.secondary)
+                .cornerRadius(10)
+                .shadow(radius: 5)
+                .frame(width: 350)
+                
+                HStack {
+                    Spacer()
+                    VStack(spacing: 4) {
+                        Text("Your Daily Averages")
+                            .font(.title3)
+                            .bold()
+                            .foregroundColor(Colors.primary)
+                        HStack {
+                            Spacer()
+                            Text("Calories:")
+                                .foregroundColor(Colors.primary)
+                            Text("\(viewModel.averageCalories) kcal")
+                                .bold()
+                                .foregroundColor(Colors.primary)
+                            Spacer()
+                        }
+                        HStack {
+                            Text("Protein:")
+                                .foregroundColor(Colors.primary)
+                            Text("\(String(format: "%.2f", viewModel.averageProtein)) g")
+                                .bold()
+                                .foregroundColor(Colors.primary)
+                        }
+                        HStack {
+                            Text("Carbs:")
+                                .foregroundColor(Colors.primary)
+                            Text("\(String(format: "%.2f", viewModel.averageCarbs)) g")
+                                .bold()
+                                .foregroundColor(Colors.primary)
+                        }
+                        HStack {
+                            Text("Fat:")
+                                .foregroundColor(Colors.primary)
+                            Text("\(String(format: "%.2f", viewModel.averageFat)) g")
+                                .bold()
+                                .foregroundColor(Colors.primary)
+                        }
+                        HStack {
+                            Text("Water:")
+                                .foregroundColor(Colors.primary)
+                            Text("\(String(format: "%.2f", viewModel.averageWater)) oz")
+                                .bold()
+                                .foregroundColor(Colors.primary)
+                        }
+                    }
+                    .padding()
+                    .background(Colors.secondary)
+                    .cornerRadius(10)
+                    .shadow(radius: 5)
+                    .frame(width: 350)
+                    Spacer()
+                }
                 
                 VStack(spacing: 4) {
-                    Text("Your Daily Averages")
+                    Text("Your Fitness Goal")
                         .font(.title3)
                         .bold()
                         .foregroundColor(Colors.primary)
                     HStack {
                         Spacer()
-                        Text("Calories:")
                             .foregroundColor(Colors.primary)
-                        Text("\(viewModel.averageCalories) kcal")
+                        Text(viewModel.fitnessGoal)
                             .bold()
                             .foregroundColor(Colors.primary)
-                        Spacer()
-                    }
-                    HStack {
-                        Text("Protein:")
-                            .foregroundColor(Colors.primary)
-                        Text("\(viewModel.averageProtein, specifier: "%.1f") g")
-                            .bold()
-                            .foregroundColor(Colors.primary)
-                    }
-                    HStack {
-                        Text("Carbs:")
-                            .foregroundColor(Colors.primary)
-                        Text("\(viewModel.averageCarbs, specifier: "%.1f") g")
-                            .bold()
-                            .foregroundColor(Colors.primary)
-                    }
-                    HStack {
-                        Text("Fat:")
-                            .foregroundColor(Colors.primary)
-                        Text("\(viewModel.averageFat, specifier: "%.1f") g")
-                            .bold()
-                            .foregroundColor(Colors.primary)
-                    }
-                    HStack {
-                        Text("Water:")
-                            .foregroundColor(Colors.primary)
-                        Text("\(viewModel.averageWater, specifier: "%.1f") fl oz")
-                            .bold()
-                            .foregroundColor(Colors.primary)
-                    }
-                }
-                .padding(8)
-                .background(
-                    RoundedRectangle(cornerRadius: 8)
-                        .fill(Colors.secondary)
-                        .stroke(Colors.primary, lineWidth: 2)
-                )
-                
-                VStack(spacing: 4) {
-                    Text("Consecutive Days Logged")
-                        .font(.title3)
-                        .bold()
-                        .foregroundColor(Colors.primary)
-                    HStack {
-                        Spacer()
-                        Text("Days:")
-                            .foregroundColor(Colors.primary)
-                        Text("\(viewModel.consecutiveDaysLogged)")
-                            .bold()
-                            .foregroundColor(Colors.primary)
+                            .multilineTextAlignment(.center)
                         Spacer()
                     }
                 }
-                .padding(8)
-                .background(
-                    RoundedRectangle(cornerRadius: 8)
-                        .fill(Colors.secondary)
-                        .stroke(Colors.primary, lineWidth: 2)
-                )
-                
+                .padding()
+                .background(Colors.secondary)
+                .cornerRadius(10)
+                .shadow(radius: 5)
+                .frame(width: 350)
+              
                 VStack(spacing: 4) {
-                    Text("Fitness Goal")
-                        .font(.title3)
+                    HStack {
+                        Spacer()
+                        Text("Your Logging Streak")
+                            .foregroundColor(Colors.primary)
+                            .bold()
+                            .font(.title3)
+                        Spacer()
+                    }
+                    Text("\(viewModel.consecutiveDaysLogged) \(viewModel.consecutiveDaysLogged == 1 ? "day" : "days")")
                         .bold()
                         .foregroundColor(Colors.primary)
-                    Text(viewModel.fitnessGoal)
-                        .font(.body)
-                        .foregroundColor(Colors.primary)
-                        .multilineTextAlignment(.center)
                 }
-                .padding(8)
-                .background(
-                    RoundedRectangle(cornerRadius: 8)
-                        .fill(Colors.secondary)
-                        .stroke(Colors.primary, lineWidth: 2)
-                )
-                VStack(spacing: 4) {
-                    Text("Info")
-                        .font(.title3)
-                        .bold()
-                        .foregroundColor(Colors.primary)
+                .padding()
+                .background(Colors.secondary)
+                .cornerRadius(10)
+                .shadow(radius: 5)
+                .frame(width: 350)
+                VStack(spacing: 8) {
+                    HStack {
+                        Spacer()
+                        Text("Manage Your Account")
+                            .foregroundColor(Colors.primary)
+                            .bold()
+                            .font(.title3)
+                        Spacer()
+                    }
+                    if let url = URL(string: "https://apps.apple.com/account/subscriptions") {
+                        HStack {
+                            Image(systemName: "link")
+                                .foregroundColor(.blue)
+                                .font(.headline)
+                            Link("Manage Subscription", destination: url)
+                                .font(.headline)
+                                .foregroundColor(.blue)
+                        }
+                    } else {
+                        HStack {
+                            Image(systemName: "link")
+                                .foregroundColor(.blue)
+                                .font(.headline)
+                            Link("Manage Subscription", destination: URL(string: "https://google.com")!)
+                                .font(.headline)
+                                .foregroundColor(.blue)
+                        }
+                    }
                     
                     HStack {
                         Image(systemName: "link")
@@ -208,35 +235,48 @@ struct ProfileView: View {
                                 .foregroundColor(.gray)
                         }
                     }
-                    
+                }
+                .padding()
+                .background(Colors.secondary)
+                .cornerRadius(10)
+                .shadow(radius: 5)
+                .frame(width: 350)
+                VStack {
                     Button(action: {
                         viewModel.signOut()
                     }) {
                         Text("Sign Out")
                             .fontWeight(.bold)
-                            .frame(maxWidth: .infinity)
+                            .frame(maxWidth: 200)
                             .padding()
                             .background(Colors.primary)
                             .foregroundColor(Colors.secondary)
                             .cornerRadius(10)
                     }
-                    .padding(.top, 8)
-                    
                     Button(action: {
                         showDeleteAlert = true
                     }) {
                         Text("Delete Account")
                             .fontWeight(.bold)
-                            .frame(maxWidth: .infinity)
+                            .frame(maxWidth: 200)
                             .padding()
                             .background(Color.red)
                             .foregroundColor(Colors.secondary)
                             .cornerRadius(10)
                     }
+                    .alert(isPresented: $viewModel.error) {
+                        Alert(
+                            title: Text("Error"),
+                            message: Text(viewModel.errorMessage),
+                            dismissButton: .default(Text("Dismiss")) {
+                                viewModel.resetError()
+                            }
+                        )
+                    }
                     .alert(isPresented: $showDeleteAlert) {
                         Alert(
-                            title: Text("Are you sure you want to delete your account?"),
-                            message: Text("This action cannot be undone."),
+                            title: Text("Are you sure?"),
+                            message: Text("This action cannot be undone. Do you want to delete your account?"),
                             primaryButton: .destructive(Text("Delete")) {
                                 showReauthDialog = true
                             },

@@ -6,6 +6,8 @@
 //
 
 import SwiftUI
+import RevenueCat
+import RevenueCatUI
 
 struct MainContentView: View {
     init() {
@@ -37,6 +39,15 @@ struct MainContentView: View {
                     Text("Profile")
                 }
         }
+        .presentPaywallIfNeeded(
+            requiredEntitlementIdentifier: "pro",
+            presentationMode: .fullScreen, purchaseCompleted: { customerInfo in
+                print("Purchase completed: \(customerInfo.entitlements)")
+            },
+            restoreCompleted: { customerInfo in
+                print("Purchases restored: \(customerInfo.entitlements)")
+            }
+        )
         .accentColor(Colors.secondary)
         .background(Colors.gray)
     }
