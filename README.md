@@ -47,7 +47,7 @@ MacroTrack is a feature-rich nutrition tracking application that combines modern
 - **Orientation**: Portrait-optimized interface
 
 ### Tech Stack
-- **Frontend**: SwiftUI, Combine
+- **Frontend**: SwiftUI
 - **Backend**: Firebase Realtime Database, Firebase Auth, Firebase Storage
 - **APIs**: FatSecret API for nutritional data
 - **Additional**: RevenueCat for potential monetization features
